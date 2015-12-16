@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--
+    Copyright 2015 Hippo Licensed under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under
+    the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+    OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and
+    limitations under the License.
+  -->
+<project name="Hippo Content EXIM (Export / Import) Documentation">
+
+  <publishDate format="d MMMM yyyy" />
+
+  <bannerLeft>
+    <name>Hippo Content EXIM (Export / Import) Documentation</name>
+  </bannerLeft>
+
+  <body>
+
+    <head>
+      <!-- SyntaxHighlighter Begins -->
+      <script type="text/javascript" src="sh/scripts/shCore.js"></script>
+      <script type="text/javascript" src="sh/scripts/shBrushBash.js"></script>
+      <script type="text/javascript" src="sh/scripts/shBrushDiff.js"></script>
+      <script type="text/javascript" src="sh/scripts/shBrushJava.js"></script>
+      <script type="text/javascript" src="sh/scripts/shBrushJScript.js"></script>
+      <script type="text/javascript" src="sh/scripts/shBrushPlain.js"></script>
+      <script type="text/javascript" src="sh/scripts/shBrushSql.js"></script>
+      <script type="text/javascript" src="sh/scripts/shBrushXml.js"></script>
+      <link type="text/css" rel="stylesheet" href="sh/styles/shCoreDefault.css" />
+      <!-- SyntaxHighlighter Ends -->
+      <!-- Automatic SyntaxHighlighter invocation script for <source/> elements Begins -->
+      <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+      <script type="text/javascript" src="highlight-source-elements.js"></script>
+      <!-- Automatic SyntaxHighlighter invocation script for <source/> elements Ends -->
+    </head>
+
+    <menu name="Home">
+      <item name="Home" href="index.html" />
+      <item name="Installation" href="install.html" />
+      <item name="Build from source" href="build-from-source.html" />
+      <item name="JavaDocs" href="apidocs/index.html" />
+      <item name="Release Notes" href="release-notes.html" />
+    </menu>
+
+    <menu ref="reports" />
+
+  </body>
+
+</project>
+
