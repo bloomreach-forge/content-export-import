@@ -117,6 +117,12 @@
       <name>Hippo maven 2 repository.</name>
       <url>http://maven.onehippo.com/maven2/</url>
     </repository>
+    <repository>
+      <id>hippo-maven2-forge</id>
+      <name>Hippo Maven 2 Forge repository</name>
+      <url>http://maven.onehippo.com/maven2-forge/</url>
+      <snapshots />
+    </repository>
   </repositories>
 
   <dependencyManagement>
