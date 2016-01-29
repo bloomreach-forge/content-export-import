@@ -19,7 +19,21 @@
     <section name="Introduction">
       <subsection name="What is Hippo Content EXIM (Export / Import)?">
         <p>
-          TODO: This project aims to provide ...
+          This project is going to provide a higher level feature of Content Import and Export,
+          depending on <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
+          (which provides a lower level JCR mapping/binding mechanism only).
+        </p>
+        <p>
+          So, for example, while <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
+          doesn't provide any Hippo Repository Workflow level operations properly,
+          this project is going to provide that kind of higher level, that is, Hippo Repository Workflow level,
+          Content Import / Export features.
+        </p>
+        <p>
+          TODO: Implement stuffs and cut a release with demo project.
+        </p>
+        <p>
+          Stay tuned!
         </p>
       </subsection>
     </section>
