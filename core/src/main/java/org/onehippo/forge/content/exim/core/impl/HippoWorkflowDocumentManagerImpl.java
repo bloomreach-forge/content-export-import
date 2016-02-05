@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2015 Hippo B.V. (http://www.onehippo.com)
+ * Copyright 2016-2016 Hippo B.V. (http://www.onehippo.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,14 @@ import org.hippoecm.repository.api.Document;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.translation.TranslationWorkflow;
 import org.onehippo.forge.content.exim.core.DocumentManager;
+import org.onehippo.forge.content.exim.core.DocumentManagerException;
+import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.onehippo.repository.documentworkflow.DocumentWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default implementation for {@link DocumentManager}.
+ * Default implementation for {@link DocumentManager} using Hippo Workflow APIs.
  */
 public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
 
@@ -60,7 +62,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String obtainEditableDocument(String documentLocation) {
+    public String obtainEditableDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### obtainEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
@@ -93,7 +95,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
         } catch (Exception e) {
             log.error("Failed to obtain editable instance on document.", e);
-            throw new RuntimeException(
+            throw new DocumentManagerException(
                     "Failed to obtain editable instance on document at '" + documentLocation + "'. " + e);
         }
 
@@ -101,7 +103,12 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String disposeEditableDocument(String documentLocation) {
+    public void updateEditableDocument(String documentIdentifier, ContentNode sourceContentNode) throws DocumentManagerException {
+        // TODO
+    }
+
+    @Override
+    public String disposeEditableDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### disposeEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
@@ -134,7 +141,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
         } catch (Exception e) {
             log.error("Failed to dispose editable instance on document.", e);
-            throw new RuntimeException(
+            throw new DocumentManagerException(
                     "Failed to dispose editable instance on document at '" + documentLocation + "'. " + e);
         }
 
@@ -142,7 +149,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String commitEditableDocument(String documentLocation) {
+    public String commitEditableDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### commitEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
@@ -175,7 +182,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
         } catch (Exception e) {
             log.error("Failed to commit editable instance on document.", e);
-            throw new RuntimeException(
+            throw new DocumentManagerException(
                     "Failed to commit editable instance on document at '" + documentLocation + "'. " + e);
         }
 
@@ -183,7 +190,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public boolean depublishDocument(String documentLocation) {
+    public boolean depublishDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### depublishDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
@@ -223,14 +230,14 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
         } catch (RepositoryException | WorkflowException | RemoteException e) {
             log.error("Failed to depublish document at '{}'.", documentLocation, e);
-            throw new RuntimeException("Failed to depublish document at '" + documentLocation + "'. " + e);
+            throw new DocumentManagerException("Failed to depublish document at '" + documentLocation + "'. " + e);
         }
 
         return depublished;
     }
 
     @Override
-    public boolean publishDocument(String documentLocation) {
+    public boolean publishDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### publishDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
@@ -262,7 +269,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             published = true;
         } catch (RepositoryException | WorkflowException | RemoteException e) {
             log.error("Failed to publish document at '{}'.", documentLocation, e);
-            throw new RuntimeException("Failed to publish document at '" + documentLocation + "'. " + e);
+            throw new DocumentManagerException("Failed to publish document at '" + documentLocation + "'. " + e);
         }
 
         return published;
@@ -270,7 +277,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public String copyDocument(String sourceDocumentLocation, String targetFolderLocation,
-            String targetDocumentNodeName) {
+            String targetDocumentNodeName) throws DocumentManagerException {
         log.debug("##### copyDocument('{}', '{}', '{}')", sourceDocumentLocation, targetFolderLocation,
                 targetDocumentNodeName);
 
@@ -310,7 +317,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
         } catch (RepositoryException | WorkflowException | RemoteException e) {
             log.error("Failed to copy document at '{}' to '{}/{}'.", sourceDocumentLocation, targetFolderLocation,
                     targetDocumentNodeName, e);
-            throw new RuntimeException("Failed to copy document at '" + sourceDocumentLocation + "' to '"
+            throw new DocumentManagerException("Failed to copy document at '" + sourceDocumentLocation + "' to '"
                     + targetFolderLocation + "/" + targetDocumentNodeName + "'. " + e);
         }
 
@@ -318,7 +325,8 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String translateFolder(String sourceFolderLocation, String targetLanguage, String targetFolderNodeName) {
+    public String translateFolder(String sourceFolderLocation, String targetLanguage, String targetFolderNodeName)
+            throws DocumentManagerException {
         log.debug("##### translateFolder('{}', '{}', '{}')", sourceFolderLocation, targetLanguage,
                 targetFolderNodeName);
 
@@ -326,25 +334,24 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
 
         try {
             if (!getSession().nodeExists(sourceFolderLocation)) {
-                throw new IllegalArgumentException(
-                        "Source folder doesn't exist at '" + sourceFolderLocation + "'.");
+                throw new IllegalArgumentException("Source folder doesn't exist at '" + sourceFolderLocation + "'.");
             }
 
             Node sourceFolderNode = getSession().getNode(sourceFolderLocation);
 
             if (sourceFolderNode == null || !sourceFolderNode.isNodeType(HippoStdNodeType.NT_FOLDER)) {
-                throw new IllegalArgumentException(
-                        "Source folder is not found at '" + sourceFolderLocation + "'.");
+                throw new IllegalArgumentException("Source folder is not found at '" + sourceFolderLocation + "'.");
             }
 
             TranslationWorkflow folderTranslationWorkflow = getFolderTranslationWorkflow(sourceFolderNode);
-            Document translatedFolderDocument = folderTranslationWorkflow.addTranslation(targetLanguage, targetFolderNodeName);
+            Document translatedFolderDocument = folderTranslationWorkflow.addTranslation(targetLanguage,
+                    targetFolderNodeName);
             Node translatedFolderNode = translatedFolderDocument.getNode(getSession());
             targetFolderLocation = translatedFolderNode.getPath();
         } catch (RepositoryException | WorkflowException | RemoteException e) {
-            log.error("Failed to translate folder at '{}' to '{}' in '{}'.", sourceFolderLocation,
-                    targetFolderNodeName, targetLanguage, e);
-            throw new RuntimeException("Failed to add translated folder of '" + sourceFolderLocation + "' to '"
+            log.error("Failed to translate folder at '{}' to '{}' in '{}'.", sourceFolderLocation, targetFolderNodeName,
+                    targetLanguage, e);
+            throw new DocumentManagerException("Failed to add translated folder of '" + sourceFolderLocation + "' to '"
                     + targetFolderNodeName + "' in '" + targetLanguage + "'. " + e);
         }
 
@@ -352,7 +359,8 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String translateDocument(String sourceDocumentLocation, String targetLanguage, String targetDocumentNodeName) {
+    public String translateDocument(String sourceDocumentLocation, String targetLanguage, String targetDocumentNodeName)
+            throws DocumentManagerException {
         log.debug("##### translateDocument('{}', '{}', '{}')", sourceDocumentLocation, targetLanguage,
                 targetDocumentNodeName);
 
@@ -387,13 +395,15 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
 
             TranslationWorkflow documentTranslationWorkflow = getDocumentTranslationWorkflow(translationVariantNode);
-            Document translatedDocument = documentTranslationWorkflow.addTranslation(targetLanguage, targetDocumentNodeName);
-            Node translatedDocumentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(translatedDocument.getNode(getSession()));
+            Document translatedDocument = documentTranslationWorkflow.addTranslation(targetLanguage,
+                    targetDocumentNodeName);
+            Node translatedDocumentHandleNode = HippoWorkflowUtils
+                    .getHippoDocumentHandle(translatedDocument.getNode(getSession()));
             targetDocumentLocation = translatedDocumentHandleNode.getPath();
         } catch (RepositoryException | WorkflowException | RemoteException e) {
             log.error("Failed to translate document at '{}' to '{}' in '{}'.", sourceDocumentLocation,
                     targetDocumentNodeName, targetLanguage, e);
-            throw new RuntimeException("Failed to add translated document of '" + sourceDocumentLocation + "' to '"
+            throw new DocumentManagerException("Failed to add translated document of '" + sourceDocumentLocation + "' to '"
                     + targetDocumentNodeName + "' in '" + targetLanguage + "'. " + e);
         }
 
@@ -409,10 +419,8 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 documentHandleNode);
     }
 
-    protected TranslationWorkflow getFolderTranslationWorkflow(final Node folderNode)
-            throws RepositoryException {
-        return (TranslationWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), "translation",
-                folderNode);
+    protected TranslationWorkflow getFolderTranslationWorkflow(final Node folderNode) throws RepositoryException {
+        return (TranslationWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), "translation", folderNode);
     }
 
     protected TranslationWorkflow getDocumentTranslationWorkflow(final Node documentVariantNode)
