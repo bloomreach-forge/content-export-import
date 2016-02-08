@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +31,11 @@ import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.translation.TranslationWorkflow;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
+import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
+import org.onehippo.forge.content.pojo.binder.ContentNodeBindingItemFilter;
+import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingItemFilter;
+import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
+import org.onehippo.forge.content.pojo.model.ContentItem;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.onehippo.repository.documentworkflow.DocumentWorkflow;
 import org.slf4j.Logger;
@@ -42,6 +48,10 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
 
     private static Logger log = LoggerFactory.getLogger(HippoWorkflowDocumentManagerImpl.class);
 
+    private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
+
+    private ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
+
     /**
      * The workflow category name to get a document workflow. 
      */
@@ -53,6 +63,34 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
         this.session = session;
     }
 
+    public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
+        if (contentNodeBinder == null) {
+            contentNodeBinder = new DefaultJcrContentNodeBinder();
+        }
+
+        return contentNodeBinder;
+    }
+
+    public void setContentNodeBinder(ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder) {
+        this.contentNodeBinder = contentNodeBinder;
+    }
+
+    public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
+        if (contentNodeBindingItemFilter == null) {
+            DefaultContentNodeJcrBindingItemFilter bindingItemFilter = new DefaultContentNodeJcrBindingItemFilter();
+            bindingItemFilter.addPropertyPathExclude("hippo:*");
+            bindingItemFilter.addPropertyPathExclude("hippostd:*");
+            bindingItemFilter.addPropertyPathExclude("hippostdpubwf:*");
+            contentNodeBindingItemFilter = bindingItemFilter;
+        }
+
+        return contentNodeBindingItemFilter;
+    }
+
+    public void setContentNodeBindingItemFilter(ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter) {
+        this.contentNodeBindingItemFilter = contentNodeBindingItemFilter;
+    }
+
     public String getDocumentWorkflowCategory() {
         return documentWorkflowCategory;
     }
@@ -62,14 +100,14 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String obtainEditableDocument(String documentLocation) throws DocumentManagerException {
+    public Document obtainEditableDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### obtainEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
         }
 
-        String identifier = null;
+        Document document = null;
 
         try {
             if (!getSession().nodeExists(documentLocation)) {
@@ -87,8 +125,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             Boolean obtainEditableInstance = (Boolean) documentWorkflow.hints().get("obtainEditableInstance");
 
             if (BooleanUtils.isTrue(obtainEditableInstance)) {
-                Document document = documentWorkflow.obtainEditableInstance();
-                identifier = document.getIdentity();
+                document = documentWorkflow.obtainEditableInstance();
             } else {
                 throw new IllegalStateException(
                         "Document at '" + documentLocation + "' is not allowed to obtain an editable instance.");
@@ -99,23 +136,30 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                     "Failed to obtain editable instance on document at '" + documentLocation + "'. " + e);
         }
 
-        return identifier;
+        return document;
     }
 
     @Override
-    public void updateEditableDocument(String documentIdentifier, ContentNode sourceContentNode) throws DocumentManagerException {
-        // TODO
+    public void updateEditableDocument(Document editableDocument, ContentNode sourceContentNode) throws DocumentManagerException {
+        try {
+            final Node editableDocumentNode = editableDocument.getNode(getSession());
+            getContentNodeBinder().bind(editableDocumentNode, sourceContentNode, getContentNodeBindingItemFilter());
+        } catch (Exception e) {
+            log.error("Failed to update editable document.", e);
+            throw new DocumentManagerException(
+                    "Failed to obtain editable instance on document (id: '" + editableDocument + "'). " + e);
+        }
     }
 
     @Override
-    public String disposeEditableDocument(String documentLocation) throws DocumentManagerException {
+    public Document disposeEditableDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### disposeEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
         }
 
-        String identifier = null;
+        Document document = null;
 
         try {
             if (!getSession().nodeExists(documentLocation)) {
@@ -133,8 +177,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             Boolean disposeEditableInstance = (Boolean) documentWorkflow.hints().get("disposeEditableInstance");
 
             if (BooleanUtils.isTrue(disposeEditableInstance)) {
-                Document document = documentWorkflow.disposeEditableInstance();
-                identifier = document.getIdentity();
+                document = documentWorkflow.disposeEditableInstance();
             } else {
                 throw new IllegalStateException(
                         "Document at '" + documentLocation + "' is not allowed to dispose an editable instance.");
@@ -145,18 +188,18 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                     "Failed to dispose editable instance on document at '" + documentLocation + "'. " + e);
         }
 
-        return identifier;
+        return document;
     }
 
     @Override
-    public String commitEditableDocument(String documentLocation) throws DocumentManagerException {
+    public Document commitEditableDocument(String documentLocation) throws DocumentManagerException {
         log.debug("##### commitEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
         }
 
-        String identifier = null;
+        Document document = null;
 
         try {
             if (!getSession().nodeExists(documentLocation)) {
@@ -174,8 +217,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             Boolean commitEditableInstance = (Boolean) documentWorkflow.hints().get("commitEditableInstance");
 
             if (BooleanUtils.isTrue(commitEditableInstance)) {
-                Document document = documentWorkflow.commitEditableInstance();
-                identifier = document.getIdentity();
+                document = documentWorkflow.commitEditableInstance();
             } else {
                 throw new IllegalStateException(
                         "Document at '" + documentLocation + "' is not allowed to commit an editable instance.");
@@ -186,7 +228,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                     "Failed to commit editable instance on document at '" + documentLocation + "'. " + e);
         }
 
-        return identifier;
+        return document;
     }
 
     @Override
@@ -325,12 +367,12 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String translateFolder(String sourceFolderLocation, String targetLanguage, String targetFolderNodeName)
+    public Document translateFolder(String sourceFolderLocation, String targetLanguage, String targetFolderNodeName)
             throws DocumentManagerException {
         log.debug("##### translateFolder('{}', '{}', '{}')", sourceFolderLocation, targetLanguage,
                 targetFolderNodeName);
 
-        String targetFolderLocation = null;
+        Document translatedFolderDocument = null;
 
         try {
             if (!getSession().nodeExists(sourceFolderLocation)) {
@@ -344,10 +386,8 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
 
             TranslationWorkflow folderTranslationWorkflow = getFolderTranslationWorkflow(sourceFolderNode);
-            Document translatedFolderDocument = folderTranslationWorkflow.addTranslation(targetLanguage,
+            translatedFolderDocument = folderTranslationWorkflow.addTranslation(targetLanguage,
                     targetFolderNodeName);
-            Node translatedFolderNode = translatedFolderDocument.getNode(getSession());
-            targetFolderLocation = translatedFolderNode.getPath();
         } catch (RepositoryException | WorkflowException | RemoteException e) {
             log.error("Failed to translate folder at '{}' to '{}' in '{}'.", sourceFolderLocation, targetFolderNodeName,
                     targetLanguage, e);
@@ -355,16 +395,16 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                     + targetFolderNodeName + "' in '" + targetLanguage + "'. " + e);
         }
 
-        return targetFolderLocation;
+        return translatedFolderDocument;
     }
 
     @Override
-    public String translateDocument(String sourceDocumentLocation, String targetLanguage, String targetDocumentNodeName)
+    public Document translateDocument(String sourceDocumentLocation, String targetLanguage, String targetDocumentNodeName)
             throws DocumentManagerException {
         log.debug("##### translateDocument('{}', '{}', '{}')", sourceDocumentLocation, targetLanguage,
                 targetDocumentNodeName);
 
-        String targetDocumentLocation = null;
+        Document translatedDocument = null;
 
         try {
             if (!getSession().nodeExists(sourceDocumentLocation)) {
@@ -395,11 +435,8 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
 
             TranslationWorkflow documentTranslationWorkflow = getDocumentTranslationWorkflow(translationVariantNode);
-            Document translatedDocument = documentTranslationWorkflow.addTranslation(targetLanguage,
+            translatedDocument = documentTranslationWorkflow.addTranslation(targetLanguage,
                     targetDocumentNodeName);
-            Node translatedDocumentHandleNode = HippoWorkflowUtils
-                    .getHippoDocumentHandle(translatedDocument.getNode(getSession()));
-            targetDocumentLocation = translatedDocumentHandleNode.getPath();
         } catch (RepositoryException | WorkflowException | RemoteException e) {
             log.error("Failed to translate document at '{}' to '{}' in '{}'.", sourceDocumentLocation,
                     targetDocumentNodeName, targetLanguage, e);
@@ -407,7 +444,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                     + targetDocumentNodeName + "' in '" + targetLanguage + "'. " + e);
         }
 
-        return targetDocumentLocation;
+        return translatedDocument;
     }
 
     protected Session getSession() {

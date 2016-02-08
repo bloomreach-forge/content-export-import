@@ -15,6 +15,7 @@
  */
 package org.onehippo.forge.content.exim.core;
 
+import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
 /**
@@ -25,34 +26,35 @@ public interface DocumentManager {
     /**
      * Obtains an editable draft variant from the document handle location.
      * @param documentLocation document handle location
-     * @return document identifier if the operation was successful
+     * @return document if the operation was successful
      * @throws DocumentManagerException if fails to process.
      */
-    String obtainEditableDocument(String documentLocation) throws DocumentManagerException;
+    Document obtainEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
      * Update editable document (specified by {@code documentIdentifier}) by the content of the given {@code sourceContentNode}.
-     * @param documentIdentifier document identifier to edit
+     * @param editableDocument document to edit
      * @param sourceContentNode source content node
      * @throws DocumentManagerException if fails to process.
      */
-    void updateEditableDocument(String documentIdentifier, ContentNode sourceContentNode) throws DocumentManagerException;
+    void updateEditableDocument(Document editableDocument, ContentNode sourceContentNode)
+            throws DocumentManagerException;
 
     /**
      * Discards the draft variant currently being edited.
      * @param documentLocation document handle location
-     * @return document identifier if the operation was successful
+     * @return document if the operation was successful
      * @throws DocumentManagerException if fails to process.
      */
-    String disposeEditableDocument(String documentLocation) throws DocumentManagerException;
+    Document disposeEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
      * Commits the draft variant currently being edited.
      * @param documentLocation document handle location
-     * @return document identifier if the operation was successful
+     * @return document if the operation was successful
      * @throws DocumentManagerException if fails to process.
      */
-    String commitEditableDocument(String documentLocation) throws DocumentManagerException;
+    Document commitEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
      * Takes offline the document.
@@ -86,20 +88,20 @@ public interface DocumentManager {
      * @param sourceFolderLocation source folder location
      * @param language target language to translate to
      * @param name target folder name
-     * @return the translated target folder location
+     * @return the translated target folder document
      * @throws DocumentManagerException if fails to process.
      */
-    String translateFolder(String sourceFolderLocation, String language, String name) throws DocumentManagerException;
+    Document translateFolder(String sourceFolderLocation, String language, String name) throws DocumentManagerException;
 
     /**
      * Translates the {@code sourceDocumentLocation} to {@code language} with the {@code name}.
      * @param sourceDocumentLocation source document handle location
      * @param language target language to translate to
      * @param name target document name
-     * @return the translated target document handle location
+     * @return the translated target document
      * @throws DocumentManagerException if fails to process.
      */
-    String translateDocument(String sourceDocumentLocation, String language, String name)
+    Document translateDocument(String sourceDocumentLocation, String language, String name)
             throws DocumentManagerException;
 
 }
