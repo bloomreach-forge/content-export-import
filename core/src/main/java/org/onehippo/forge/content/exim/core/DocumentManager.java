@@ -24,6 +24,21 @@ import org.onehippo.forge.content.pojo.model.ContentNode;
 public interface DocumentManager {
 
     /**
+     * Creates a document in the specific {@code folderLocation}
+     * with given {@code templateCategory}, {@code prototype}, {@code name} and {@code displayName}.
+     * @param folderLocation destination folder location
+     * @param templateCategory template category name
+     * @param prototype prototype name
+     * @param nodeName document node name
+     * @param locale locale name for the document display name
+     * @param displayName document display name for the locale
+     * @return created document location
+     * @throws DocumentManagerException if fails to process.
+     */
+    String createDocument(String folderLocation, String templateCategory, String prototype, String nodeName, String locale, String displayName)
+            throws DocumentManagerException;
+
+    /**
      * Obtains an editable draft variant from the document handle location.
      * @param documentLocation document handle location
      * @return document if the operation was successful
@@ -57,6 +72,14 @@ public interface DocumentManager {
     Document commitEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
+     * Publishes the document.
+     * @param documentLocation document handle location
+     * @return true if the operation was successful, false otherwise
+     * @throws DocumentManagerException if fails to process.
+     */
+    boolean publishDocument(String documentLocation) throws DocumentManagerException;
+
+    /**
      * Takes offline the document.
      * @param documentLocation document handle location
      * @return true if the operation was successful, false otherwise
@@ -65,12 +88,11 @@ public interface DocumentManager {
     boolean depublishDocument(String documentLocation) throws DocumentManagerException;
 
     /**
-     * Publishes the document.
+     * Deletes a document at {@code documentLocation}.
      * @param documentLocation document handle location
-     * @return true if the operation was successful, false otherwise
      * @throws DocumentManagerException if fails to process.
      */
-    boolean publishDocument(String documentLocation) throws DocumentManagerException;
+    void deleteDocument(String documentLocation) throws DocumentManagerException;
 
     /**
      * Copies the {@code sourceDocumentLocation} to {@code targetFolderLocation} with the {@code targetDocumentName}.
