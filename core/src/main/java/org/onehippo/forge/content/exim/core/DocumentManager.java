@@ -35,15 +35,14 @@ public interface DocumentManager {
      * Creates a document in the specific {@code folderLocation}
      * with given {@code templateCategory}, {@code prototype}, {@code name} and {@code localizedName}.
      * @param folderLocation destination folder location
-     * @param templateCategory template category name
-     * @param prototype prototype name
+     * @param primaryTypeName primary node type name
      * @param nodeName document node name
      * @param locale locale name for the document display name
      * @param localizedName document display name for the locale
      * @return created document location
      * @throws DocumentManagerException if fails to process.
      */
-    String createDocument(String folderLocation, String templateCategory, String prototype, String nodeName, String locale, String localizedName)
+    String createDocument(String folderLocation, String primaryTypeName, String nodeName, String locale, String localizedName)
             throws DocumentManagerException;
 
     /**

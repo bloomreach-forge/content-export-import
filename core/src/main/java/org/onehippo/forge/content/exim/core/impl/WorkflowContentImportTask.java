@@ -100,15 +100,14 @@ public class WorkflowContentImportTask extends AbstractContentExportImportTask i
     }
 
     @Override
-    public String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String documentLocation,
-            String templateCategory, String prototype, String locale, String localizedName)
-                    throws ContentExportException {
+    public String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String primaryTypeName,
+            String documentLocation, String locale, String localizedName) throws ContentExportException {
         String createdOrUpdatedDocumentLocation = null;
 
         try {
             if (!getDocumentManager().getSession().nodeExists(documentLocation)) {
-                createdOrUpdatedDocumentLocation = createDocumentFromVariantContentNode(documentLocation, contentNode,
-                        templateCategory, prototype, locale, localizedName);
+                createdOrUpdatedDocumentLocation = createDocumentFromVariantContentNode(primaryTypeName,
+                        documentLocation, contentNode, locale, localizedName);
             }
 
             createdOrUpdatedDocumentLocation = updateDocumentFromVariantContentNode(documentLocation, contentNode);
@@ -119,19 +118,19 @@ public class WorkflowContentImportTask extends AbstractContentExportImportTask i
         return createdOrUpdatedDocumentLocation;
     }
 
-    private String createDocumentFromVariantContentNode(String documentLocation, final ContentNode contentNode,
-            String templateCategory, String prototype, String locale, String localizedName)
+    protected String createDocumentFromVariantContentNode(String primaryTypeName, String documentLocation,
+            final ContentNode contentNode, String locale, String localizedName)
                     throws DocumentManagerException, RepositoryException {
         documentLocation = StringUtils.removeEnd(documentLocation, "/");
         int offset = StringUtils.lastIndexOf(documentLocation, '/');
         final String folderLocation = StringUtils.substring(documentLocation, 0, offset);
         final String nodeName = StringUtils.substring(documentLocation, offset + 1);
-        String createdDocumentLocation = getDocumentManager().createDocument(folderLocation, templateCategory, prototype,
-                nodeName, locale, localizedName);
+        String createdDocumentLocation = getDocumentManager().createDocument(folderLocation, primaryTypeName, nodeName,
+                locale, localizedName);
         return createdDocumentLocation;
     }
 
-    private String updateDocumentFromVariantContentNode(final String documentLocation, final ContentNode contentNode)
+    protected String updateDocumentFromVariantContentNode(final String documentLocation, final ContentNode contentNode)
             throws DocumentManagerException, RepositoryException {
         Document editableDocument = null;
 

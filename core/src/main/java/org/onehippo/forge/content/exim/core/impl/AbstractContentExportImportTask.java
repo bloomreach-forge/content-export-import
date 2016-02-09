@@ -15,9 +15,17 @@
  */
 package org.onehippo.forge.content.exim.core.impl;
 
+import java.util.regex.Pattern;
+
 import javax.jcr.Value;
 
+import org.apache.commons.vfs2.FileFilter;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSelector;
+import org.apache.commons.vfs2.FileSystemException;
 import org.onehippo.forge.content.exim.core.DocumentManager;
+import org.onehippo.forge.content.exim.core.util.FileFilterDepthSelector;
+import org.onehippo.forge.content.exim.core.util.NamePatternFileFilter;
 import org.onehippo.forge.content.pojo.common.ContentValueConverter;
 import org.onehippo.forge.content.pojo.common.jcr.DefaultJcrContentValueConverter;
 
@@ -61,4 +69,10 @@ abstract public class AbstractContentExportImportTask {
         this.contentValueConverter = contentValueConverter;
     }
 
+    public FileObject[] findFilesByNamePattern(FileObject baseFolder, String nameRegex, int minDepth, int maxDepth)
+            throws FileSystemException {
+        final FileFilter fileFilter = new NamePatternFileFilter(Pattern.compile(nameRegex));
+        final FileSelector selector = new FileFilterDepthSelector(fileFilter, minDepth, maxDepth);
+        return baseFolder.findFiles(selector);
+    }
 }

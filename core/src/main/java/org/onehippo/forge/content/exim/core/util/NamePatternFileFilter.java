@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onehippo.forge.content.exim.core;
+package org.onehippo.forge.content.exim.core.util;
 
-import org.apache.commons.vfs2.FileObject;
-import org.onehippo.forge.content.pojo.model.ContentNode;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public interface ContentImportTask {
+import org.apache.commons.vfs2.FileFilter;
+import org.apache.commons.vfs2.FileSelectInfo;
 
-    ContentNode readContentNodeFromJsonFile(FileObject sourceFile) throws ContentExportException;
+public class NamePatternFileFilter implements FileFilter {
 
-    String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String primaryTypeName,
-            String documentLocation, String locale, String localizedName) throws ContentExportException;
+    private final Pattern namePattern;
+
+    public NamePatternFileFilter(final Pattern namePattern) {
+        this.namePattern = namePattern;
+    }
+
+    @Override
+    public boolean accept(FileSelectInfo fileInfo) {
+        final String name = fileInfo.getFile().getName().getBaseName();
+        final Matcher m = namePattern.matcher(name);
+        return m.matches();
+    }
 
 }

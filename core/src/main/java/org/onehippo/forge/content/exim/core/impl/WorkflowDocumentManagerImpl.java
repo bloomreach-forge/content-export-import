@@ -17,7 +17,6 @@ package org.onehippo.forge.content.exim.core.impl;
 
 import java.rmi.RemoteException;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -158,8 +157,8 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
-    public String createDocument(String folderLocation, String templateCategory, String prototype, String nodeName,
-            String locale, String localizedName) throws DocumentManagerException {
+    public String createDocument(String folderLocation, String primaryTypeName, String nodeName, String locale, String localizedName)
+            throws DocumentManagerException {
         log.debug("##### createDocument under '{}')", folderLocation);
 
         String createdDocPath = null;
@@ -180,10 +179,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             Boolean add = (Boolean) folderWorkflow.hints().get("add");
 
             if (BooleanUtils.isTrue(add)) {
-                final TreeMap<String, String> arguments = new TreeMap<>();
-                arguments.put("name", nodeName);
-                arguments.put("hippotranslation:locale", locale);
-                createdDocPath = folderWorkflow.add(templateCategory, prototype, arguments);
+                createdDocPath = folderWorkflow.add("new-document", primaryTypeName, nodeName);
                 final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(getSession().getNode(createdDocPath));
                 defaultWorkflow.localizeName(localizedName);
             } else {
@@ -465,8 +461,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         "Source document doesn't exist at '" + sourceDocumentLocation + "'.");
             }
 
-            final Node targetFolderNode = WorkflowUtils.createMissingHippoFolders(getSession(),
-                    targetFolderLocation);
+            final Node targetFolderNode = WorkflowUtils.createMissingHippoFolders(getSession(), targetFolderLocation);
 
             if (targetFolderNode == null) {
                 throw new IllegalArgumentException("Target folder doesn't exist at '" + targetFolderLocation + "'.");
@@ -580,8 +575,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     protected FolderWorkflow getFolderWorkflow(final Node folderNode) throws RepositoryException {
-        return (FolderWorkflow) WorkflowUtils.getHippoWorkflow(getSession(), getFolderWorkflowCategory(),
-                folderNode);
+        return (FolderWorkflow) WorkflowUtils.getHippoWorkflow(getSession(), getFolderWorkflowCategory(), folderNode);
     }
 
     protected DocumentWorkflow getDocumentWorkflow(final Node documentHandleNode) throws RepositoryException {
