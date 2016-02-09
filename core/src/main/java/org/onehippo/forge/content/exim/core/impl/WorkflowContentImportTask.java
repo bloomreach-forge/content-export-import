@@ -63,11 +63,20 @@ public class WorkflowContentImportTask extends AbstractContentExportImportTask i
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
         if (contentNodeBindingItemFilter == null) {
             contentNodeBindingItemFilter = new DefaultContentNodeJcrBindingItemFilter();
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter).addPropertyPathExclude("hippo:*");
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippostd:*");
             ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
                     .addPropertyPathExclude("hippostdpubwf:*");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippo:availability");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippo:paths");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippo:related");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippostd:holder");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippostd:state");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippostd:stateSummary");
         }
 
         return contentNodeBindingItemFilter;
@@ -139,6 +148,7 @@ public class WorkflowContentImportTask extends AbstractContentExportImportTask i
             final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
             getContentNodeBinder().bind(variant, contentNode, getContentNodeBindingItemFilter(),
                     getContentValueConverter());
+            getDocumentManager().getSession().save();
             getDocumentManager().commitEditableDocument(documentLocation);
         } catch (DocumentManagerException | RepositoryException e) {
             if (editableDocument != null) {
