@@ -16,10 +16,10 @@
 package org.onehippo.forge.content.exim.core;
 
 import org.apache.commons.vfs2.FileObject;
-import org.hippoecm.repository.api.Document;
 
 public interface ContentImportTask {
 
-    void importJsonFileToDocumentVariant(final FileObject targetFile, final Document document) throws ContentExportException;
+    void importVariantJsonFileToHandle(final FileObject targetFile, final String handlePath)
+            throws ContentExportException;
 
 }

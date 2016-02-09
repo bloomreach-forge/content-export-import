@@ -19,7 +19,6 @@ import javax.jcr.Node;
 import javax.jcr.Value;
 
 import org.apache.commons.vfs2.FileObject;
-import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentImportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -90,8 +89,9 @@ public class WorkflowContentImportTask implements ContentImportTask {
     }
 
     @Override
-    public void importJsonFileToDocumentVariant(FileObject targetFile, Document document)
+    public void importVariantJsonFileToHandle(FileObject targetFile, String handlePath)
             throws ContentExportException {
+        //getDocumentManager().createDocument(folderLocation, templateCategory, prototype, nodeName, locale, displayName);
     }
 
 }

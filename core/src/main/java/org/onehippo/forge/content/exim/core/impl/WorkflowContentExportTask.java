@@ -93,7 +93,7 @@ public class WorkflowContentExportTask implements ContentExportTask {
     }
 
     @Override
-    public void exportDocumentVariantToJsonFile(Document document, FileObject targetFile)
+    public void exportVariantToJsonFile(Document document, FileObject targetFile)
             throws ContentExportException {
         OutputStream os = null;
         BufferedOutputStream bos = null;
