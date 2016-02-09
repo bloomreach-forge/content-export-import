@@ -153,6 +153,11 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     @Override
+    public Session getSession() {
+        return session;
+    }
+
+    @Override
     public String createDocument(String folderLocation, String templateCategory, String prototype, String nodeName,
             String locale, String displayName) throws DocumentManagerException {
         log.debug("##### createDocument under '{}')", folderLocation);
@@ -572,10 +577,6 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
         }
 
         return translatedDocument;
-    }
-
-    protected Session getSession() {
-        return session;
     }
 
     protected FolderWorkflow getFolderWorkflow(final Node folderNode) throws RepositoryException {

@@ -15,6 +15,8 @@
  */
 package org.onehippo.forge.content.exim.core;
 
+import javax.jcr.Session;
+
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
@@ -22,6 +24,12 @@ import org.onehippo.forge.content.pojo.model.ContentNode;
  * Hippo CMS Document/Folder Workflow manager.
  */
 public interface DocumentManager {
+
+    /**
+     * Returns the JCR session.
+     * @return the JCR session
+     */
+    Session getSession();
 
     /**
      * Creates a document in the specific {@code folderLocation}
