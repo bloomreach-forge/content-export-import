@@ -33,7 +33,9 @@ import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentExportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMapper;
+import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
 import org.onehippo.forge.content.pojo.mapper.jcr.DefaultJcrContentNodeMapper;
+import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,18 +43,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WorkflowContentExportTask implements ContentExportTask {
 
     private final DocumentManager documentManager;
-    private final FileObject targetBaseFolder;
 
     private ContentNodeMapper<Node, Item, Value> contentNodeMapper;
+    private ContentNodeMappingItemFilter<Item> contentNodeMappingItemFilter;
     private ObjectMapper objectMapper;
 
-    public WorkflowContentExportTask(final DocumentManager documentManager, final FileObject targetBaseFolder) {
+    public WorkflowContentExportTask(final DocumentManager documentManager) {
         this.documentManager = documentManager;
-        this.targetBaseFolder = targetBaseFolder;
-    }
-
-    public FileObject getTargetBaseFolder() {
-        return targetBaseFolder;
     }
 
     public ContentNodeMapper<Node, Item, Value> getContentNodeMapper() {
@@ -65,6 +62,18 @@ public class WorkflowContentExportTask implements ContentExportTask {
 
     public void setContentNodeMapper(ContentNodeMapper<Node, Item, Value> contentNodeMapper) {
         this.contentNodeMapper = contentNodeMapper;
+    }
+
+    public ContentNodeMappingItemFilter<Item> getContentNodeMappingItemFilter() {
+        if (contentNodeMappingItemFilter == null) {
+            contentNodeMappingItemFilter = new DefaultHippoJcrItemMappingFilter();
+        }
+
+        return contentNodeMappingItemFilter;
+    }
+
+    public void setContentNodeMappingItemFilter(ContentNodeMappingItemFilter<Item> contentNodeMappingItemFilter) {
+        this.contentNodeMappingItemFilter = contentNodeMappingItemFilter;
     }
 
     public ObjectMapper getObjectMapper() {
@@ -91,7 +100,7 @@ public class WorkflowContentExportTask implements ContentExportTask {
 
         try {
             final Node node = document.getNode(getDocumentManager().getSession());
-            final ContentNode contentNode = getContentNodeMapper().map(node);
+            final ContentNode contentNode = getContentNodeMapper().map(node, getContentNodeMappingItemFilter());
             setMetaProperties(contentNode, node);
             os = targetFile.getContent().getOutputStream();
             bos = new BufferedOutputStream(os);

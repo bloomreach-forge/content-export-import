@@ -1,5 +1,6 @@
 * text=auto !eol
 core/pom.xml -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/Constants.java -text
 core/src/main/java/org/onehippo/forge/content/exim/core/ContentExportException.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/ContentExportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/ContentImportException.java -text svneol=unset#text/plain

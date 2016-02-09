@@ -15,15 +15,83 @@
  */
 package org.onehippo.forge.content.exim.core.impl;
 
+import javax.jcr.Node;
+import javax.jcr.Value;
+
 import org.apache.commons.vfs2.FileObject;
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentImportTask;
+import org.onehippo.forge.content.exim.core.DocumentManager;
+import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
+import org.onehippo.forge.content.pojo.binder.ContentNodeBindingItemFilter;
+import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingItemFilter;
+import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
+import org.onehippo.forge.content.pojo.model.ContentItem;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WorkflowContentImportTask implements ContentImportTask {
 
+    private final DocumentManager documentManager;
+
+    private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
+    private ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
+    private ObjectMapper objectMapper;
+
+    public WorkflowContentImportTask(final DocumentManager documentManager) {
+        this.documentManager = documentManager;
+    }
+
+    public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
+        if (contentNodeBinder == null) {
+            contentNodeBinder = new DefaultJcrContentNodeBinder();
+        }
+
+        return contentNodeBinder;
+    }
+
+    public void setContentNodeBinder(ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder) {
+        this.contentNodeBinder = contentNodeBinder;
+    }
+
+    public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
+        if (contentNodeBindingItemFilter == null) {
+            contentNodeBindingItemFilter = new DefaultContentNodeJcrBindingItemFilter();
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter).addPropertyPathExclude("hippo:*");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippostd:*");
+            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
+                    .addPropertyPathExclude("hippostdpubwf:*");
+        }
+
+        return contentNodeBindingItemFilter;
+    }
+
+    public void setContentNodeBindingItemFilter(
+            ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter) {
+        this.contentNodeBindingItemFilter = contentNodeBindingItemFilter;
+    }
+
+    public ObjectMapper getObjectMapper() {
+        if (objectMapper == null) {
+            objectMapper = new ObjectMapper();
+        }
+
+        return objectMapper;
+    }
+
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    public DocumentManager getDocumentManager() {
+        return documentManager;
+    }
+
     @Override
-    public void importJsonFileToDocumentVariant(FileObject targetFile, Document document) throws ContentExportException {
+    public void importJsonFileToDocumentVariant(FileObject targetFile, Document document)
+            throws ContentExportException {
     }
 
 }
