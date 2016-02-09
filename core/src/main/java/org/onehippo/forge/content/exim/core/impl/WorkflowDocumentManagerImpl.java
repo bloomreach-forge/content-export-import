@@ -164,10 +164,6 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         String createdDocPath = null;
 
         try {
-            if (!getSession().nodeExists(folderLocation)) {
-                throw new IllegalArgumentException("Folder doesn't exist at '" + folderLocation + "'.");
-            }
-
             final Node folderNode = WorkflowUtils.createMissingHippoFolders(getSession(), folderLocation);
 
             if (folderNode == null) {
