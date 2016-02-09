@@ -20,6 +20,6 @@ import org.hippoecm.repository.api.Document;
 
 public interface ContentExportTask {
 
-    void exportDocumentToJsonFile(final Document document, final FileObject targetFile) throws ContentExportException;
+    void exportDocumentVariantToJsonFile(final Document document, final FileObject targetFile) throws ContentExportException;
 
 }

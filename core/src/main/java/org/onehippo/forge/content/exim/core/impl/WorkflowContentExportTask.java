@@ -28,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.hippoecm.repository.api.Document;
 import org.hippoecm.repository.api.HippoNode;
+import org.onehippo.forge.content.exim.core.Constants;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentExportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -37,7 +38,7 @@ import org.onehippo.forge.content.pojo.model.ContentNode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class HippoWorkflowContentExportTask implements ContentExportTask {
+public class WorkflowContentExportTask implements ContentExportTask {
 
     private final DocumentManager documentManager;
     private final FileObject targetBaseFolder;
@@ -45,7 +46,7 @@ public class HippoWorkflowContentExportTask implements ContentExportTask {
     private ContentNodeMapper<Node, Item, Value> contentNodeMapper;
     private ObjectMapper objectMapper;
 
-    public HippoWorkflowContentExportTask(final DocumentManager documentManager, final FileObject targetBaseFolder) {
+    public WorkflowContentExportTask(final DocumentManager documentManager, final FileObject targetBaseFolder) {
         this.documentManager = documentManager;
         this.targetBaseFolder = targetBaseFolder;
     }
@@ -83,7 +84,8 @@ public class HippoWorkflowContentExportTask implements ContentExportTask {
     }
 
     @Override
-    public void exportDocumentToJsonFile(Document document, FileObject targetFile) throws ContentExportException {
+    public void exportDocumentVariantToJsonFile(Document document, FileObject targetFile)
+            throws ContentExportException {
         OutputStream os = null;
         BufferedOutputStream bos = null;
 
@@ -103,21 +105,22 @@ public class HippoWorkflowContentExportTask implements ContentExportTask {
     }
 
     private void setMetaProperties(final ContentNode contentNode, final Node node) throws RepositoryException {
-        final Node handle = HippoWorkflowUtils.getHippoDocumentHandle(node);
+        final Node handle = WorkflowUtils.getHippoDocumentHandle(node);
 
         if (handle != null) {
-            contentNode.setProperty("jcr:name", handle.getName());
-            contentNode.setProperty("jcr:path", handle.getPath());
+            contentNode.setProperty(Constants.META_PROP_NODE_NAME, handle.getName());
+            contentNode.setProperty(Constants.META_PROP_NODE_PATH, handle.getPath());
 
             if (handle instanceof HippoNode) {
-                contentNode.setProperty("jcr:localizedName", ((HippoNode) handle).getLocalizedName());
+                contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME,
+                        ((HippoNode) handle).getLocalizedName());
             }
         } else {
-            contentNode.setProperty("jcr:name", node.getName());
-            contentNode.setProperty("jcr:path", node.getPath());
+            contentNode.setProperty(Constants.META_PROP_NODE_NAME, node.getName());
+            contentNode.setProperty(Constants.META_PROP_NODE_PATH, node.getPath());
 
             if (node instanceof HippoNode) {
-                contentNode.setProperty("jcr:localizedName", ((HippoNode) node).getLocalizedName());
+                contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME, ((HippoNode) node).getLocalizedName());
             }
         }
     }

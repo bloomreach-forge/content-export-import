@@ -47,9 +47,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Default implementation for {@link DocumentManager} using Hippo Workflow APIs.
  */
-public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
+public class WorkflowDocumentManagerImpl implements DocumentManager {
 
-    private static Logger log = LoggerFactory.getLogger(HippoWorkflowDocumentManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(WorkflowDocumentManagerImpl.class);
 
     private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
 
@@ -79,7 +79,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
 
     private final Session session;
 
-    public HippoWorkflowDocumentManagerImpl(final Session session) {
+    public WorkflowDocumentManagerImpl(final Session session) {
         this.session = session;
     }
 
@@ -169,7 +169,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Folder doesn't exist at '" + folderLocation + "'.");
             }
 
-            final Node folderNode = HippoWorkflowUtils.createMissingHippoFolders(getSession(), folderLocation);
+            final Node folderNode = WorkflowUtils.createMissingHippoFolders(getSession(), folderLocation);
 
             if (folderNode == null) {
                 throw new IllegalArgumentException("Folder is not available at '" + folderLocation + "'.");
@@ -213,7 +213,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = WorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -266,7 +266,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = WorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -306,7 +306,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = WorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -346,7 +346,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = WorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -385,7 +385,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = WorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -430,7 +430,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = WorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -465,14 +465,14 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                         "Source document doesn't exist at '" + sourceDocumentLocation + "'.");
             }
 
-            final Node targetFolderNode = HippoWorkflowUtils.createMissingHippoFolders(getSession(),
+            final Node targetFolderNode = WorkflowUtils.createMissingHippoFolders(getSession(),
                     targetFolderLocation);
 
             if (targetFolderNode == null) {
                 throw new IllegalArgumentException("Target folder doesn't exist at '" + targetFolderLocation + "'.");
             }
 
-            Node sourceDocumentHandleNode = HippoWorkflowUtils
+            Node sourceDocumentHandleNode = WorkflowUtils
                     .getHippoDocumentHandle(getSession().getNode(sourceDocumentLocation));
 
             if (sourceDocumentHandleNode == null) {
@@ -545,7 +545,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
                         "Source document doesn't exist at '" + sourceDocumentLocation + "'.");
             }
 
-            Node sourceDocumentHandleNode = HippoWorkflowUtils
+            Node sourceDocumentHandleNode = WorkflowUtils
                     .getHippoDocumentHandle(getSession().getNode(sourceDocumentLocation));
 
             if (sourceDocumentHandleNode == null) {
@@ -554,7 +554,7 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
             }
 
             Node translationVariantNode = null;
-            Map<String, Node> documentVariantsMap = HippoWorkflowUtils.getDocumentVariantsMap(sourceDocumentHandleNode);
+            Map<String, Node> documentVariantsMap = WorkflowUtils.getDocumentVariantsMap(sourceDocumentHandleNode);
 
             if (documentVariantsMap.containsKey(HippoStdNodeType.UNPUBLISHED)) {
                 translationVariantNode = documentVariantsMap.get(HippoStdNodeType.UNPUBLISHED);
@@ -580,28 +580,28 @@ public class HippoWorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     protected FolderWorkflow getFolderWorkflow(final Node folderNode) throws RepositoryException {
-        return (FolderWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), getFolderWorkflowCategory(),
+        return (FolderWorkflow) WorkflowUtils.getHippoWorkflow(getSession(), getFolderWorkflowCategory(),
                 folderNode);
     }
 
     protected DocumentWorkflow getDocumentWorkflow(final Node documentHandleNode) throws RepositoryException {
-        return (DocumentWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), getDocumentWorkflowCategory(),
+        return (DocumentWorkflow) WorkflowUtils.getHippoWorkflow(getSession(), getDocumentWorkflowCategory(),
                 documentHandleNode);
     }
 
     protected DefaultWorkflow getDefaultWorkflow(final Node documentHandleNode) throws RepositoryException {
-        return (DefaultWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), getDefaultWorkflowCategory(),
+        return (DefaultWorkflow) WorkflowUtils.getHippoWorkflow(getSession(), getDefaultWorkflowCategory(),
                 documentHandleNode);
     }
 
     protected TranslationWorkflow getFolderTranslationWorkflow(final Node folderNode) throws RepositoryException {
-        return (TranslationWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(),
+        return (TranslationWorkflow) WorkflowUtils.getHippoWorkflow(getSession(),
                 getFolderTranslationWorkflowCategory(), folderNode);
     }
 
     protected TranslationWorkflow getDocumentTranslationWorkflow(final Node documentVariantNode)
             throws RepositoryException {
-        return (TranslationWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(),
+        return (TranslationWorkflow) WorkflowUtils.getHippoWorkflow(getSession(),
                 getDocumentTranslationWorkflowCategory(), documentVariantNode);
     }
 }

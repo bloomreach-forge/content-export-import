@@ -46,9 +46,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Internal utility to invoke Hippo Workflow APIs.
  */
-class HippoWorkflowUtils {
+class WorkflowUtils {
 
-    private static Logger log = LoggerFactory.getLogger(HippoWorkflowUtils.class);
+    private static Logger log = LoggerFactory.getLogger(WorkflowUtils.class);
 
     /**
      * Hippo Repository specific predefined folder node type name
@@ -80,7 +80,7 @@ class HippoWorkflowUtils {
      */
     private static final StringCodec DEFAULT_URI_ENCODING = new StringCodecFactory.UriEncoding();
 
-    private HippoWorkflowUtils() {
+    private WorkflowUtils() {
     }
 
     /**

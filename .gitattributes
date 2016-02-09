@@ -6,10 +6,10 @@ core/src/main/java/org/onehippo/forge/content/exim/core/ContentImportException.j
 core/src/main/java/org/onehippo/forge/content/exim/core/ContentImportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/DocumentManager.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/DocumentManagerException.java -text svneol=unset#text/plain
-core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoWorkflowContentExportTask.java -text svneol=unset#text/plain
-core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoWorkflowContentImportTask.java -text svneol=unset#text/plain
-core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoWorkflowDocumentManagerImpl.java -text svneol=unset#text/plain
-core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoWorkflowUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowContentExportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowContentImportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentManagerImpl.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowUtils.java -text svneol=unset#text/plain
 /pom.xml -text
 src/site/site.xml -text
 src/site/xdoc/build-from-source.xml -text

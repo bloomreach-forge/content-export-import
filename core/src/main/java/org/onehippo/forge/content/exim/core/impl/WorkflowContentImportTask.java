@@ -20,10 +20,10 @@ import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentImportTask;
 
-public class HippoWorkflowContentImportTask implements ContentImportTask {
+public class WorkflowContentImportTask implements ContentImportTask {
 
     @Override
-    public void importJsonFileToDocument(FileObject targetFile, Document document) throws ContentExportException {
+    public void importJsonFileToDocumentVariant(FileObject targetFile, Document document) throws ContentExportException {
     }
 
 }
