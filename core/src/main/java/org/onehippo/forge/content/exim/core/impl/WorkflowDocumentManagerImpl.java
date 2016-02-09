@@ -159,7 +159,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public String createDocument(String folderLocation, String templateCategory, String prototype, String nodeName,
-            String locale, String displayName) throws DocumentManagerException {
+            String locale, String localizedName) throws DocumentManagerException {
         log.debug("##### createDocument under '{}')", folderLocation);
 
         String createdDocPath = null;
@@ -185,7 +185,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 arguments.put("hippotranslation:locale", locale);
                 createdDocPath = folderWorkflow.add(templateCategory, prototype, arguments);
                 final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(getSession().getNode(createdDocPath));
-                defaultWorkflow.localizeName(displayName);
+                defaultWorkflow.localizeName(localizedName);
             } else {
                 throw new IllegalStateException("Folder at '" + folderLocation + "' is not allowed to add a document.");
             }

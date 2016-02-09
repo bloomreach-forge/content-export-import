@@ -38,18 +38,13 @@ import org.onehippo.forge.content.pojo.mapper.jcr.DefaultJcrContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class WorkflowContentExportTask implements ContentExportTask {
-
-    private final DocumentManager documentManager;
+public class WorkflowContentExportTask extends AbstractContentExportImportTask implements ContentExportTask {
 
     private ContentNodeMapper<Node, Item, Value> contentNodeMapper;
     private ContentNodeMappingItemFilter<Item> contentNodeMappingItemFilter;
-    private ObjectMapper objectMapper;
 
     public WorkflowContentExportTask(final DocumentManager documentManager) {
-        this.documentManager = documentManager;
+        super(documentManager);
     }
 
     public ContentNodeMapper<Node, Item, Value> getContentNodeMapper() {
@@ -76,44 +71,40 @@ public class WorkflowContentExportTask implements ContentExportTask {
         this.contentNodeMappingItemFilter = contentNodeMappingItemFilter;
     }
 
-    public ObjectMapper getObjectMapper() {
-        if (objectMapper == null) {
-            objectMapper = new ObjectMapper();
+    @Override
+    public ContentNode exportVariantToContentNode(final Document document) throws ContentExportException {
+        ContentNode contentNode = null;
+
+        try {
+            final Node node = document.getNode(getDocumentManager().getSession());
+            contentNode = getContentNodeMapper().map(node, getContentNodeMappingItemFilter(), getContentValueConverter());
+            setMetaProperties(contentNode, node);
+        } catch (RepositoryException e) {
+            throw new ContentExportException(e.toString(), e);
         }
 
-        return objectMapper;
-    }
-
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    public DocumentManager getDocumentManager() {
-        return documentManager;
+        return contentNode;
     }
 
     @Override
-    public void exportVariantToJsonFile(Document document, FileObject targetFile)
-            throws ContentExportException {
+    public void writeContentNodeToJsonFile(final ContentNode contentNode, final FileObject targetFile) throws ContentExportException {
         OutputStream os = null;
         BufferedOutputStream bos = null;
 
         try {
-            final Node node = document.getNode(getDocumentManager().getSession());
-            final ContentNode contentNode = getContentNodeMapper().map(node, getContentNodeMappingItemFilter());
-            setMetaProperties(contentNode, node);
             os = targetFile.getContent().getOutputStream();
             bos = new BufferedOutputStream(os);
             getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(bos, contentNode);
-        } catch (RepositoryException | IOException e) {
+        } catch (IOException e) {
             throw new ContentExportException(e.toString(), e);
         } finally {
             IOUtils.closeQuietly(bos);
             IOUtils.closeQuietly(os);
         }
+
     }
 
-    private void setMetaProperties(final ContentNode contentNode, final Node node) throws RepositoryException {
+    protected void setMetaProperties(final ContentNode contentNode, final Node node) throws RepositoryException {
         final Node handle = WorkflowUtils.getHippoDocumentHandle(node);
 
         if (handle != null) {

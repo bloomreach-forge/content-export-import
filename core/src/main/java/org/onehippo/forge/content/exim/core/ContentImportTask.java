@@ -16,10 +16,14 @@
 package org.onehippo.forge.content.exim.core;
 
 import org.apache.commons.vfs2.FileObject;
+import org.onehippo.forge.content.pojo.model.ContentNode;
 
 public interface ContentImportTask {
 
-    void importVariantJsonFileToHandle(final FileObject targetFile, final String handlePath)
-            throws ContentExportException;
+    ContentNode readContentNodeFromJsonFile(FileObject sourceFile) throws ContentExportException;
+
+    String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String documentLocation,
+            String templateCategory, String prototype, String locale, String localizedName)
+                    throws ContentExportException;
 
 }

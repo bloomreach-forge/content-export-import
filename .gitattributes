@@ -7,6 +7,7 @@ core/src/main/java/org/onehippo/forge/content/exim/core/ContentImportException.j
 core/src/main/java/org/onehippo/forge/content/exim/core/ContentImportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/DocumentManager.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/DocumentManagerException.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/AbstractContentExportImportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowContentExportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowContentImportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentManagerImpl.java -text svneol=unset#text/plain

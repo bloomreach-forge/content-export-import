@@ -15,31 +15,37 @@
  */
 package org.onehippo.forge.content.exim.core.impl;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
+import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentExportException;
+import org.onehippo.forge.content.exim.core.ContentImportException;
 import org.onehippo.forge.content.exim.core.ContentImportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
+import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBindingItemFilter;
 import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingItemFilter;
 import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
 import org.onehippo.forge.content.pojo.model.ContentItem;
+import org.onehippo.forge.content.pojo.model.ContentNode;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class WorkflowContentImportTask implements ContentImportTask {
-
-    private final DocumentManager documentManager;
+public class WorkflowContentImportTask extends AbstractContentExportImportTask implements ContentImportTask {
 
     private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
     private ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
-    private ObjectMapper objectMapper;
 
     public WorkflowContentImportTask(final DocumentManager documentManager) {
-        this.documentManager = documentManager;
+        super(documentManager);
     }
 
     public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
@@ -72,26 +78,78 @@ public class WorkflowContentImportTask implements ContentImportTask {
         this.contentNodeBindingItemFilter = contentNodeBindingItemFilter;
     }
 
-    public ObjectMapper getObjectMapper() {
-        if (objectMapper == null) {
-            objectMapper = new ObjectMapper();
+    @Override
+    public ContentNode readContentNodeFromJsonFile(final FileObject sourceFile) throws ContentExportException {
+        ContentNode contentNode = null;
+
+        InputStream is = null;
+        BufferedInputStream bis = null;
+
+        try {
+            is = sourceFile.getContent().getInputStream();
+            bis = new BufferedInputStream(is);
+            contentNode = getObjectMapper().readValue(bis, ContentNode.class);
+        } catch (IOException e) {
+            throw new ContentImportException(e.toString(), e);
+        } finally {
+            IOUtils.closeQuietly(bis);
+            IOUtils.closeQuietly(is);
         }
 
-        return objectMapper;
-    }
-
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    public DocumentManager getDocumentManager() {
-        return documentManager;
+        return contentNode;
     }
 
     @Override
-    public void importVariantJsonFileToHandle(FileObject targetFile, String handlePath)
-            throws ContentExportException {
-        //getDocumentManager().createDocument(folderLocation, templateCategory, prototype, nodeName, locale, displayName);
+    public String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String documentLocation,
+            String templateCategory, String prototype, String locale, String localizedName)
+                    throws ContentExportException {
+        String createdOrUpdatedDocumentLocation = null;
+
+        try {
+            if (!getDocumentManager().getSession().nodeExists(documentLocation)) {
+                createdOrUpdatedDocumentLocation = createDocumentFromVariantContentNode(documentLocation, contentNode,
+                        templateCategory, prototype, locale, localizedName);
+            }
+
+            createdOrUpdatedDocumentLocation = updateDocumentFromVariantContentNode(documentLocation, contentNode);
+        } catch (DocumentManagerException | RepositoryException e) {
+            throw new ContentImportException(e.toString(), e);
+        }
+
+        return createdOrUpdatedDocumentLocation;
+    }
+
+    private String createDocumentFromVariantContentNode(String documentLocation, final ContentNode contentNode,
+            String templateCategory, String prototype, String locale, String localizedName)
+                    throws DocumentManagerException, RepositoryException {
+        documentLocation = StringUtils.removeEnd(documentLocation, "/");
+        int offset = StringUtils.lastIndexOf(documentLocation, '/');
+        final String folderLocation = StringUtils.substring(documentLocation, 0, offset);
+        final String nodeName = StringUtils.substring(documentLocation, offset + 1);
+        String createdDocumentLocation = getDocumentManager().createDocument(folderLocation, templateCategory, prototype,
+                nodeName, locale, localizedName);
+        return createdDocumentLocation;
+    }
+
+    private String updateDocumentFromVariantContentNode(final String documentLocation, final ContentNode contentNode)
+            throws DocumentManagerException, RepositoryException {
+        Document editableDocument = null;
+
+        try {
+            editableDocument = getDocumentManager().obtainEditableDocument(documentLocation);
+            final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
+            getContentNodeBinder().bind(variant, contentNode, getContentNodeBindingItemFilter(),
+                    getContentValueConverter());
+            getDocumentManager().commitEditableDocument(documentLocation);
+        } catch (DocumentManagerException | RepositoryException e) {
+            if (editableDocument != null) {
+                getDocumentManager().disposeEditableDocument(documentLocation);
+            }
+
+            throw e;
+        }
+
+        return documentLocation;
     }
 
 }
