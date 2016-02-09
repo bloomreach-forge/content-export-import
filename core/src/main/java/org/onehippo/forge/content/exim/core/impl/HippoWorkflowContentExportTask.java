@@ -27,6 +27,7 @@ import javax.jcr.Value;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.hippoecm.repository.api.Document;
+import org.hippoecm.repository.api.HippoNode;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentExportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -89,14 +90,7 @@ public class HippoWorkflowContentExportTask implements ContentExportTask {
         try {
             final Node node = document.getNode(getDocumentManager().getSession());
             final ContentNode contentNode = getContentNodeMapper().map(node);
-            final Node handle = HippoWorkflowUtils.getHippoDocumentHandle(node);
-
-            if (handle != null) {
-                contentNode.setProperty("jcr:path", handle.getPath());
-            } else {
-                contentNode.setProperty("jcr:path", node.getPath());
-            }
-
+            setMetaProperties(contentNode, node);
             os = targetFile.getContent().getOutputStream();
             bos = new BufferedOutputStream(os);
             getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(bos, contentNode);
@@ -108,4 +102,23 @@ public class HippoWorkflowContentExportTask implements ContentExportTask {
         }
     }
 
+    private void setMetaProperties(final ContentNode contentNode, final Node node) throws RepositoryException {
+        final Node handle = HippoWorkflowUtils.getHippoDocumentHandle(node);
+
+        if (handle != null) {
+            contentNode.setProperty("jcr:name", handle.getName());
+            contentNode.setProperty("jcr:path", handle.getPath());
+
+            if (handle instanceof HippoNode) {
+                contentNode.setProperty("jcr:localizedName", ((HippoNode) handle).getLocalizedName());
+            }
+        } else {
+            contentNode.setProperty("jcr:name", node.getName());
+            contentNode.setProperty("jcr:path", node.getPath());
+
+            if (node instanceof HippoNode) {
+                contentNode.setProperty("jcr:localizedName", ((HippoNode) node).getLocalizedName());
+            }
+        }
+    }
 }
