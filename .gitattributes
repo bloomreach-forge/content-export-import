@@ -12,6 +12,7 @@ core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowContentExpo
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowContentImportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentManagerImpl.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentNodeUtils.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/FileFilterDepthSelector.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/NamePatternFileFilter.java -text svneol=unset#text/plain
 /pom.xml -text
