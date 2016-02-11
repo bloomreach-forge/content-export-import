@@ -30,6 +30,7 @@ import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentImportException;
 import org.onehippo.forge.content.exim.core.ContentImportTask;
+import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
@@ -39,7 +40,7 @@ import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
 import org.onehippo.forge.content.pojo.model.ContentItem;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public class WorkflowContentImportTask extends AbstractContentExportImportTask implements ContentImportTask {
+public class WorkflowContentImportTask extends AbstractContentMigrationTask implements ContentImportTask {
 
     private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
     private ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
@@ -114,6 +115,13 @@ public class WorkflowContentImportTask extends AbstractContentExportImportTask i
         String createdOrUpdatedDocumentLocation = null;
 
         try {
+            if (!isValidCurrentContentMigrationRecordByContentPath(documentLocation)) {
+                ContentMigrationRecord record = new ContentMigrationRecord();
+                record.setContentPath(documentLocation);
+                record.setContentType(primaryTypeName);
+                setCurrentContentMigrationRecord(addContentMigrationRecord(record));
+            }
+
             if (!getDocumentManager().getSession().nodeExists(documentLocation)) {
                 createdOrUpdatedDocumentLocation = createDocumentFromVariantContentNode(primaryTypeName,
                         documentLocation, contentNode, locale, localizedName);
@@ -146,6 +154,13 @@ public class WorkflowContentImportTask extends AbstractContentExportImportTask i
         try {
             editableDocument = getDocumentManager().obtainEditableDocument(documentLocation);
             final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
+
+            if (getCurrentContentMigrationRecord() != null) {
+                final Node handle = WorkflowUtils.getHippoDocumentHandle(variant);
+                getCurrentContentMigrationRecord().setContentId(handle.getIdentifier());
+                getCurrentContentMigrationRecord().setContentPath(handle.getPath());
+            }
+
             getContentNodeBinder().bind(variant, contentNode, getContentNodeBindingItemFilter(),
                     getContentValueConverter());
             getDocumentManager().getSession().save();

@@ -15,14 +15,26 @@
  */
 package org.onehippo.forge.content.exim.core;
 
-import org.apache.commons.vfs2.FileObject;
-import org.hippoecm.repository.api.Document;
-import org.onehippo.forge.content.pojo.model.ContentNode;
+import java.util.Collection;
 
-public interface ContentExportTask extends ContentMigrationTask {
+import org.slf4j.Logger;
 
-    ContentNode exportVariantToContentNode(Document document) throws ContentExportException;
+public interface ContentMigrationTask {
 
-    void writeContentNodeToJsonFile(ContentNode contentNode, FileObject targetFile) throws ContentExportException;
+    public Logger getLogger();
+
+    public void setLogger(Logger logger);
+
+    public void start();
+
+    public void stop();
+
+    public long getStartedTimeMillis();
+
+    public long getStoppedTimeMillis();
+
+    public Collection<ContentMigrationRecord> getContentMigrationRecords();
+
+    public void logSummary();
 
 }

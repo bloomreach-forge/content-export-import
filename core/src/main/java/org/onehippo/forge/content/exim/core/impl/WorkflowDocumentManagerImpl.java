@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WorkflowDocumentManagerImpl implements DocumentManager {
 
-    private static Logger log = LoggerFactory.getLogger(WorkflowDocumentManagerImpl.class);
+    private Logger logger = LoggerFactory.getLogger(WorkflowDocumentManagerImpl.class);
 
     private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
 
@@ -80,6 +80,14 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     public WorkflowDocumentManagerImpl(final Session session) {
         this.session = session;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 
     public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
@@ -159,7 +167,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     @Override
     public String createDocument(String folderLocation, String primaryTypeName, String nodeName, String locale, String localizedName)
             throws DocumentManagerException {
-        log.debug("##### createDocument under '{}')", folderLocation);
+        getLogger().debug("##### createDocument under '{}')", folderLocation);
 
         String createdDocPath = null;
 
@@ -182,7 +190,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalStateException("Folder at '" + folderLocation + "' is not allowed to add a document.");
             }
         } catch (Exception e) {
-            log.error("Failed to add a document with '{}' under '{}'.", nodeName, folderLocation, e);
+            getLogger().error("Failed to add a document with '{}' under '{}'.", nodeName, folderLocation, e);
             throw new DocumentManagerException(
                     "Failed to add a document with '" + nodeName + "' under '" + folderLocation + "'." + "'. " + e);
         }
@@ -192,7 +200,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public Document obtainEditableDocument(String documentLocation) throws DocumentManagerException {
-        log.debug("##### obtainEditableDocument('{}')", documentLocation);
+        getLogger().debug("##### obtainEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
@@ -222,7 +230,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         "Document at '" + documentLocation + "' is not allowed to obtain an editable instance.");
             }
         } catch (Exception e) {
-            log.error("Failed to obtain editable instance on document.", e);
+            getLogger().error("Failed to obtain editable instance on document.", e);
             throw new DocumentManagerException(
                     "Failed to obtain editable instance on document at '" + documentLocation + "'. " + e);
         }
@@ -237,7 +245,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             final Node editableDocumentNode = editableDocument.getNode(getSession());
             getContentNodeBinder().bind(editableDocumentNode, sourceContentNode, getContentNodeBindingItemFilter());
         } catch (Exception e) {
-            log.error("Failed to update editable document.", e);
+            getLogger().error("Failed to update editable document.", e);
             throw new DocumentManagerException(
                     "Failed to obtain editable instance on document (id: '" + editableDocument + "'). " + e);
         }
@@ -245,7 +253,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public Document disposeEditableDocument(String documentLocation) throws DocumentManagerException {
-        log.debug("##### disposeEditableDocument('{}')", documentLocation);
+        getLogger().debug("##### disposeEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
@@ -275,7 +283,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         "Document at '" + documentLocation + "' is not allowed to dispose an editable instance.");
             }
         } catch (Exception e) {
-            log.error("Failed to dispose editable instance on document.", e);
+            getLogger().error("Failed to dispose editable instance on document.", e);
             throw new DocumentManagerException(
                     "Failed to dispose editable instance on document at '" + documentLocation + "'. " + e);
         }
@@ -285,7 +293,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public Document commitEditableDocument(String documentLocation) throws DocumentManagerException {
-        log.debug("##### commitEditableDocument('{}')", documentLocation);
+        getLogger().debug("##### commitEditableDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
@@ -315,7 +323,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         "Document at '" + documentLocation + "' is not allowed to commit an editable instance.");
             }
         } catch (Exception e) {
-            log.error("Failed to commit editable instance on document.", e);
+            getLogger().error("Failed to commit editable instance on document.", e);
             throw new DocumentManagerException(
                     "Failed to commit editable instance on document at '" + documentLocation + "'. " + e);
         }
@@ -325,7 +333,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public boolean publishDocument(String documentLocation) throws DocumentManagerException {
-        log.debug("##### publishDocument('{}')", documentLocation);
+        getLogger().debug("##### publishDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
@@ -355,7 +363,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             documentWorkflow.publish();
             published = true;
         } catch (RepositoryException | WorkflowException | RemoteException e) {
-            log.error("Failed to publish document at '{}'.", documentLocation, e);
+            getLogger().error("Failed to publish document at '{}'.", documentLocation, e);
             throw new DocumentManagerException("Failed to publish document at '" + documentLocation + "'. " + e);
         }
 
@@ -364,7 +372,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public boolean depublishDocument(String documentLocation) throws DocumentManagerException {
-        log.debug("##### depublishDocument('{}')", documentLocation);
+        getLogger().debug("##### depublishDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
@@ -402,7 +410,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 depublished = true;
             }
         } catch (RepositoryException | WorkflowException | RemoteException e) {
-            log.error("Failed to depublish document at '{}'.", documentLocation, e);
+            getLogger().error("Failed to depublish document at '{}'.", documentLocation, e);
             throw new DocumentManagerException("Failed to depublish document at '" + documentLocation + "'. " + e);
         }
 
@@ -411,7 +419,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     @Override
     public void deleteDocument(String documentLocation) throws DocumentManagerException {
-        log.debug("##### deleteDocument('{}')", documentLocation);
+        getLogger().debug("##### deleteDocument('{}')", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
@@ -438,7 +446,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalStateException("Document at '" + documentLocation + "' is not allowed to delete.");
             }
         } catch (RepositoryException | WorkflowException | RemoteException e) {
-            log.error("Failed to depublish document at '{}'.", documentLocation, e);
+            getLogger().error("Failed to depublish document at '{}'.", documentLocation, e);
             throw new DocumentManagerException("Failed to depublish document at '" + documentLocation + "'. " + e);
         }
     }
@@ -446,7 +454,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     @Override
     public String copyDocument(String sourceDocumentLocation, String targetFolderLocation,
             String targetDocumentNodeName) throws DocumentManagerException {
-        log.debug("##### copyDocument('{}', '{}', '{}')", sourceDocumentLocation, targetFolderLocation,
+        getLogger().debug("##### copyDocument('{}', '{}', '{}')", sourceDocumentLocation, targetFolderLocation,
                 targetDocumentNodeName);
 
         String targetDocumentLocation = null;
@@ -482,7 +490,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         + "' to '" + targetFolderLocation + "/" + targetDocumentNodeName + "'.");
             }
         } catch (RepositoryException | WorkflowException | RemoteException e) {
-            log.error("Failed to copy document at '{}' to '{}/{}'.", sourceDocumentLocation, targetFolderLocation,
+            getLogger().error("Failed to copy document at '{}' to '{}/{}'.", sourceDocumentLocation, targetFolderLocation,
                     targetDocumentNodeName, e);
             throw new DocumentManagerException("Failed to copy document at '" + sourceDocumentLocation + "' to '"
                     + targetFolderLocation + "/" + targetDocumentNodeName + "'. " + e);
@@ -494,7 +502,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     @Override
     public Document translateFolder(String sourceFolderLocation, String targetLanguage, String targetFolderNodeName)
             throws DocumentManagerException {
-        log.debug("##### translateFolder('{}', '{}', '{}')", sourceFolderLocation, targetLanguage,
+        getLogger().debug("##### translateFolder('{}', '{}', '{}')", sourceFolderLocation, targetLanguage,
                 targetFolderNodeName);
 
         Document translatedFolderDocument = null;
@@ -513,7 +521,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             TranslationWorkflow folderTranslationWorkflow = getFolderTranslationWorkflow(sourceFolderNode);
             translatedFolderDocument = folderTranslationWorkflow.addTranslation(targetLanguage, targetFolderNodeName);
         } catch (RepositoryException | WorkflowException | RemoteException e) {
-            log.error("Failed to translate folder at '{}' to '{}' in '{}'.", sourceFolderLocation, targetFolderNodeName,
+            getLogger().error("Failed to translate folder at '{}' to '{}' in '{}'.", sourceFolderLocation, targetFolderNodeName,
                     targetLanguage, e);
             throw new DocumentManagerException("Failed to add translated folder of '" + sourceFolderLocation + "' to '"
                     + targetFolderNodeName + "' in '" + targetLanguage + "'. " + e);
@@ -525,7 +533,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     @Override
     public Document translateDocument(String sourceDocumentLocation, String targetLanguage,
             String targetDocumentNodeName) throws DocumentManagerException {
-        log.debug("##### translateDocument('{}', '{}', '{}')", sourceDocumentLocation, targetLanguage,
+        getLogger().debug("##### translateDocument('{}', '{}', '{}')", sourceDocumentLocation, targetLanguage,
                 targetDocumentNodeName);
 
         Document translatedDocument = null;
@@ -561,7 +569,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             TranslationWorkflow documentTranslationWorkflow = getDocumentTranslationWorkflow(translationVariantNode);
             translatedDocument = documentTranslationWorkflow.addTranslation(targetLanguage, targetDocumentNodeName);
         } catch (RepositoryException | WorkflowException | RemoteException e) {
-            log.error("Failed to translate document at '{}' to '{}' in '{}'.", sourceDocumentLocation,
+            getLogger().error("Failed to translate document at '{}' to '{}' in '{}'.", sourceDocumentLocation,
                     targetDocumentNodeName, targetLanguage, e);
             throw new DocumentManagerException("Failed to add translated document of '" + sourceDocumentLocation
                     + "' to '" + targetDocumentNodeName + "' in '" + targetLanguage + "'. " + e);

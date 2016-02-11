@@ -19,11 +19,16 @@ import javax.jcr.Session;
 
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.pojo.model.ContentNode;
+import org.slf4j.Logger;
 
 /**
  * Hippo CMS Document/Folder Workflow manager.
  */
 public interface DocumentManager {
+
+    public Logger getLogger();
+
+    public void setLogger(Logger migrationLogger);
 
     /**
      * Returns the JCR session.

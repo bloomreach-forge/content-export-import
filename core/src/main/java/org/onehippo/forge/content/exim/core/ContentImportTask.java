@@ -18,7 +18,7 @@ package org.onehippo.forge.content.exim.core;
 import org.apache.commons.vfs2.FileObject;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public interface ContentImportTask {
+public interface ContentImportTask extends ContentMigrationTask {
 
     ContentNode readContentNodeFromJsonFile(FileObject sourceFile) throws ContentExportException;
 
