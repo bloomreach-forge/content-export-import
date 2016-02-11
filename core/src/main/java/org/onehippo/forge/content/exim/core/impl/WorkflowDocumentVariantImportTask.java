@@ -17,67 +17,38 @@ package org.onehippo.forge.content.exim.core.impl;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 
 import org.apache.commons.lang.StringUtils;
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentMigrationException;
-import org.onehippo.forge.content.exim.core.DocumentVariantImportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
-import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
+import org.onehippo.forge.content.exim.core.DocumentVariantImportTask;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBindingItemFilter;
 import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingItemFilter;
-import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
 import org.onehippo.forge.content.pojo.model.ContentItem;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public class WorkflowDocumentVariantImportTask extends AbstractContentMigrationTask implements DocumentVariantImportTask {
-
-    private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
-    private ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
+public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask implements DocumentVariantImportTask {
 
     public WorkflowDocumentVariantImportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
-    public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
-        if (contentNodeBinder == null) {
-            contentNodeBinder = new DefaultJcrContentNodeBinder();
-        }
-
-        return contentNodeBinder;
-    }
-
-    public void setContentNodeBinder(ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder) {
-        this.contentNodeBinder = contentNodeBinder;
-    }
-
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
         if (contentNodeBindingItemFilter == null) {
-            contentNodeBindingItemFilter = new DefaultContentNodeJcrBindingItemFilter();
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippostdpubwf:*");
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippo:availability");
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippo:paths");
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippo:related");
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippostd:holder");
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippostd:state");
-            ((DefaultContentNodeJcrBindingItemFilter) contentNodeBindingItemFilter)
-                    .addPropertyPathExclude("hippostd:stateSummary");
+            DefaultContentNodeJcrBindingItemFilter filter = new DefaultContentNodeJcrBindingItemFilter();
+            filter.addPropertyPathExclude("hippostdpubwf:*");
+            filter.addPropertyPathExclude("hippo:availability");
+            filter.addPropertyPathExclude("hippo:paths");
+            filter.addPropertyPathExclude("hippo:related");
+            filter.addPropertyPathExclude("hippostd:holder");
+            filter.addPropertyPathExclude("hippostd:state");
+            filter.addPropertyPathExclude("hippostd:stateSummary");
+            contentNodeBindingItemFilter = filter;
         }
 
         return contentNodeBindingItemFilter;
-    }
-
-    public void setContentNodeBindingItemFilter(
-            ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter) {
-        this.contentNodeBindingItemFilter = contentNodeBindingItemFilter;
     }
 
     @Override
