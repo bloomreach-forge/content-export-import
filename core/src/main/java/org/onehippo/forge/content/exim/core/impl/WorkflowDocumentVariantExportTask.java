@@ -33,6 +33,7 @@ public class WorkflowDocumentVariantExportTask extends AbstractContentExportTask
         super(documentManager);
     }
 
+    @Override
     public ContentNodeMappingItemFilter<Item> getContentNodeMappingItemFilter() {
         if (contentNodeMappingItemFilter == null) {
             DefaultHippoJcrItemMappingFilter filter = new DefaultHippoJcrItemMappingFilter();

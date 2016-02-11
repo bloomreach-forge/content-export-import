@@ -62,6 +62,7 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     private ObjectMapper objectMapper;
     private ContentValueConverter<Value> contentValueConverter;
     private FileObject binaryValueFileFolder;
+    private long dataUrlSizeThreashold = 512 * 1024; // 512 KB
 
     public AbstractContentMigrationTask(final DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -198,6 +199,8 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
             contentValueConverter = new DefaultJcrContentValueConverter(getDocumentManager().getSession());
             ((DefaultJcrContentValueConverter) contentValueConverter)
                     .setBinaryValueFileFolder(getBinaryValueFileFolder());
+            ((DefaultJcrContentValueConverter) contentValueConverter)
+                    .setDataUrlSizeThreashold(getDataUrlSizeThreashold());
         }
 
         return contentValueConverter;
@@ -216,6 +219,19 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
 
         if (contentValueConverter != null && contentValueConverter instanceof DefaultJcrContentValueConverter) {
             ((DefaultJcrContentValueConverter) contentValueConverter).setBinaryValueFileFolder(binaryValueFileFolder);
+        }
+    }
+
+    public long getDataUrlSizeThreashold() {
+        return dataUrlSizeThreashold;
+    }
+
+    public void setDataUrlSizeThreashold(long dataUrlSizeThreashold) {
+        this.dataUrlSizeThreashold = dataUrlSizeThreashold;
+
+        if (contentValueConverter != null && contentValueConverter instanceof DefaultJcrContentValueConverter) {
+            ((DefaultJcrContentValueConverter) contentValueConverter)
+                    .setDataUrlSizeThreashold(getDataUrlSizeThreashold());
         }
     }
 

@@ -63,7 +63,7 @@ abstract public class AbstractContentExportTask extends AbstractContentMigration
     }
 
     protected void setMetaProperties(final ContentNode contentNode, final Node node) throws RepositoryException {
-        final Node handle = WorkflowUtils.getHippoDocumentHandle(node);
+        final Node handle = HippoWorkflowUtils.getHippoDocumentHandle(node);
 
         if (handle != null) {
             contentNode.setProperty(Constants.META_PROP_NODE_NAME, handle.getName());

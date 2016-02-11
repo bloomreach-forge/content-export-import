@@ -20,10 +20,12 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.hippoecm.repository.api.Document;
+import org.onehippo.forge.content.exim.core.Constants;
 import org.onehippo.forge.content.exim.core.ContentMigrationException;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.exim.core.DocumentVariantImportTask;
+import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBindingItemFilter;
 import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingItemFilter;
 import org.onehippo.forge.content.pojo.model.ContentItem;
@@ -35,9 +37,13 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
         super(documentManager);
     }
 
+    @Override
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
         if (contentNodeBindingItemFilter == null) {
             DefaultContentNodeJcrBindingItemFilter filter = new DefaultContentNodeJcrBindingItemFilter();
+            filter.addPropertyPathExclude(Constants.META_PROP_NODE_NAME);
+            filter.addPropertyPathExclude(Constants.META_PROP_NODE_LOCALIZED_NAME);
+            filter.addPropertyPathExclude(Constants.META_PROP_NODE_PATH);
             filter.addPropertyPathExclude("hippostdpubwf:*");
             filter.addPropertyPathExclude("hippo:availability");
             filter.addPropertyPathExclude("hippo:paths");
@@ -78,11 +84,9 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
             final ContentNode contentNode, String locale, String localizedName)
                     throws DocumentManagerException, RepositoryException {
         documentLocation = StringUtils.removeEnd(documentLocation, "/");
-        int offset = StringUtils.lastIndexOf(documentLocation, '/');
-        final String folderLocation = StringUtils.substring(documentLocation, 0, offset);
-        final String nodeName = StringUtils.substring(documentLocation, offset + 1);
-        String createdDocumentLocation = getDocumentManager().createDocument(folderLocation, primaryTypeName, nodeName,
-                locale, localizedName);
+        String[] folderPathAndName = ContentPathUtils.splitToFolderPathAndName(documentLocation);
+        String createdDocumentLocation = getDocumentManager().createDocument(folderPathAndName[0], primaryTypeName,
+                folderPathAndName[1], locale, localizedName);
         return createdDocumentLocation;
     }
 
@@ -95,7 +99,7 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
             final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
 
             if (getCurrentContentMigrationRecord() != null) {
-                final Node handle = WorkflowUtils.getHippoDocumentHandle(variant);
+                final Node handle = HippoWorkflowUtils.getHippoDocumentHandle(variant);
                 getCurrentContentMigrationRecord().setContentId(handle.getIdentifier());
             }
 

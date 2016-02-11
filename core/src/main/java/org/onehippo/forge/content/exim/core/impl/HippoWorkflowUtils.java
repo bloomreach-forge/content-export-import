@@ -46,9 +46,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Internal utility to invoke Hippo Workflow APIs.
  */
-class WorkflowUtils {
+class HippoWorkflowUtils {
 
-    private static Logger log = LoggerFactory.getLogger(WorkflowUtils.class);
+    private static Logger log = LoggerFactory.getLogger(HippoWorkflowUtils.class);
 
     /**
      * Hippo Repository specific predefined folder node type name
@@ -78,9 +78,9 @@ class WorkflowUtils {
     /**
      * The codec which is used for the node names
      */
-    private static final StringCodec DEFAULT_URI_ENCODING = new StringCodecFactory.UriEncoding();
+    static final StringCodec DEFAULT_URI_ENCODING = new StringCodecFactory.UriEncoding();
 
-    private WorkflowUtils() {
+    private HippoWorkflowUtils() {
     }
 
     /**
@@ -203,7 +203,7 @@ class WorkflowUtils {
         return null;
     }
 
-    private static Node getHippoCanonicalNode(Node node) {
+    static Node getHippoCanonicalNode(Node node) {
         if (node instanceof HippoNode) {
             HippoNode hnode = (HippoNode) node;
 
@@ -225,7 +225,7 @@ class WorkflowUtils {
         return node;
     }
 
-    private static boolean isHippoMirrorNode(Node node) throws RepositoryException {
+    static boolean isHippoMirrorNode(Node node) throws RepositoryException {
         if (node.isNodeType(HippoNodeType.NT_FACETSELECT) || node.isNodeType(HippoNodeType.NT_MIRROR)) {
             return true;
         }
@@ -233,7 +233,7 @@ class WorkflowUtils {
         return false;
     }
 
-    private static Node getRereferencedNodeByHippoMirror(Node mirrorNode) {
+    static Node getRereferencedNodeByHippoMirror(Node mirrorNode) {
         String docBaseUUID = null;
 
         try {
@@ -271,7 +271,7 @@ class WorkflowUtils {
         return null;
     }
 
-    private static Node getExistingHippoFolderNode(final Session session, final String absPath)
+    static Node getExistingHippoFolderNode(final Session session, final String absPath)
             throws RepositoryException {
         if (!session.nodeExists(absPath)) {
             return null;
@@ -314,7 +314,7 @@ class WorkflowUtils {
         return canonicalFolderNode;
     }
 
-    private static boolean isHippoDocumentHandleOrVariant(Node node) throws RepositoryException {
+    static boolean isHippoDocumentHandleOrVariant(Node node) throws RepositoryException {
         if (node.isNodeType("hippo:handle")) {
             return true;
         } else if (node.isNodeType("hippo:document")) {
@@ -330,7 +330,7 @@ class WorkflowUtils {
         return false;
     }
 
-    private static String createHippoFolderNodeByWorkflow(final Session session, Node folderNode, String nodeTypeName,
+    static String createHippoFolderNodeByWorkflow(final Session session, Node folderNode, String nodeTypeName,
             String name) throws RepositoryException, WorkflowException {
         try {
             folderNode = getHippoCanonicalNode(folderNode);
