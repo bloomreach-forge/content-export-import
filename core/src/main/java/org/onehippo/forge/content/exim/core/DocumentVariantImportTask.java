@@ -15,11 +15,11 @@
  */
 package org.onehippo.forge.content.exim.core;
 
-import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public interface DocumentExportTask extends ContentMigrationTask {
+public interface DocumentVariantImportTask extends ContentMigrationTask {
 
-    ContentNode exportVariantToContentNode(Document document) throws ContentMigrationException;
+    String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String primaryTypeName,
+            String documentLocation, String locale, String localizedName) throws ContentMigrationException;
 
 }

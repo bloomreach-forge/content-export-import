@@ -24,7 +24,7 @@ import org.hippoecm.repository.api.Document;
 import org.hippoecm.repository.api.HippoNode;
 import org.onehippo.forge.content.exim.core.Constants;
 import org.onehippo.forge.content.exim.core.ContentMigrationException;
-import org.onehippo.forge.content.exim.core.DocumentExportTask;
+import org.onehippo.forge.content.exim.core.DocumentVariantExportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
@@ -32,12 +32,12 @@ import org.onehippo.forge.content.pojo.mapper.jcr.DefaultJcrContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public class WorkflowDocumentExportTask extends AbstractContentMigrationTask implements DocumentExportTask {
+public class WorkflowDocumentVariantExportTask extends AbstractContentMigrationTask implements DocumentVariantExportTask {
 
     private ContentNodeMapper<Node, Item, Value> contentNodeMapper;
     private ContentNodeMappingItemFilter<Item> contentNodeMappingItemFilter;
 
-    public WorkflowDocumentExportTask(final DocumentManager documentManager) {
+    public WorkflowDocumentVariantExportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 

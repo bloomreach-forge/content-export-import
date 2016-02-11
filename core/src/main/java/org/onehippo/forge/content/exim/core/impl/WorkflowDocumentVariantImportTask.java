@@ -22,7 +22,7 @@ import javax.jcr.Value;
 import org.apache.commons.lang.StringUtils;
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentMigrationException;
-import org.onehippo.forge.content.exim.core.DocumentImportTask;
+import org.onehippo.forge.content.exim.core.DocumentVariantImportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
@@ -32,12 +32,12 @@ import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
 import org.onehippo.forge.content.pojo.model.ContentItem;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public class WorkflowDocumentImportTask extends AbstractContentMigrationTask implements DocumentImportTask {
+public class WorkflowDocumentVariantImportTask extends AbstractContentMigrationTask implements DocumentVariantImportTask {
 
     private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
     private ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
 
-    public WorkflowDocumentImportTask(final DocumentManager documentManager) {
+    public WorkflowDocumentVariantImportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
