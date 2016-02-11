@@ -61,6 +61,7 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     private final DocumentManager documentManager;
     private ObjectMapper objectMapper;
     private ContentValueConverter<Value> contentValueConverter;
+    private FileObject binaryValueFileFolder;
 
     public AbstractContentMigrationTask(final DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -163,7 +164,7 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
 
         for (ContentMigrationRecord record : getContentMigrationRecords()) {
             sb.append(record.isProcessed()).append(',').append(record.isSucceeded()).append(',')
-            .append(StringUtils.defaultString(record.getContentId())).append(',')
+                    .append(StringUtils.defaultString(record.getContentId())).append(',')
                     .append(StringUtils.defaultString(record.getContentPath())).append(',')
                     .append(StringUtils.defaultString(record.getContentType())).append(',')
                     .append(record.getAttributeMap()).append(',')
@@ -195,6 +196,8 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     public ContentValueConverter<Value> getContentValueConverter() {
         if (contentValueConverter == null) {
             contentValueConverter = new DefaultJcrContentValueConverter(getDocumentManager().getSession());
+            ((DefaultJcrContentValueConverter) contentValueConverter)
+                    .setBinaryValueFileFolder(getBinaryValueFileFolder());
         }
 
         return contentValueConverter;
@@ -202,6 +205,18 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
 
     public void setContentValueConverter(ContentValueConverter<Value> contentValueConverter) {
         this.contentValueConverter = contentValueConverter;
+    }
+
+    public FileObject getBinaryValueFileFolder() {
+        return binaryValueFileFolder;
+    }
+
+    public void setBinaryValueFileFolder(FileObject binaryValueFileFolder) {
+        this.binaryValueFileFolder = binaryValueFileFolder;
+
+        if (contentValueConverter != null && contentValueConverter instanceof DefaultJcrContentValueConverter) {
+            ((DefaultJcrContentValueConverter) contentValueConverter).setBinaryValueFileFolder(binaryValueFileFolder);
+        }
     }
 
     public FileObject[] findFilesByNamePattern(FileObject baseFolder, String nameRegex, int minDepth, int maxDepth)
@@ -233,7 +248,8 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     }
 
     @Override
-    public void writeContentNodeToJsonFile(final ContentNode contentNode, final FileObject targetFile) throws ContentMigrationException {
+    public void writeContentNodeToJsonFile(final ContentNode contentNode, final FileObject targetFile)
+            throws ContentMigrationException {
         OutputStream os = null;
         BufferedOutputStream bos = null;
 

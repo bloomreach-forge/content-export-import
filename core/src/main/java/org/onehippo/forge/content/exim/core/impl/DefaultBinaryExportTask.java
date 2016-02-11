@@ -19,30 +19,25 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.hippoecm.repository.api.Document;
+import org.onehippo.forge.content.exim.core.BinaryExportTask;
 import org.onehippo.forge.content.exim.core.ContentMigrationException;
 import org.onehippo.forge.content.exim.core.DocumentManager;
-import org.onehippo.forge.content.exim.core.DocumentVariantExportTask;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
 import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public class WorkflowDocumentVariantExportTask extends AbstractContentExportTask implements DocumentVariantExportTask {
+public class DefaultBinaryExportTask extends AbstractContentExportTask implements BinaryExportTask {
 
-    public WorkflowDocumentVariantExportTask(final DocumentManager documentManager) {
+    public DefaultBinaryExportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
     public ContentNodeMappingItemFilter<Item> getContentNodeMappingItemFilter() {
         if (contentNodeMappingItemFilter == null) {
             DefaultHippoJcrItemMappingFilter filter = new DefaultHippoJcrItemMappingFilter();
-            filter.addPropertyPathExclude("hippostdpubwf:*");
             filter.addPropertyPathExclude("hippo:availability");
             filter.addPropertyPathExclude("hippo:paths");
-            filter.addPropertyPathExclude("hippo:related");
-            filter.addPropertyPathExclude("hippostd:holder");
-            filter.addPropertyPathExclude("hippostd:state");
-            filter.addPropertyPathExclude("hippostd:stateSummary");
+            filter.addPropertyPathExclude("hippo:text");
             contentNodeMappingItemFilter = filter;
         }
 
@@ -50,18 +45,17 @@ public class WorkflowDocumentVariantExportTask extends AbstractContentExportTask
     }
 
     @Override
-    public ContentNode exportVariantToContentNode(final Document document) throws ContentMigrationException {
+    public ContentNode exportBinarySetToContentNode(Node imageSetOrAssetSetNode) throws ContentMigrationException {
         ContentNode contentNode = null;
 
         try {
-            final Node node = document.getNode(getDocumentManager().getSession());
+            final Node node = imageSetOrAssetSetNode;
 
             if (getCurrentContentMigrationRecord() != null) {
                 getCurrentContentMigrationRecord().setContentType(node.getPrimaryNodeType().getName());
             }
 
-            contentNode = getContentNodeMapper().map(node, getContentNodeMappingItemFilter(),
-                    getContentValueConverter());
+            contentNode = getContentNodeMapper().map(node, getContentNodeMappingItemFilter(), getContentValueConverter());
             setMetaProperties(contentNode, node);
         } catch (RepositoryException e) {
             throw new ContentMigrationException(e.toString(), e);
