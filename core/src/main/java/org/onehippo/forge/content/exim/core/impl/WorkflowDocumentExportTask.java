@@ -15,22 +15,16 @@
  */
 package org.onehippo.forge.content.exim.core.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.FileObject;
 import org.hippoecm.repository.api.Document;
 import org.hippoecm.repository.api.HippoNode;
 import org.onehippo.forge.content.exim.core.Constants;
-import org.onehippo.forge.content.exim.core.ContentExportException;
-import org.onehippo.forge.content.exim.core.ContentExportTask;
+import org.onehippo.forge.content.exim.core.ContentMigrationException;
+import org.onehippo.forge.content.exim.core.DocumentExportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
@@ -38,12 +32,12 @@ import org.onehippo.forge.content.pojo.mapper.jcr.DefaultJcrContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public class WorkflowContentExportTask extends AbstractContentMigrationTask implements ContentExportTask {
+public class WorkflowDocumentExportTask extends AbstractContentMigrationTask implements DocumentExportTask {
 
     private ContentNodeMapper<Node, Item, Value> contentNodeMapper;
     private ContentNodeMappingItemFilter<Item> contentNodeMappingItemFilter;
 
-    public WorkflowContentExportTask(final DocumentManager documentManager) {
+    public WorkflowDocumentExportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
@@ -62,6 +56,15 @@ public class WorkflowContentExportTask extends AbstractContentMigrationTask impl
     public ContentNodeMappingItemFilter<Item> getContentNodeMappingItemFilter() {
         if (contentNodeMappingItemFilter == null) {
             contentNodeMappingItemFilter = new DefaultHippoJcrItemMappingFilter();
+            ((DefaultHippoJcrItemMappingFilter) contentNodeMappingItemFilter).addPropertyPathExclude("hippostdpubwf:*");
+            ((DefaultHippoJcrItemMappingFilter) contentNodeMappingItemFilter)
+                    .addPropertyPathExclude("hippo:availability");
+            ((DefaultHippoJcrItemMappingFilter) contentNodeMappingItemFilter).addPropertyPathExclude("hippo:paths");
+            ((DefaultHippoJcrItemMappingFilter) contentNodeMappingItemFilter).addPropertyPathExclude("hippo:related");
+            ((DefaultHippoJcrItemMappingFilter) contentNodeMappingItemFilter).addPropertyPathExclude("hippostd:holder");
+            ((DefaultHippoJcrItemMappingFilter) contentNodeMappingItemFilter).addPropertyPathExclude("hippostd:state");
+            ((DefaultHippoJcrItemMappingFilter) contentNodeMappingItemFilter)
+                    .addPropertyPathExclude("hippostd:stateSummary");
         }
 
         return contentNodeMappingItemFilter;
@@ -72,7 +75,7 @@ public class WorkflowContentExportTask extends AbstractContentMigrationTask impl
     }
 
     @Override
-    public ContentNode exportVariantToContentNode(final Document document) throws ContentExportException {
+    public ContentNode exportVariantToContentNode(final Document document) throws ContentMigrationException {
         ContentNode contentNode = null;
 
         try {
@@ -83,27 +86,10 @@ public class WorkflowContentExportTask extends AbstractContentMigrationTask impl
             contentNode = getContentNodeMapper().map(node, getContentNodeMappingItemFilter(), getContentValueConverter());
             setMetaProperties(contentNode, node);
         } catch (RepositoryException e) {
-            throw new ContentExportException(e.toString(), e);
+            throw new ContentMigrationException(e.toString(), e);
         }
 
         return contentNode;
-    }
-
-    @Override
-    public void writeContentNodeToJsonFile(final ContentNode contentNode, final FileObject targetFile) throws ContentExportException {
-        OutputStream os = null;
-        BufferedOutputStream bos = null;
-
-        try {
-            os = targetFile.getContent().getOutputStream();
-            bos = new BufferedOutputStream(os);
-            getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(bos, contentNode);
-        } catch (IOException e) {
-            throw new ContentExportException(e.toString(), e);
-        } finally {
-            IOUtils.closeQuietly(bos);
-            IOUtils.closeQuietly(os);
-        }
     }
 
     protected void setMetaProperties(final ContentNode contentNode, final Node node) throws RepositoryException {

@@ -15,21 +15,14 @@
  */
 package org.onehippo.forge.content.exim.core.impl;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs2.FileObject;
 import org.hippoecm.repository.api.Document;
-import org.onehippo.forge.content.exim.core.ContentExportException;
-import org.onehippo.forge.content.exim.core.ContentImportException;
-import org.onehippo.forge.content.exim.core.ContentImportTask;
+import org.onehippo.forge.content.exim.core.ContentMigrationException;
+import org.onehippo.forge.content.exim.core.DocumentImportTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
@@ -39,12 +32,12 @@ import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
 import org.onehippo.forge.content.pojo.model.ContentItem;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public class WorkflowContentImportTask extends AbstractContentMigrationTask implements ContentImportTask {
+public class WorkflowDocumentImportTask extends AbstractContentMigrationTask implements DocumentImportTask {
 
     private ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
     private ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
 
-    public WorkflowContentImportTask(final DocumentManager documentManager) {
+    public WorkflowDocumentImportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
@@ -88,29 +81,8 @@ public class WorkflowContentImportTask extends AbstractContentMigrationTask impl
     }
 
     @Override
-    public ContentNode readContentNodeFromJsonFile(final FileObject sourceFile) throws ContentExportException {
-        ContentNode contentNode = null;
-
-        InputStream is = null;
-        BufferedInputStream bis = null;
-
-        try {
-            is = sourceFile.getContent().getInputStream();
-            bis = new BufferedInputStream(is);
-            contentNode = getObjectMapper().readValue(bis, ContentNode.class);
-        } catch (IOException e) {
-            throw new ContentImportException(e.toString(), e);
-        } finally {
-            IOUtils.closeQuietly(bis);
-            IOUtils.closeQuietly(is);
-        }
-
-        return contentNode;
-    }
-
-    @Override
     public String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String primaryTypeName,
-            String documentLocation, String locale, String localizedName) throws ContentExportException {
+            String documentLocation, String locale, String localizedName) throws ContentMigrationException {
         String createdOrUpdatedDocumentLocation = null;
 
         try {
@@ -125,7 +97,7 @@ public class WorkflowContentImportTask extends AbstractContentMigrationTask impl
 
             createdOrUpdatedDocumentLocation = updateDocumentFromVariantContentNode(documentLocation, contentNode);
         } catch (DocumentManagerException | RepositoryException e) {
-            throw new ContentImportException(e.toString(), e);
+            throw new ContentMigrationException(e.toString(), e);
         }
 
         return createdOrUpdatedDocumentLocation;

@@ -17,6 +17,8 @@ package org.onehippo.forge.content.exim.core;
 
 import java.util.Collection;
 
+import org.apache.commons.vfs2.FileObject;
+import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 
 public interface ContentMigrationTask {
@@ -40,5 +42,10 @@ public interface ContentMigrationTask {
     public Collection<ContentMigrationRecord> getContentMigrationRecords();
 
     public void logSummary();
+
+    public ContentNode readContentNodeFromJsonFile(FileObject sourceFile) throws ContentMigrationException;
+
+    public void writeContentNodeToJsonFile(ContentNode contentNode, FileObject targetFile)
+            throws ContentMigrationException;
 
 }

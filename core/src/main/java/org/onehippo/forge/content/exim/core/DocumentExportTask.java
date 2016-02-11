@@ -15,14 +15,11 @@
  */
 package org.onehippo.forge.content.exim.core;
 
-import org.apache.commons.vfs2.FileObject;
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
-public interface ContentExportTask extends ContentMigrationTask {
+public interface DocumentExportTask extends ContentMigrationTask {
 
-    ContentNode exportVariantToContentNode(Document document) throws ContentExportException;
-
-    void writeContentNodeToJsonFile(ContentNode contentNode, FileObject targetFile) throws ContentExportException;
+    ContentNode exportVariantToContentNode(Document document) throws ContentMigrationException;
 
 }

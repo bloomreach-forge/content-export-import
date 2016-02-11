@@ -15,6 +15,11 @@
  */
 package org.onehippo.forge.content.exim.core.impl;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -23,11 +28,13 @@ import java.util.regex.Pattern;
 
 import javax.jcr.Value;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileFilter;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
+import org.onehippo.forge.content.exim.core.ContentMigrationException;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.ContentMigrationTask;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -35,6 +42,7 @@ import org.onehippo.forge.content.exim.core.util.FileFilterDepthSelector;
 import org.onehippo.forge.content.exim.core.util.NamePatternFileFilter;
 import org.onehippo.forge.content.pojo.common.ContentValueConverter;
 import org.onehippo.forge.content.pojo.common.jcr.DefaultJcrContentValueConverter;
+import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,6 +209,44 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         final FileFilter fileFilter = new NamePatternFileFilter(Pattern.compile(nameRegex));
         final FileSelector selector = new FileFilterDepthSelector(fileFilter, minDepth, maxDepth);
         return baseFolder.findFiles(selector);
+    }
+
+    @Override
+    public ContentNode readContentNodeFromJsonFile(final FileObject sourceFile) throws ContentMigrationException {
+        ContentNode contentNode = null;
+
+        InputStream is = null;
+        BufferedInputStream bis = null;
+
+        try {
+            is = sourceFile.getContent().getInputStream();
+            bis = new BufferedInputStream(is);
+            contentNode = getObjectMapper().readValue(bis, ContentNode.class);
+        } catch (IOException e) {
+            throw new ContentMigrationException(e.toString(), e);
+        } finally {
+            IOUtils.closeQuietly(bis);
+            IOUtils.closeQuietly(is);
+        }
+
+        return contentNode;
+    }
+
+    @Override
+    public void writeContentNodeToJsonFile(final ContentNode contentNode, final FileObject targetFile) throws ContentMigrationException {
+        OutputStream os = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            os = targetFile.getContent().getOutputStream();
+            bos = new BufferedOutputStream(os);
+            getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(bos, contentNode);
+        } catch (IOException e) {
+            throw new ContentMigrationException(e.toString(), e);
+        } finally {
+            IOUtils.closeQuietly(bos);
+            IOUtils.closeQuietly(os);
+        }
     }
 
     private boolean isStarted() {

@@ -16,25 +16,25 @@
 package org.onehippo.forge.content.exim.core;
 
 /**
- * ContentExportException.
+ * ContentMigrationException.
  */
-public class ContentExportException extends RuntimeException {
+public class ContentMigrationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public ContentExportException() {
+    public ContentMigrationException() {
         super();
     }
 
-    public ContentExportException(String message) {
+    public ContentMigrationException(String message) {
         super(message);
     }
 
-    public ContentExportException(Throwable nested) {
+    public ContentMigrationException(Throwable nested) {
         super(nested);
     }
 
-    public ContentExportException(String msg, Throwable nested) {
+    public ContentMigrationException(String msg, Throwable nested) {
         super(msg, nested);
     }
 

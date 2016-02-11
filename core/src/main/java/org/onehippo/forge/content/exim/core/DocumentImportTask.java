@@ -15,27 +15,11 @@
  */
 package org.onehippo.forge.content.exim.core;
 
-/**
- * ContentImportException.
- */
-public class ContentImportException extends RuntimeException {
+import org.onehippo.forge.content.pojo.model.ContentNode;
 
-    private static final long serialVersionUID = 1L;
+public interface DocumentImportTask extends ContentMigrationTask {
 
-    public ContentImportException() {
-        super();
-    }
-
-    public ContentImportException(String message) {
-        super(message);
-    }
-
-    public ContentImportException(Throwable nested) {
-        super(nested);
-    }
-
-    public ContentImportException(String msg, Throwable nested) {
-        super(msg, nested);
-    }
+    String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String primaryTypeName,
+            String documentLocation, String locale, String localizedName) throws ContentMigrationException;
 
 }
