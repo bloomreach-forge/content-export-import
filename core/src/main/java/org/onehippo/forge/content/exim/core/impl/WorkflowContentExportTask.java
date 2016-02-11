@@ -31,7 +31,6 @@ import org.hippoecm.repository.api.HippoNode;
 import org.onehippo.forge.content.exim.core.Constants;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentExportTask;
-import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
@@ -77,12 +76,6 @@ public class WorkflowContentExportTask extends AbstractContentMigrationTask impl
         ContentNode contentNode = null;
 
         try {
-            if (!isValidCurrentContentMigrationRecordByContentId(document.getIdentity())) {
-                ContentMigrationRecord record = new ContentMigrationRecord();
-                record.setContentId(document.getIdentity());
-                setCurrentContentMigrationRecord(addContentMigrationRecord(record));
-            }
-
             final Node node = document.getNode(getDocumentManager().getSession());
             getCurrentContentMigrationRecord().setContentType(node.getPrimaryNodeType().getName());
             getCurrentContentMigrationRecord().setContentPath(node.getPath());
@@ -102,10 +95,6 @@ public class WorkflowContentExportTask extends AbstractContentMigrationTask impl
         BufferedOutputStream bos = null;
 
         try {
-            if (getCurrentContentMigrationRecord() != null) {
-                getCurrentContentMigrationRecord().setAttribute("file", targetFile.getName().getPath());
-            }
-
             os = targetFile.getContent().getOutputStream();
             bos = new BufferedOutputStream(os);
             getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(bos, contentNode);

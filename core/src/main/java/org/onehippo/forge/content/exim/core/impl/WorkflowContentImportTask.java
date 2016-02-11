@@ -30,7 +30,6 @@ import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentExportException;
 import org.onehippo.forge.content.exim.core.ContentImportException;
 import org.onehippo.forge.content.exim.core.ContentImportTask;
-import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
@@ -115,11 +114,8 @@ public class WorkflowContentImportTask extends AbstractContentMigrationTask impl
         String createdOrUpdatedDocumentLocation = null;
 
         try {
-            if (!isValidCurrentContentMigrationRecordByContentPath(documentLocation)) {
-                ContentMigrationRecord record = new ContentMigrationRecord();
-                record.setContentPath(documentLocation);
-                record.setContentType(primaryTypeName);
-                setCurrentContentMigrationRecord(addContentMigrationRecord(record));
+            if (getCurrentContentMigrationRecord() != null) {
+                getCurrentContentMigrationRecord().setContentType(primaryTypeName);
             }
 
             if (!getDocumentManager().getSession().nodeExists(documentLocation)) {
@@ -158,7 +154,6 @@ public class WorkflowContentImportTask extends AbstractContentMigrationTask impl
             if (getCurrentContentMigrationRecord() != null) {
                 final Node handle = WorkflowUtils.getHippoDocumentHandle(variant);
                 getCurrentContentMigrationRecord().setContentId(handle.getIdentifier());
-                getCurrentContentMigrationRecord().setContentPath(handle.getPath());
             }
 
             getContentNodeBinder().bind(variant, contentNode, getContentNodeBindingItemFilter(),

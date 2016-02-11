@@ -94,48 +94,29 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return stoppedTimeMillis;
     }
 
+    @Override
+    public ContentMigrationRecord beginRecord(String contentId, String contentPath) {
+        ContentMigrationRecord record = new ContentMigrationRecord();
+        record.setContentId(contentId);
+        record.setContentPath(contentPath);
+        contentMigrationRecords.add(record);
+        tlCurrentContentMigrationRecord.set(record);
+        return record;
+    }
+
+    @Override
+    public ContentMigrationRecord endRecord() {
+        ContentMigrationRecord record = getCurrentContentMigrationRecord();
+        tlCurrentContentMigrationRecord.remove();
+        return record;
+    }
+
     public Collection<ContentMigrationRecord> getContentMigrationRecords() {
         return Collections.unmodifiableCollection(contentMigrationRecords);
     }
 
-    public ContentMigrationRecord addContentMigrationRecord(ContentMigrationRecord contentMigrationRecord) {
-        if (contentMigrationRecords.add(contentMigrationRecord)) {
-            return contentMigrationRecord;
-        }
-
-        return null;
-    }
-
     public static ContentMigrationRecord getCurrentContentMigrationRecord() {
         return tlCurrentContentMigrationRecord.get();
-    }
-
-    public static void setCurrentContentMigrationRecord(ContentMigrationRecord contentMigrationRecord) {
-        tlCurrentContentMigrationRecord.set(contentMigrationRecord);
-    }
-
-    public static boolean isValidCurrentContentMigrationRecordByContentId(final String contentId) {
-        if (getCurrentContentMigrationRecord() == null) {
-            return false;
-        }
-
-        if (!StringUtils.equals(contentId, getCurrentContentMigrationRecord().getContentId())) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean isValidCurrentContentMigrationRecordByContentPath(final String contentPath) {
-        if (getCurrentContentMigrationRecord() == null) {
-            return false;
-        }
-
-        if (!StringUtils.equals(contentPath, getCurrentContentMigrationRecord().getContentPath())) {
-            return false;
-        }
-
-        return true;
     }
 
     public void logSummary() {

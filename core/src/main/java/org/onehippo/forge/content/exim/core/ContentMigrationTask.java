@@ -33,6 +33,10 @@ public interface ContentMigrationTask {
 
     public long getStoppedTimeMillis();
 
+    public ContentMigrationRecord beginRecord(String contentId, String contentPath);
+
+    public ContentMigrationRecord endRecord();
+
     public Collection<ContentMigrationRecord> getContentMigrationRecords();
 
     public void logSummary();
