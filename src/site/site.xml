@@ -11,7 +11,7 @@
     License for the specific language governing permissions and
     limitations under the License.
   -->
-<project name="Hippo Content EXIM (EXport / IMport) Documentation">
+<project name="Hippo Content EXIM (EXport/IMport) Documentation">
 
   <skin>
     <groupId>org.onehippo.forge.mavenskin</groupId>
@@ -36,6 +36,13 @@
     <menu name="Home">
       <item name="Home" href="index.html" />
       <item name="Installation" href="install.html" />
+      <item name="Components" href="components.html" />
+      <item name="Tutorials" href="tutorials.html">
+        <item name="Exporting Binaries" href="tutorials-export-bins.html" />
+        <item name="Exporting Documents" href="tutorials-export-docs.html" />
+        <item name="Importing Binaries" href="tutorials-import-bins.html" />
+        <item name="Importing Documents" href="tutorials-import-docs.html" />
+      </item>
       <item name="Build from source" href="build-from-source.html" />
       <item name="JavaDocs" href="apidocs/index.html" />
       <item name="Release Notes" href="release-notes.html" />

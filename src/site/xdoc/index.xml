@@ -17,24 +17,127 @@
   </properties>
   <body>
     <section name="Introduction">
-      <subsection name="What is Hippo Content EXIM (Export / Import)?">
+      <subsection name="What is Hippo Content EXIM (EXport/IMport)?">
         <p>
-          This project is going to provide a higher level feature of Content Import and Export,
-          depending on <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
-          (which provides a lower level JCR mapping/binding mechanism only).
+          This project is going to provide higher level features of Content Import and Export,
+          depending on Hipo Workflow API (for higher/workflow level document management) and 
+          <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
+          (for lower level JCR mappings/bindings).
         </p>
         <p>
-          So, for example, while <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
-          doesn't provide any Hippo Repository Workflow level operations properly,
-          this project is going to provide that kind of higher level, that is, Hippo Repository Workflow level,
-          Content Import / Export features.
+          So, while <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
+          focuses only on JCR Node level mappings and bindings and doesn't provide any Hippo Workflow level operations,
+          this project aims to provide higher level, that is, Hippo Workflow level,
+          Content Export/Import features.
+        </p>
+      </subsection>
+      <subsection name="Content Migration Task Components">
+        <p>
+          This project provides migration task componets which can be used in any Java application or in Groovy updater scripts
+          instead of trying to provide a whole new UI.
         </p>
         <p>
-          TODO: Implement stuffs and cut a release with demo project.
+          There are basically four content migration task interfaces for which components are provided by this project:
         </p>
+        <table>
+          <tr>
+            <th>Interface Name</th>
+            <th>Description</th>
+            <th>Implementation(s)</th>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              
+            </td>
+            <td>
+              
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              
+            </td>
+            <td>
+              
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              
+            </td>
+            <td>
+              
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              
+            </td>
+            <td>
+              
+            </td>
+          </tr>
+        </table>
+      </subsection>
+    </section>
+    <section name="Demo Application">
+      <subsection name="Demo Application with Hippo CMS 10">
+        <p>You can check out, build and run demo application, which contains all the examples explained in this site documentation.</p>
+        <p>Here are example commands to check out, build and run demo application:</p>
+        <div class="brush: bash">
+        <source><![CDATA[
+$ svn checkout https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk content-exim-demo-TRUNK
+$ cd content-exim-demo-TRUNK
+$ mvn clean verify
+$ mvn -P cargo.run
+        ]]></source>
+        </div>
         <p>
-          Stay tuned!
+          Visit http://localhost:8080/cms/ and <strong>Control Panel / Updater Editor</strong> in the <strong>Admin</strong> perspective
+          to test it with some example groovy updater scripts using this module like the following:
         </p>
+
+        <table>
+          <tr>
+            <th>Updater script name</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Demo - Export Asset and Image Set Content</td>
+            <td>
+              A demo script to export asset and image set content.
+            </td>
+          </tr>
+          <tr>
+            <td>Demo - Export Published Documents</td>
+            <td>
+              A demo script to export published documents.
+            </td>
+          </tr>
+          <tr>
+            <td>Demo - Import Asset and Image Set Content</td>
+            <td>
+              A demo script to import asset and image set content.
+            </td>
+          </tr>
+          <tr>
+            <td>Demo - Import Documents As Unpublished</td>
+            <td>
+              A demo script to import documents as unpublished status.
+            </td>
+          </tr>
+          <tr>
+            <td>Demo - Clean Hippo Docbase Values Having Paths</td>
+            <td>
+              A demo script to clean interim hippo:docbase values having paths instead of UUIDs.
+            </td>
+          </tr>
+        </table>
+
       </subsection>
     </section>
     <section name="Project status">

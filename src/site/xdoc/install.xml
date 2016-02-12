@@ -58,7 +58,7 @@
         <!-- NOTE: You should set a property named 'forge.content-exim.version' to a version of this plugin! -->
         <dependency>
           <groupId>org.onehippo.forge.content-exim</groupId>
-          <artifactId>content-exim</artifactId>
+          <artifactId>content-exim-core</artifactId>
           <version>${forge.content-exim.version}</version>
         </dependency>
 
@@ -82,7 +82,7 @@
 
       <dependency>
         <groupId>org.onehippo.forge.content-exim</groupId>
-        <artifactId>content-exim</artifactId>
+        <artifactId>content-exim-core</artifactId>
         <version>${forge.content-exim.version}</version>
       </dependency>
 
