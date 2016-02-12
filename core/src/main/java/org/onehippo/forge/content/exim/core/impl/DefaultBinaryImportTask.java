@@ -103,6 +103,10 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
                 binaryHandleNode = folderNode.getNode(name);
             }
 
+            if (getCurrentContentMigrationRecord() != null) {
+                getCurrentContentMigrationRecord().setContentId(binaryHandleNode.getIdentifier());
+            }
+
             updateBinaryHandleFromBinarySetContentNode(binaryHandleNode, contentNode);
 
             getDocumentManager().getSession().save();

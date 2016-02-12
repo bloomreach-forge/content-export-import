@@ -40,6 +40,7 @@
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-vfs2.version>2.0</commons-vfs2.version>
     <commons-io.version>2.4</commons-io.version>
+    <commons-csv.version>1.2</commons-csv.version>
 
     <lib.junit.version>4.8.2</lib.junit.version>
     <lib.easymock.version>3.0</lib.easymock.version>
@@ -231,6 +232,12 @@
             <artifactId>commons-logging</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${commons-csv.version}</version>
       </dependency>
 
       <!-- TEST DEPENDENCIES -->

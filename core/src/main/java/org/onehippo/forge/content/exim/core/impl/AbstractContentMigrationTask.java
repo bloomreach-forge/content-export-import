@@ -20,6 +20,8 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -28,7 +30,10 @@ import java.util.regex.Pattern;
 
 import javax.jcr.Value;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileFilter;
 import org.apache.commons.vfs2.FileObject;
@@ -130,7 +135,8 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     }
 
     public void logSummary() {
-        StringBuilder sb = new StringBuilder(1024);
+        StringWriter sw = new StringWriter(1024);
+        PrintWriter out = new PrintWriter(sw);
 
         int totalCount = 0;
         int processedCount = 0;
@@ -148,34 +154,50 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
             }
         }
 
-        sb.append(
-                "===============================================================================================================\n");
-        sb.append("Execution Summary:\n");
-        sb.append(
-                "---------------------------------------------------------------------------------------------------------------\n");
-        sb.append("Total: ").append(totalCount).append(", Processed: ").append(processedCount).append(", Succeeded: ")
-                .append(successCount).append(", Failed: ").append(processedCount - successCount).append(", Duration: ")
-                .append(getStoppedTimeMillis() - getStartedTimeMillis()).append("ms").append("\n");
-        sb.append(
-                "---------------------------------------------------------------------------------------------------------------\n");
-        sb.append("Details (in CSV format):\n");
-        sb.append(
-                "---------------------------------------------------------------------------------------------------------------\n");
-        sb.append("Processed,Succeeded,ID,Path,Type,Attributes,Error\n");
+        out.println(
+                "===============================================================================================================");
+        out.println("Execution Summary:");
+        out.println(
+                "---------------------------------------------------------------------------------------------------------------");
+        out.printf("Total: %d, Processed: %d, Suceeded: %d, Failed: %d, Duration: %dms", totalCount, processedCount,
+                successCount, processedCount - successCount, getStoppedTimeMillis() - getStartedTimeMillis());
+        out.println();
+        out.println(
+                "---------------------------------------------------------------------------------------------------------------");
+        out.println("Details (in CSV format):");
+        out.println(
+                "---------------------------------------------------------------------------------------------------------------");
 
-        for (ContentMigrationRecord record : getContentMigrationRecords()) {
-            sb.append(record.isProcessed()).append(',').append(record.isSucceeded()).append(',')
-                    .append(StringUtils.defaultString(record.getContentId())).append(',')
-                    .append(StringUtils.defaultString(record.getContentPath())).append(',')
-                    .append(StringUtils.defaultString(record.getContentType())).append(',')
-                    .append(record.getAttributeMap()).append(',')
-                    .append(StringUtils.defaultString(record.getErrorMessage())).append('\n');
+        CSVPrinter csvPrinter = null;
+
+        try {
+            csvPrinter = CSVFormat.DEFAULT
+                    .withHeader("SEQ", "PROCESSED", "SUCCEEDED", "ID", "PATH", "TYPE", "ATTRIBUTES", "ERROR")
+                    .print(out);
+
+            int seq = 0;
+
+            for (ContentMigrationRecord record : getContentMigrationRecords()) {
+                csvPrinter.printRecord(++seq, record.isProcessed(), record.isSucceeded(),
+                        StringUtils.defaultString(record.getContentId()),
+                        StringUtils.defaultString(record.getContentPath()),
+                        StringUtils.defaultString(record.getContentType()),
+                        ObjectUtils.toString(record.getAttributeMap()),
+                        StringUtils.defaultString(record.getErrorMessage()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace(out);
         }
 
-        sb.append(
-                "===============================================================================================================\n");
+        out.println(
+                "===============================================================================================================");
+        out.flush();
 
-        getLogger().info("\n\n{}\n", sb);
+        getLogger().info("\n\n{}\n", sw.toString());
+
+        IOUtils.closeQuietly(csvPrinter);
+        IOUtils.closeQuietly(out);
+        IOUtils.closeQuietly(sw);
     }
 
     public DocumentManager getDocumentManager() {
