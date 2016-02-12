@@ -86,7 +86,7 @@ abstract public class AbstractContentExportTask extends AbstractContentMigration
     }
 
     /**
-     * Set meta properties such as {@link Constants.META_PROP_NODE_PATH} and {@link Constants.META_PROP_NODE_LOCALIZED_NAME},
+     * Set meta properties such as {@link Constants#META_PROP_NODE_PATH} and {@link Constants#META_PROP_NODE_LOCALIZED_NAME},
      * which might be helpful when importing back later.
      * @param contentNode {@link ContentNode} instance to set the meta properties
      * @param sourceNode the source node from which the meta properties should be extracted

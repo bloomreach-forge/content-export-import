@@ -93,7 +93,7 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
     }
 
     /**
-     * Create a document at the document handle node path ({@link documentLocation})
+     * Create a document at the document handle node path ({@code documentLocation})
      * and returns the created document handle node path.
      * @param primaryTypeName primary node type name of the document to create
      * @param documentLocation document handle node path where the document should be created

@@ -245,6 +245,7 @@ public class ContentMigrationRecord implements Serializable {
      * or sets and returns a new {@link AtomicInteger} object when {@code create} is true.
      * This method is useful if you want to record a counter for some reason while processing data.
      * @param name attribute name
+     * @param create whether or not to create if attribute not found by {@code name}
      * @return an attribute value as {@link AtomicInteger} object if found.
      *         If not found, returns null when {@code create} is false,
      *         or sets and returns a new {@link AtomicInteger} object when {@code create} is true.
@@ -266,6 +267,7 @@ public class ContentMigrationRecord implements Serializable {
      * or sets and returns a new {@link Collection} object when {@code create} is true.
      * This method is useful if you want to add data in the record for some reason while processing data.
      * @param name attribute name
+     * @param create whether or not to create if attribute not found by {@code name}
      * @return an attribute value as {@link Collection} object if found.
      *         If not found, returns null when {@code create} is false,
      *         or sets and returns a new {@link Collection} object when {@code create} is true.

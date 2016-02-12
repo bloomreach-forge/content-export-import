@@ -253,14 +253,16 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     }
 
     /**
-     * Returns {@link DocumentManager}.
+     * Returns {@link DocumentManager} instance.
+     * @return {@link DocumentManager} instance
      */
     public DocumentManager getDocumentManager() {
         return documentManager;
     }
 
     /**
-     * Returns {@link ObjectMapper}. If not set, returns a default {@link ObjectMapper} instance.
+     * Returns {@link ObjectMapper} instance. If not set, returns a default {@link ObjectMapper} instance.
+     * @return {@link ObjectMapper} instance
      */
     public ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
@@ -271,14 +273,16 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     }
 
     /**
-     * Sets {@link ObjectMapper}.
+     * Sets {@link ObjectMapper} instance.
+     * @param objectMapper {@link ObjectMapper} instance
      */
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     /**
-     * Returns {@link ContentValueConverter}. If not set, returns a default {@link ContentValueConverter} instance.
+     * Returns {@link ContentValueConverter} instance. If not set, returns a default {@link ContentValueConverter} instance.
+     * @return {@link ContentValueConverter} instance
      */
     public ContentValueConverter<Value> getContentValueConverter() {
         if (contentValueConverter == null) {
