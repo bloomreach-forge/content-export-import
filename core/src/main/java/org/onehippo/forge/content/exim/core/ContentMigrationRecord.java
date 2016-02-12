@@ -28,77 +28,154 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Content Migration record.
+ * Content Migration record which is used to keep execution information of a unit of
+ * content migration work item.
  */
 public class ContentMigrationRecord implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Whether or not this unit of work item was processed.
+     */
     private boolean processed;
 
+    /**
+     * Whether or not this unit of work item was done successfully.
+     */
     private boolean succeeded;
 
+    /**
+     * Error detail message when it was not done successfully.
+     */
     private String errorMessage;
 
+    /**
+     * Content primary node type name of the associated subject content processed.
+     */
     private String contentType;
 
+    /**
+     * Content primary node identifier of the associated subject content processed.
+     */
     private String contentId;
 
+    /**
+     * Content primary node handle path of the associated subject content processed.
+     */
     private String contentPath;
 
+    /**
+     * Any extra attributes storing custom data.
+     */
     private Map<String, Object> attributes;
 
+    /**
+     * Default constructor.
+     */
     public ContentMigrationRecord() {
     }
 
+    /**
+     * Returns true if the unit of content migration work item in this record was processed.
+     * @return true if the unit of content migration work item in this record was processed
+     */
     public boolean isProcessed() {
         return processed;
     }
 
+    /**
+     * Sets whether or not the unit of content migration work item in this record was processed.
+     * @param processed whether or not the unit of content migration work item in this record was processed
+     */
     public void setProcessed(boolean processed) {
         this.processed = processed;
     }
 
+    /**
+     * Returns true if the unit of content migration work item in this record was done successfully.
+     * @return  true if the unit of content migration work item in this record was done successfully
+     */
     public boolean isSucceeded() {
         return succeeded;
     }
 
+    /**
+     * Sets whether or not the unit of content migration work item in this record was done successfully.
+     * @param succeeded whether or not the unit of content migration work item in this record was done successfully
+     */
     public void setSucceeded(boolean succeeded) {
         this.succeeded = succeeded;
     }
 
+    /**
+     * Returns the error detail message if the unit of content migration work item in this record failed.
+     * @return the error detail message if the unit of content migration work item in this record failed
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
+    /**
+     * Set the error detail message if the unit of content migration work item in this record failed.
+     * @param errorMessage the error detail message if the unit of content migration work item in this record failed
+     */
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
+    /**
+     * Returns the content primary node type name of the associated subject content processed.
+     * @return the content primary node type name of the associated subject content processed
+     */
     public String getContentType() {
         return contentType;
     }
 
+    /**
+     * Sets the content primary node type name of the associated subject content processing.
+     * @param contentType the content primary node type name of the associated subject content processing
+     */
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
+    /**
+     * Returns the content node identifier of the associated subject content processed.
+     * @return the content primary node identifier of the associated subject content processed
+     */
     public String getContentId() {
         return contentId;
     }
 
+    /**
+     * Sets the content node identifier of the associated subject content processing.
+     * @param contentId the content node identifier of the associated subject content processing
+     */
     public void setContentId(String contentId) {
         this.contentId = contentId;
     }
 
+    /**
+     * Returns the content path of the associated subject content processed.
+     * @return the content path of the associated subject content processed
+     */
     public String getContentPath() {
         return contentPath;
     }
 
+    /**
+     * Sets the content path of the associated subject content processing.
+     * @param contentPath the content path of the associated subject content processing
+     */
     public void setContentPath(String contentPath) {
         this.contentPath = contentPath;
     }
 
+    /**
+     * Returns an unmodifiable map of extra custom attributes.
+     * @return an unmodifiable map of extra custom attributes
+     */
     public Map<String, Object> getAttributeMap() {
         if (attributes == null) {
             return Collections.emptyMap();
@@ -107,6 +184,10 @@ public class ContentMigrationRecord implements Serializable {
         return Collections.unmodifiableMap(attributes);
     }
 
+    /**
+     * Returns an unmodifiable set of extra custom attribute names.
+     * @return an unmodifiable set of extra custom attribute names
+     */
     public Set<String> getAttributeNames() {
         if (attributes != null) {
             return Collections.unmodifiableSet(attributes.keySet());
@@ -115,24 +196,41 @@ public class ContentMigrationRecord implements Serializable {
         }
     }
 
-    public void setAttribute(String key, Object value) {
+    /**
+     * Sets an extra custom attribute.
+     * @param name attribute name
+     * @param value attribute value
+     */
+    public void setAttribute(String name, Object value) {
         if (attributes == null) {
             attributes = new LinkedHashMap<String, Object> ();
         }
 
-        attributes.put(key, value);
+        attributes.put(name, value);
     }
 
-    public Object getAttribute(String key) {
+    /**
+     * Finds and returns the attribute value by the {@code name} if found.
+     * Otherwise, return null.
+     * @param name attribute name
+     * @return attribute value if found. Otherwise null.
+     */
+    public Object getAttribute(String name) {
         if (attributes == null) {
             return null;
         }
 
-        return attributes.get(key);
+        return attributes.get(name);
     }
 
-    public String getStringAttribute(String key) {
-        Object obj = getAttribute(key);
+    /**
+     * Gets an attribute value as {@link String} object if found. If not found, returns an empty string instead.
+     * This method is useful if you want to retrieve an attribute always as string or empty string value when it is null.
+     * @param name attribute name
+     * @return an attribute value as {@link String} object if found. If not found, returns an empty string instead
+     */
+    public String getAttributeAsString(String name) {
+        Object obj = getAttribute(name);
 
         if (obj == null) {
             return StringUtils.EMPTY;
@@ -141,34 +239,60 @@ public class ContentMigrationRecord implements Serializable {
         return obj.toString();
     }
 
-    public Object removeAttribute(String key) {
-        if (attributes != null) {
-            return attributes.remove(key);
-        }
-
-        return null;
-    }
-
-    public AtomicInteger getCounterAttribute(String key, boolean create) {
-        AtomicInteger counter = (AtomicInteger) getAttribute(key);
+    /**
+     * Gets an attribute value as {@link AtomicInteger} object if found.
+     * If not found, returns null when {@code create} is false,
+     * or sets and returns a new {@link AtomicInteger} object when {@code create} is true.
+     * This method is useful if you want to record a counter for some reason while processing data.
+     * @param name attribute name
+     * @return an attribute value as {@link AtomicInteger} object if found.
+     *         If not found, returns null when {@code create} is false,
+     *         or sets and returns a new {@link AtomicInteger} object when {@code create} is true.
+     */
+    public AtomicInteger getAttributeAsAtomicInteger(String name, boolean create) {
+        AtomicInteger counter = (AtomicInteger) getAttribute(name);
 
         if (counter == null && create) {
             counter = new AtomicInteger();
-            setAttribute(key, counter);
+            setAttribute(name, counter);
         }
 
         return counter;
     }
 
-    public Collection<Object> getCollectionAttribute(String key, boolean create) {
-        Collection<Object> collection = (Collection<Object>) getAttribute(key);
+    /**
+     * Gets an attribute value as {@link Collection} object if found.
+     * If not found, returns null when {@code create} is false,
+     * or sets and returns a new {@link Collection} object when {@code create} is true.
+     * This method is useful if you want to add data in the record for some reason while processing data.
+     * @param name attribute name
+     * @return an attribute value as {@link Collection} object if found.
+     *         If not found, returns null when {@code create} is false,
+     *         or sets and returns a new {@link Collection} object when {@code create} is true.
+     */
+    public Collection<Object> getAttributeAsCollection(String name, boolean create) {
+        Collection<Object> collection = (Collection<Object>) getAttribute(name);
 
         if (collection == null && create) {
             collection = new LinkedList<>();
-            setAttribute(key, collection);
+            setAttribute(name, collection);
         }
 
         return collection;
+    }
+
+    /**
+     * Removes an attribute by {@code name} and returns the removed attribute value if found.
+     * If not found, returns null.
+     * @param name attribute name
+     * @return removed attribute value if found. If not found, returns null.
+     */
+    public Object removeAttribute(String name) {
+        if (attributes != null) {
+            return attributes.remove(name);
+        }
+
+        return null;
     }
 
     @Override

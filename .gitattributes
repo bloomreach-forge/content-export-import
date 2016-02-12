@@ -15,8 +15,8 @@ core/src/main/java/org/onehippo/forge/content/exim/core/impl/AbstractContentImpo
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/AbstractContentMigrationTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/DefaultBinaryExportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/DefaultBinaryImportTask.java -text svneol=unset#text/plain
-core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoBinaryUtils.java -text svneol=unset#text/plain
-core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoWorkflowUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoBinaryNodeUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoNodeUtils.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentManagerImpl.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantExportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantImportTask.java -text svneol=unset#text/plain

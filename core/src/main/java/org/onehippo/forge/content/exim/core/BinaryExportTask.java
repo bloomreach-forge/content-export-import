@@ -19,8 +19,19 @@ import javax.jcr.Node;
 
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * <code>ContentMigrationTask</code> to export binary (gallery/asset) data to {@link ContentNode} objects.
+ */
 public interface BinaryExportTask extends ContentMigrationTask {
 
+    /**
+     * Exports an imageset (e.g, <code>hippogallery:imageset</code>) node or
+     * an assetset (e.g, <code>hippogallery:exampleAssetSet</code>) node to a {@link ContentNode} object.
+     * @param imageSetOrAssetSetNode an imageset (e.g, <code>hippogallery:imageset</code>) node or
+     *                               an assetset (e.g, <code>hippogallery:exampleAssetSet</code>) node
+     * @return an exported {@link ContentNode} object
+     * @throws ContentMigrationException if exporting fails
+     */
     ContentNode exportBinarySetToContentNode(Node imageSetOrAssetSetNode) throws ContentMigrationException;
 
 }

@@ -18,8 +18,17 @@ package org.onehippo.forge.content.exim.core;
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * <code>ContentMigrationTask</code> to export document variant nodes to {@link ContentNode} objects.
+ */
 public interface DocumentVariantExportTask extends ContentMigrationTask {
 
+    /**
+     * Exports a document variant ({@link Document}), {@code document}, to a {@link ContentNode} object.
+     * @param document a document variant ({@link Document})
+     * @return a {@link ContentNode} object written with the {@code document} data
+     * @throws ContentMigrationException if exporting fails
+     */
     ContentNode exportVariantToContentNode(Document document) throws ContentMigrationException;
 
 }

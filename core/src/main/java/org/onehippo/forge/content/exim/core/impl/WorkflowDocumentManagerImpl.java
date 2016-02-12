@@ -78,18 +78,34 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     private final Session session;
 
+    /**
+     * Constructs with {@code session}.
+     * @param session JCR session to use
+     */
     public WorkflowDocumentManagerImpl(final Session session) {
         this.session = session;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Logger getLogger() {
         return logger;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setLogger(Logger logger) {
         this.logger = logger;
     }
 
+    /**
+     * Returns {@link ContentNodeBinder} instance. If not set, returns a default implementation.
+     * @return {@link ContentNodeBinder} instance. If not set, returns a default implementation
+     */
     public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
         if (contentNodeBinder == null) {
             contentNodeBinder = new DefaultJcrContentNodeBinder();
@@ -98,10 +114,18 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return contentNodeBinder;
     }
 
+    /**
+     * Sets {@link ContentNodeBinder} instance.
+     * @param contentNodeBinder {@link ContentNodeBinder} instance
+     */
     public void setContentNodeBinder(ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder) {
         this.contentNodeBinder = contentNodeBinder;
     }
 
+    /**
+     * Returns {@link ContentNodeBindingItemFilter} instance. If not set, returns a default implementation.
+     * @return {@link ContentNodeBindingItemFilter} instance. If not set, returns a default implementation
+     */
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
         if (contentNodeBindingItemFilter == null) {
             DefaultContentNodeJcrBindingItemFilter bindingItemFilter = new DefaultContentNodeJcrBindingItemFilter();
@@ -114,56 +138,106 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return contentNodeBindingItemFilter;
     }
 
+    /**
+     * Sets {@link ContentNodeBindingItemFilter} instance.
+     * @param contentNodeBindingItemFilter {@link ContentNodeBindingItemFilter} instance
+     */
     public void setContentNodeBindingItemFilter(
             ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter) {
         this.contentNodeBindingItemFilter = contentNodeBindingItemFilter;
     }
 
+    /**
+     * Returns the document workflow category.
+     * @return the document workflow category
+     */
     public String getDocumentWorkflowCategory() {
         return documentWorkflowCategory;
     }
 
+    /**
+     * Sets the document workflow category
+     * @param documentWorkflowCategory the document workflow category
+     */
     public void setDocumentWorkflowCategory(String documentWorkflowCategory) {
         this.documentWorkflowCategory = documentWorkflowCategory;
     }
 
+    /**
+     * Returns the default workflow category.
+     * @return the default workflow category
+     */
     public String getDefaultWorkflowCategory() {
         return defaultWorkflowCategory;
     }
 
+    /**
+     * Sets the default workflow category.
+     * @param defaultWorkflowCategory the default workflow category
+     */
     public void setDefaultWorkflowCategory(String defaultWorkflowCategory) {
         this.defaultWorkflowCategory = defaultWorkflowCategory;
     }
 
+    /**
+     * Returns the folder workflow category.
+     * @return the folder workflow category
+     */
     public String getFolderWorkflowCategory() {
         return folderWorkflowCategory;
     }
 
+    /**
+     * Sets the folder workflow category.
+     * @param folderWorkflowCategory the folder workflow category
+     */
     public void setFolderWorkflowCategory(String folderWorkflowCategory) {
         this.folderWorkflowCategory = folderWorkflowCategory;
     }
 
+    /**
+     * Returns the folder translation workflow category.
+     * @return the folder translation workflow category
+     */
     public String getFolderTranslationWorkflowCategory() {
         return folderTranslationWorkflowCategory;
     }
 
+    /**
+     * Sets the folder translation workflow category.
+     * @param folderTranslationWorkflowCategory the folder translation workflow category
+     */
     public void setFolderTranslationWorkflowCategory(String folderTranslationWorkflowCategory) {
         this.folderTranslationWorkflowCategory = folderTranslationWorkflowCategory;
     }
 
+    /**
+     * Returns the document translation workflow category.
+     * @return the document translation workflow category
+     */
     public String getDocumentTranslationWorkflowCategory() {
         return documentTranslationWorkflowCategory;
     }
 
+    /**
+     * Sets the document translation workflow category.
+     * @param documentTranslationWorkflowCategory the document translation workflow category
+     */
     public void setDocumentTranslationWorkflowCategory(String documentTranslationWorkflowCategory) {
         this.documentTranslationWorkflowCategory = documentTranslationWorkflowCategory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Session getSession() {
         return session;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String createDocument(String folderLocation, String primaryTypeName, String nodeName, String locale, String localizedName)
             throws DocumentManagerException {
@@ -172,7 +246,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         String createdDocPath = null;
 
         try {
-            final Node folderNode = HippoWorkflowUtils.createMissingHippoFolders(getSession(), folderLocation);
+            final Node folderNode = HippoNodeUtils.createMissingHippoFolders(getSession(), folderLocation);
 
             if (folderNode == null) {
                 throw new IllegalArgumentException("Folder is not available at '" + folderLocation + "'.");
@@ -198,6 +272,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return createdDocPath;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Document obtainEditableDocument(String documentLocation) throws DocumentManagerException {
         getLogger().debug("##### obtainEditableDocument('{}')", documentLocation);
@@ -213,7 +290,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -238,6 +315,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return document;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateEditableDocument(Document editableDocument, ContentNode sourceContentNode)
             throws DocumentManagerException {
@@ -251,6 +331,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Document disposeEditableDocument(String documentLocation) throws DocumentManagerException {
         getLogger().debug("##### disposeEditableDocument('{}')", documentLocation);
@@ -266,7 +349,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -291,6 +374,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return document;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Document commitEditableDocument(String documentLocation) throws DocumentManagerException {
         getLogger().debug("##### commitEditableDocument('{}')", documentLocation);
@@ -306,7 +392,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -331,6 +417,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return document;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean publishDocument(String documentLocation) throws DocumentManagerException {
         getLogger().debug("##### publishDocument('{}')", documentLocation);
@@ -346,7 +435,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -370,6 +459,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return published;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean depublishDocument(String documentLocation) throws DocumentManagerException {
         getLogger().debug("##### depublishDocument('{}')", documentLocation);
@@ -385,7 +477,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -417,6 +509,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return depublished;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteDocument(String documentLocation) throws DocumentManagerException {
         getLogger().debug("##### deleteDocument('{}')", documentLocation);
@@ -430,7 +525,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 throw new IllegalArgumentException("Document doesn't exist at '" + documentLocation + "'.");
             }
 
-            Node documentHandleNode = HippoWorkflowUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
+            Node documentHandleNode = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(documentLocation));
 
             if (documentHandleNode == null) {
                 throw new IllegalArgumentException("Document handle is not found at '" + documentLocation + "'.");
@@ -451,6 +546,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String copyDocument(String sourceDocumentLocation, String targetFolderLocation,
             String targetDocumentNodeName) throws DocumentManagerException {
@@ -465,13 +563,13 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         "Source document doesn't exist at '" + sourceDocumentLocation + "'.");
             }
 
-            final Node targetFolderNode = HippoWorkflowUtils.createMissingHippoFolders(getSession(), targetFolderLocation);
+            final Node targetFolderNode = HippoNodeUtils.createMissingHippoFolders(getSession(), targetFolderLocation);
 
             if (targetFolderNode == null) {
                 throw new IllegalArgumentException("Target folder doesn't exist at '" + targetFolderLocation + "'.");
             }
 
-            Node sourceDocumentHandleNode = HippoWorkflowUtils
+            Node sourceDocumentHandleNode = HippoNodeUtils
                     .getHippoDocumentHandle(getSession().getNode(sourceDocumentLocation));
 
             if (sourceDocumentHandleNode == null) {
@@ -499,6 +597,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return targetDocumentLocation;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Document translateFolder(String sourceFolderLocation, String targetLanguage, String targetFolderNodeName)
             throws DocumentManagerException {
@@ -530,6 +631,9 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return translatedFolderDocument;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Document translateDocument(String sourceDocumentLocation, String targetLanguage,
             String targetDocumentNodeName) throws DocumentManagerException {
@@ -544,7 +648,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         "Source document doesn't exist at '" + sourceDocumentLocation + "'.");
             }
 
-            Node sourceDocumentHandleNode = HippoWorkflowUtils
+            Node sourceDocumentHandleNode = HippoNodeUtils
                     .getHippoDocumentHandle(getSession().getNode(sourceDocumentLocation));
 
             if (sourceDocumentHandleNode == null) {
@@ -553,7 +657,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             }
 
             Node translationVariantNode = null;
-            Map<String, Node> documentVariantsMap = HippoWorkflowUtils.getDocumentVariantsMap(sourceDocumentHandleNode);
+            Map<String, Node> documentVariantsMap = HippoNodeUtils.getDocumentVariantsMap(sourceDocumentHandleNode);
 
             if (documentVariantsMap.containsKey(HippoStdNodeType.UNPUBLISHED)) {
                 translationVariantNode = documentVariantsMap.get(HippoStdNodeType.UNPUBLISHED);
@@ -566,7 +670,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         + sourceDocumentLocation + "'.");
             }
 
-            TranslationWorkflow documentTranslationWorkflow = getDocumentTranslationWorkflow(translationVariantNode);
+            TranslationWorkflow documentTranslationWorkflow = getDocumentVariantTranslationWorkflow(translationVariantNode);
             translatedDocument = documentTranslationWorkflow.addTranslation(targetLanguage, targetDocumentNodeName);
         } catch (RepositoryException | WorkflowException | RemoteException e) {
             getLogger().error("Failed to translate document at '{}' to '{}' in '{}'.", sourceDocumentLocation,
@@ -578,28 +682,58 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         return translatedDocument;
     }
 
+    /**
+     * Returns a folder workflow instance on {@code folderNode}.
+     * @param folderNode folder node
+     * @return a folder workflow instance on {@code folderNode}
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
     protected FolderWorkflow getFolderWorkflow(final Node folderNode) throws RepositoryException {
-        return (FolderWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), getFolderWorkflowCategory(), folderNode);
+        return (FolderWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(), getFolderWorkflowCategory(), folderNode);
     }
 
+    /**
+     * Returns a document workflow on {@code documentHandleNode}.
+     * @param documentHandleNode document handle node
+     * @return a document workflow on {@code documentHandleNode}
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
     protected DocumentWorkflow getDocumentWorkflow(final Node documentHandleNode) throws RepositoryException {
-        return (DocumentWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), getDocumentWorkflowCategory(),
+        return (DocumentWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(), getDocumentWorkflowCategory(),
                 documentHandleNode);
     }
 
+    /**
+     * Returns a {@link DefaultWorkflow} instance on {@code documentHandleNode}.
+     * @param documentHandleNode document handle node
+     * @return {@link DefaultWorkflow} instance on {@code documentHandleNode}
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
     protected DefaultWorkflow getDefaultWorkflow(final Node documentHandleNode) throws RepositoryException {
-        return (DefaultWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(), getDefaultWorkflowCategory(),
+        return (DefaultWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(), getDefaultWorkflowCategory(),
                 documentHandleNode);
     }
 
+    /**
+     * Returns a folder {@link TranslationWorkflow} instance on {@code folderNode}.
+     * @param folderNode folder node
+     * @return a folder {@link TranslationWorkflow} instance on {@code folderNode}
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
     protected TranslationWorkflow getFolderTranslationWorkflow(final Node folderNode) throws RepositoryException {
-        return (TranslationWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(),
+        return (TranslationWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(),
                 getFolderTranslationWorkflowCategory(), folderNode);
     }
 
-    protected TranslationWorkflow getDocumentTranslationWorkflow(final Node documentVariantNode)
+    /**
+     * Returns a document {@link TranslationWorkflow} instance on {@code documentVariantNode}.
+     * @param documentVariantNode document variant node
+     * @return a document {@link TranslationWorkflow} instance on {@code documentVariantNode}
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
+    protected TranslationWorkflow getDocumentVariantTranslationWorkflow(final Node documentVariantNode)
             throws RepositoryException {
-        return (TranslationWorkflow) HippoWorkflowUtils.getHippoWorkflow(getSession(),
+        return (TranslationWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(),
                 getDocumentTranslationWorkflowCategory(), documentVariantNode);
     }
 }

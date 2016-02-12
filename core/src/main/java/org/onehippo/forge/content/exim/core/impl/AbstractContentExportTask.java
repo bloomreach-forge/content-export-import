@@ -29,15 +29,26 @@ import org.onehippo.forge.content.pojo.mapper.jcr.DefaultJcrContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * Abstract content export task implementation class to provide common properties and utility operations.
+ */
 abstract public class AbstractContentExportTask extends AbstractContentMigrationTask {
 
     protected ContentNodeMapper<Node, Item, Value> contentNodeMapper;
     protected ContentNodeMappingItemFilter<Item> contentNodeMappingItemFilter;
 
+    /**
+     * Constructs with {@code documentManager}.
+     * @param documentManager {@link DocumentManager} instance
+     */
     public AbstractContentExportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
+    /**
+     * Returns {@link ContentNodeMapper} instance. If not set, returns a default implementation.
+     * @return {@link ContentNodeMapper} instance. If not set, returns a default implementation
+     */
     public ContentNodeMapper<Node, Item, Value> getContentNodeMapper() {
         if (contentNodeMapper == null) {
             contentNodeMapper = new DefaultJcrContentNodeMapper();
@@ -46,10 +57,18 @@ abstract public class AbstractContentExportTask extends AbstractContentMigration
         return contentNodeMapper;
     }
 
+    /**
+     * Sets {@link ContentNodeMapper} instance.
+     * @param contentNodeMapper {@link ContentNodeMapper} instance
+     */
     public void setContentNodeMapper(ContentNodeMapper<Node, Item, Value> contentNodeMapper) {
         this.contentNodeMapper = contentNodeMapper;
     }
 
+    /**
+     * Returns {@link ContentNodeMappingItemFilter} instance. If not set, returns a default implementation.
+     * @return {@link ContentNodeMappingItemFilter} instance. If not set, returns a default implementation
+     */
     public ContentNodeMappingItemFilter<Item> getContentNodeMappingItemFilter() {
         if (contentNodeMappingItemFilter == null) {
             contentNodeMappingItemFilter = new DefaultHippoJcrItemMappingFilter();
@@ -58,15 +77,25 @@ abstract public class AbstractContentExportTask extends AbstractContentMigration
         return contentNodeMappingItemFilter;
     }
 
+    /**
+     * Sets {@link ContentNodeMappingItemFilter} instance.
+     * @param contentNodeMappingItemFilter {@link ContentNodeMappingItemFilter} instance
+     */
     public void setContentNodeMappingItemFilter(ContentNodeMappingItemFilter<Item> contentNodeMappingItemFilter) {
         this.contentNodeMappingItemFilter = contentNodeMappingItemFilter;
     }
 
-    protected void setMetaProperties(final ContentNode contentNode, final Node node) throws RepositoryException {
-        final Node handle = HippoWorkflowUtils.getHippoDocumentHandle(node);
+    /**
+     * Set meta properties such as {@link Constants.META_PROP_NODE_PATH} and {@link Constants.META_PROP_NODE_LOCALIZED_NAME},
+     * which might be helpful when importing back later.
+     * @param contentNode {@link ContentNode} instance to set the meta properties
+     * @param sourceNode the source node from which the meta properties should be extracted
+     * @throws RepositoryException if data cannot be read from the {@code sourceNode} due to repository error
+     */
+    protected void setMetaProperties(final ContentNode contentNode, final Node sourceNode) throws RepositoryException {
+        final Node handle = HippoNodeUtils.getHippoDocumentHandle(sourceNode);
 
         if (handle != null) {
-            contentNode.setProperty(Constants.META_PROP_NODE_NAME, handle.getName());
             contentNode.setProperty(Constants.META_PROP_NODE_PATH, handle.getPath());
 
             if (handle instanceof HippoNode) {
@@ -74,11 +103,10 @@ abstract public class AbstractContentExportTask extends AbstractContentMigration
                         ((HippoNode) handle).getLocalizedName());
             }
         } else {
-            contentNode.setProperty(Constants.META_PROP_NODE_NAME, node.getName());
-            contentNode.setProperty(Constants.META_PROP_NODE_PATH, node.getPath());
+            contentNode.setProperty(Constants.META_PROP_NODE_PATH, sourceNode.getPath());
 
-            if (node instanceof HippoNode) {
-                contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME, ((HippoNode) node).getLocalizedName());
+            if (sourceNode instanceof HippoNode) {
+                contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME, ((HippoNode) sourceNode).getLocalizedName());
             }
         }
     }

@@ -44,11 +44,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Internal utility to invoke Hippo Workflow APIs.
+ * Hippo specific node related utilities.
  */
-class HippoWorkflowUtils {
+class HippoNodeUtils {
 
-    private static Logger log = LoggerFactory.getLogger(HippoWorkflowUtils.class);
+    private static Logger log = LoggerFactory.getLogger(HippoNodeUtils.class);
 
     /**
      * Hippo Repository specific predefined folder node type name
@@ -80,7 +80,7 @@ class HippoWorkflowUtils {
      */
     static final StringCodec DEFAULT_URI_ENCODING = new StringCodecFactory.UriEncoding();
 
-    private HippoWorkflowUtils() {
+    private HippoNodeUtils() {
     }
 
     /**
@@ -203,6 +203,11 @@ class HippoWorkflowUtils {
         return null;
     }
 
+    /**
+     * Finds and returns the canonical node from the {@code node}.
+     * @param node node
+     * @return the canonical node from the {@code node}
+     */
     static Node getHippoCanonicalNode(Node node) {
         if (node instanceof HippoNode) {
             HippoNode hnode = (HippoNode) node;
@@ -225,6 +230,12 @@ class HippoWorkflowUtils {
         return node;
     }
 
+    /**
+     * Returns true if the {@code node} is a either <code>hippo:facetselect</code> or <code>hippo:mirror</code> node.
+     * @param node node
+     * @return true if the {@code node} is a either <code>hippo:facetselect</code> or <code>hippo:mirror</code> node
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
     static boolean isHippoMirrorNode(Node node) throws RepositoryException {
         if (node.isNodeType(HippoNodeType.NT_FACETSELECT) || node.isNodeType(HippoNodeType.NT_MIRROR)) {
             return true;
@@ -233,6 +244,11 @@ class HippoWorkflowUtils {
         return false;
     }
 
+    /**
+     * Returns the referenced node by the given mirror node ({@code mirrorNode}).
+     * @param mirrorNode mirror node
+     * @return the referenced node by the given mirror node ({@code mirrorNode})
+     */
     static Node getRereferencedNodeByHippoMirror(Node mirrorNode) {
         String docBaseUUID = null;
 
@@ -271,6 +287,13 @@ class HippoWorkflowUtils {
         return null;
     }
 
+    /**
+     * Finds and returns a hippo folder node located at {@code absPath} if found. If not found, returns null.
+     * @param session JCR session
+     * @param absPath absolute folder node path
+     * @return a hippo folder node located at {@code absPath} if found. If not found, returns null
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
     static Node getExistingHippoFolderNode(final Session session, final String absPath)
             throws RepositoryException {
         if (!session.nodeExists(absPath)) {
@@ -314,6 +337,12 @@ class HippoWorkflowUtils {
         return canonicalFolderNode;
     }
 
+    /**
+     * Returns true if {@code node} is either document handle node or document variant node.
+     * @param node node
+     * @return true if {@code node} is either document handle node or document variant node
+     * @throws RepositoryException
+     */
     static boolean isHippoDocumentHandleOrVariant(Node node) throws RepositoryException {
         if (node.isNodeType("hippo:handle")) {
             return true;
@@ -330,6 +359,16 @@ class HippoWorkflowUtils {
         return false;
     }
 
+    /**
+     * Creates a hippo folder by using Hippo Repository Workflow.
+     * @param session JCR session
+     * @param folderNode base folder node
+     * @param nodeTypeName folder node type name
+     * @param name folder node name
+     * @return absolute path of the created folder
+     * @throws RepositoryException if unexpected repository exception occurs
+     * @throws WorkflowException if unexpected workflow exception occurs
+     */
     static String createHippoFolderNodeByWorkflow(final Session session, Node folderNode, String nodeTypeName,
             String name) throws RepositoryException, WorkflowException {
         try {

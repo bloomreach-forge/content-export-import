@@ -15,13 +15,40 @@
  */
 package org.onehippo.forge.content.exim.core;
 
+import org.onehippo.forge.content.pojo.model.ContentNode;
+
+/**
+ * Module-wise constants.
+ */
 public class Constants {
 
-    public static final String META_PROP_NODE_NAME = "jcr:name";
-
-    public static final String META_PROP_NODE_LOCALIZED_NAME = "jcr:localizedName";
-
+    /**
+     * Meta property name to store the original document handle node path temporarily in a {@link ContentNode} object.
+     * <P>
+     * This meta property is useful when exporting a document content data into a {@link ContentNode} object
+     * because the original document handle node path isn't available by default in the exported {@link ContentNode} object.
+     * </P>
+     * <P>
+     * So, by storing this meta property temporarily in a {@link ContentNode} object, it can be used
+     * when importing back from the {@link ContentNode} object later to determine where it should be imported.
+     * Or, importing task modify this meta property to change the import target document handle location.
+     * </P>
+     */
     public static final String META_PROP_NODE_PATH = "jcr:path";
+
+    /**
+     * Meta property name to store a localized document name temporarily in a {@link ContentNode} object.
+     * <P>
+     * This meta property is useful when exporting a document variant content data into a {@link ContentNode} object
+     * because the localized document name doesn't exist in the document variant node itself but it exists in a separate
+     * translation node under the document handle node.
+     * </P>
+     * <P>
+     * So, by storing this meta property temporarily in a {@link ContentNode} object, it can be used
+     * when importing back from the {@link ContentNode} object later.
+     * </P>
+     */
+    public static final String META_PROP_NODE_LOCALIZED_NAME = "jcr:localizedName";
 
     private Constants() {
     }

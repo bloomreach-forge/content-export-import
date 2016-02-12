@@ -16,7 +16,7 @@
 package org.onehippo.forge.content.exim.core;
 
 /**
- * ContentMigrationException.
+ * ContentMigrationException thrown by {@link ContentMigrationTask}.
  */
 public class ContentMigrationException extends RuntimeException {
 

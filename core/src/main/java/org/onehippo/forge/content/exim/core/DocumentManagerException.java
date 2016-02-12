@@ -16,7 +16,7 @@
 package org.onehippo.forge.content.exim.core;
 
 /**
- * DocumentManagerException.
+ * DocumentManagerException thrown by {@link DocumentManager}.
  */
 public class DocumentManagerException extends RuntimeException {
 

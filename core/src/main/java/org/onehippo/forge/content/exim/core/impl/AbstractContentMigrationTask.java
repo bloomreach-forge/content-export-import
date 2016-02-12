@@ -53,6 +53,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Abstract {@link ContentMigrationTask} implementation class to provide common properties and utility operations.
+ */
 abstract public class AbstractContentMigrationTask implements ContentMigrationTask {
 
     private Logger logger = LoggerFactory.getLogger(AbstractContentMigrationTask.class);
@@ -69,18 +72,34 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
     private FileObject binaryValueFileFolder;
     private long dataUrlSizeThreashold = 512 * 1024; // 512 KB
 
+    /**
+     * Constructs with {@code documentManager}.
+     * @param documentManager {@link DocumentManager} instance
+     */
     public AbstractContentMigrationTask(final DocumentManager documentManager) {
         this.documentManager = documentManager;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Logger getLogger() {
         return logger;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setLogger(Logger logger) {
         this.logger = logger;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void start() {
         if (isStarted()) {
             throw new IllegalStateException("Task was already started.");
@@ -92,6 +111,10 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         tlCurrentContentMigrationRecord.remove();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stop() {
         if (!isStarted()) {
             throw new IllegalStateException("Task was not started.");
@@ -101,14 +124,25 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         tlCurrentContentMigrationRecord.remove();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public long getStartedTimeMillis() {
         return startedTimeMillis;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public long getStoppedTimeMillis() {
         return stoppedTimeMillis;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentMigrationRecord beginRecord(String contentId, String contentPath) {
         ContentMigrationRecord record = new ContentMigrationRecord();
@@ -119,6 +153,9 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return record;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentMigrationRecord endRecord() {
         ContentMigrationRecord record = getCurrentContentMigrationRecord();
@@ -126,14 +163,29 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return record;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Collection<ContentMigrationRecord> getContentMigrationRecords() {
         return Collections.unmodifiableCollection(contentMigrationRecords);
     }
 
+    /**
+     * Returns the current {@link ContentMigrationRecord} instance in the current context thread.
+     * @return the current {@link ContentMigrationRecord} instance in the current context thread
+     */
     public static ContentMigrationRecord getCurrentContentMigrationRecord() {
         return tlCurrentContentMigrationRecord.get();
     }
 
+    /**
+     * {@inheritDoc}
+     * <P>
+     * The default implementation summarizes the result with details on each execution record in CSV format.
+     * </P>
+     */
+    @Override
     public void logSummary() {
         StringWriter sw = new StringWriter(1024);
         PrintWriter out = new PrintWriter(sw);
@@ -200,10 +252,16 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         IOUtils.closeQuietly(sw);
     }
 
+    /**
+     * Returns {@link DocumentManager}.
+     */
     public DocumentManager getDocumentManager() {
         return documentManager;
     }
 
+    /**
+     * Returns {@link ObjectMapper}. If not set, returns a default {@link ObjectMapper} instance.
+     */
     public ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
             objectMapper = new ObjectMapper();
@@ -212,10 +270,16 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return objectMapper;
     }
 
+    /**
+     * Sets {@link ObjectMapper}.
+     */
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Returns {@link ContentValueConverter}. If not set, returns a default {@link ContentValueConverter} instance.
+     */
     public ContentValueConverter<Value> getContentValueConverter() {
         if (contentValueConverter == null) {
             contentValueConverter = new DefaultJcrContentValueConverter(getDocumentManager().getSession());
@@ -228,14 +292,28 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return contentValueConverter;
     }
 
+    /**
+     * Sets {@link ContentValueConverter}.
+     * @param contentValueConverter {@link ContentValueConverter} instance
+     */
     public void setContentValueConverter(ContentValueConverter<Value> contentValueConverter) {
         this.contentValueConverter = contentValueConverter;
     }
 
+    /**
+     * Returns base folder object of type {@link FileObject}, which is used as a base folder
+     * when storing a binary value into an external file.
+     * @return base folder object of type {@link FileObject}
+     */
     public FileObject getBinaryValueFileFolder() {
         return binaryValueFileFolder;
     }
 
+    /**
+     * Sets the base folder object of type {@link FileObject}, which is used as a base folder
+     * when storing a binary value into an external file.
+     * @param binaryValueFileFolder base folder object of type {@link FileObject}
+     */
     public void setBinaryValueFileFolder(FileObject binaryValueFileFolder) {
         this.binaryValueFileFolder = binaryValueFileFolder;
 
@@ -244,10 +322,26 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         }
     }
 
+    /**
+     * Returns the threshold binary value data size used to determine if the specific binary value data should
+     * be stored in either an embedded data: url inside a {@link ContentNode} object or an external file
+     * when the data size is bigger than the threshold.
+     * @return the threshold binary value data size used to determine if the specific binary value data should
+     *         be stored in either an embedded data: url inside a {@link ContentNode} object or an external file
+     *         when the data size is bigger than the threshold.
+     */
     public long getDataUrlSizeThreashold() {
         return dataUrlSizeThreashold;
     }
 
+    /**
+     * Sets the threshold binary value data size used to determine if the specific binary value data should
+     * be stored in either an embedded data: url inside a {@link ContentNode} object or an external file
+     * when the data size is bigger than the threshold.
+     * @param dataUrlSizeThreashold the threshold binary value data size used to determine if the specific binary value data should
+     *        be stored in either an embedded data: url inside a {@link ContentNode} object or an external file
+     *        when the data size is bigger than the threshold.
+     */
     public void setDataUrlSizeThreashold(long dataUrlSizeThreashold) {
         this.dataUrlSizeThreashold = dataUrlSizeThreashold;
 
@@ -257,6 +351,16 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         }
     }
 
+    /**
+     * Finds files (type of {@link FileObject}) under {@code baseFolder} based on the file name pattern specified by the regular expression, {@code nameRegex}.
+     * It only matches when the depth of a descendant file in the range, [{@code minDepth}, {@code maxDepth}].
+     * @param baseFolder base folder to search from
+     * @param nameRegex file name pattern regular expression
+     * @param minDepth minimum depth of a descendant file
+     * @param maxDepth maximum depth of a descendant file
+     * @return array of files (type of {@link FileObject}) found
+     * @throws FileSystemException if any file system exception occurs
+     */
     public FileObject[] findFilesByNamePattern(FileObject baseFolder, String nameRegex, int minDepth, int maxDepth)
             throws FileSystemException {
         final FileFilter fileFilter = new NamePatternFileFilter(Pattern.compile(nameRegex));
@@ -264,6 +368,9 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return baseFolder.findFiles(selector);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentNode readContentNodeFromJsonFile(final FileObject sourceFile) throws ContentMigrationException {
         ContentNode contentNode = null;
@@ -285,6 +392,9 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return contentNode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void writeContentNodeToJsonFile(final ContentNode contentNode, final FileObject targetFile)
             throws ContentMigrationException {
@@ -303,6 +413,10 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         }
     }
 
+    /**
+     * Returns true if this task was already started.
+     * @return true if this task was already started
+     */
     private boolean isStarted() {
         return startedTimeMillis != 0;
     }

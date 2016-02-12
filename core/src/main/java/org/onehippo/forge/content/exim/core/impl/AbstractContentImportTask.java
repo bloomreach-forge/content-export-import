@@ -25,15 +25,26 @@ import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingIt
 import org.onehippo.forge.content.pojo.binder.jcr.DefaultJcrContentNodeBinder;
 import org.onehippo.forge.content.pojo.model.ContentItem;
 
+/**
+ * Abstract content import task implementation class to provide common properties and utility operations.
+ */
 public class AbstractContentImportTask extends AbstractContentMigrationTask {
 
     protected ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder;
     protected ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter;
 
+    /**
+     * Constructs with {@code documentManager}.
+     * @param documentManager {@link DocumentManager} instance
+     */
     public AbstractContentImportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
+    /**
+     * Returns {@link ContentNodeBinder} instance. If not set, returns a default implementation.
+     * @return {@link ContentNodeBinder} instance. If not set, returns a default implementation
+     */
     public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
         if (contentNodeBinder == null) {
             contentNodeBinder = new DefaultJcrContentNodeBinder();
@@ -42,10 +53,18 @@ public class AbstractContentImportTask extends AbstractContentMigrationTask {
         return contentNodeBinder;
     }
 
+    /**
+     * Sets {@link ContentNodeBinder} instance.
+     * @param contentNodeBinder {@link ContentNodeBinder} instance
+     */
     public void setContentNodeBinder(ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder) {
         this.contentNodeBinder = contentNodeBinder;
     }
 
+    /**
+     * Returns {@link ContentNodeBindingItemFilter} instance. If not set, returns a default implementation.
+     * @return {@link ContentNodeBindingItemFilter} instance. If not set, returns a default implementation
+     */
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
         if (contentNodeBindingItemFilter == null) {
             contentNodeBindingItemFilter = new DefaultContentNodeJcrBindingItemFilter();
@@ -54,6 +73,10 @@ public class AbstractContentImportTask extends AbstractContentMigrationTask {
         return contentNodeBindingItemFilter;
     }
 
+    /**
+     * Sets {@link ContentNodeBindingItemFilter} instance.
+     * @param contentNodeBindingItemFilter {@link ContentNodeBindingItemFilter} instance
+     */
     public void setContentNodeBindingItemFilter(
             ContentNodeBindingItemFilter<ContentItem> contentNodeBindingItemFilter) {
         this.contentNodeBindingItemFilter = contentNodeBindingItemFilter;

@@ -26,12 +26,23 @@ import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
 import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * Default {@link BinaryExportTask} implementation.
+ */
 public class DefaultBinaryExportTask extends AbstractContentExportTask implements BinaryExportTask {
 
+    /**
+     * Constructs with {@code documentManager}.
+     * @param documentManager {@link DocumentManager} instance
+     */
     public DefaultBinaryExportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ContentNodeMappingItemFilter<Item> getContentNodeMappingItemFilter() {
         if (contentNodeMappingItemFilter == null) {
             DefaultHippoJcrItemMappingFilter filter = new DefaultHippoJcrItemMappingFilter();
@@ -44,6 +55,9 @@ public class DefaultBinaryExportTask extends AbstractContentExportTask implement
         return contentNodeMappingItemFilter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentNode exportBinarySetToContentNode(Node imageSetOrAssetSetNode) throws ContentMigrationException {
         ContentNode contentNode = null;

@@ -31,17 +31,26 @@ import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingIt
 import org.onehippo.forge.content.pojo.model.ContentItem;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * {@link DocumentVariantImportTask} implementation using Hippo Repository Workflow APIs.
+ */
 public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask implements DocumentVariantImportTask {
 
+    /**
+     * Constructs with {@code documentManager}.
+     * @param documentManager {@link DocumentManager} instance
+     */
     public WorkflowDocumentVariantImportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
         if (contentNodeBindingItemFilter == null) {
             DefaultContentNodeJcrBindingItemFilter filter = new DefaultContentNodeJcrBindingItemFilter();
-            filter.addPropertyPathExclude(Constants.META_PROP_NODE_NAME);
             filter.addPropertyPathExclude(Constants.META_PROP_NODE_LOCALIZED_NAME);
             filter.addPropertyPathExclude(Constants.META_PROP_NODE_PATH);
             filter.addPropertyPathExclude("hippostdpubwf:*");
@@ -57,6 +66,9 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
         return contentNodeBindingItemFilter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String primaryTypeName,
             String documentLocation, String locale, String localizedName) throws ContentMigrationException {
@@ -69,7 +81,7 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
 
             if (!getDocumentManager().getSession().nodeExists(documentLocation)) {
                 createdOrUpdatedDocumentLocation = createDocumentFromVariantContentNode(primaryTypeName,
-                        documentLocation, contentNode, locale, localizedName);
+                        documentLocation, locale, localizedName);
             }
 
             createdOrUpdatedDocumentLocation = updateDocumentFromVariantContentNode(documentLocation, contentNode);
@@ -80,9 +92,19 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
         return createdOrUpdatedDocumentLocation;
     }
 
+    /**
+     * Create a document at the document handle node path ({@link documentLocation})
+     * and returns the created document handle node path.
+     * @param primaryTypeName primary node type name of the document to create
+     * @param documentLocation document handle node path where the document should be created
+     * @param locale locale name for {@code localizedName} which is used as a localized name of the created document
+     * @param localizedName localized name of the document to create
+     * @return the created document handle node path
+     * @throws DocumentManagerException if document creation fails
+     * @throws RepositoryException if document creation fails due to unexpected repository error
+     */
     protected String createDocumentFromVariantContentNode(String primaryTypeName, String documentLocation,
-            final ContentNode contentNode, String locale, String localizedName)
-                    throws DocumentManagerException, RepositoryException {
+            String locale, String localizedName) throws DocumentManagerException, RepositoryException {
         documentLocation = StringUtils.removeEnd(documentLocation, "/");
         String[] folderPathAndName = ContentPathUtils.splitToFolderPathAndName(documentLocation);
         String createdDocumentLocation = getDocumentManager().createDocument(folderPathAndName[0], primaryTypeName,
@@ -90,6 +112,15 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
         return createdDocumentLocation;
     }
 
+    /**
+     * Update the document located under the document handle node path ({@code documentLocation})
+     * and returns the document handle node path where the content was updated.
+     * @param documentLocation document handle node path
+     * @param contentNode source {@link ContentNode} instance containing the document variant content data
+     * @return the document handle node path where the content was updated
+     * @throws DocumentManagerException if document update fails
+     * @throws RepositoryException if document update fails due to unexpected repository error
+     */
     protected String updateDocumentFromVariantContentNode(final String documentLocation, final ContentNode contentNode)
             throws DocumentManagerException, RepositoryException {
         Document editableDocument = null;
@@ -99,7 +130,7 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
             final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
 
             if (getCurrentContentMigrationRecord() != null) {
-                final Node handle = HippoWorkflowUtils.getHippoDocumentHandle(variant);
+                final Node handle = HippoNodeUtils.getHippoDocumentHandle(variant);
                 getCurrentContentMigrationRecord().setContentId(handle.getIdentifier());
             }
 

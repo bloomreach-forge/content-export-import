@@ -30,17 +30,26 @@ import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingIt
 import org.onehippo.forge.content.pojo.model.ContentItem;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * Default {@link BinaryImportTask} implementation.
+ */
 public class DefaultBinaryImportTask extends AbstractContentImportTask implements BinaryImportTask {
 
+    /**
+     * Constructs with {@code documentManager}.
+     * @param documentManager {@link DocumentManager} instance
+     */
     public DefaultBinaryImportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
         if (contentNodeBindingItemFilter == null) {
             DefaultContentNodeJcrBindingItemFilter filter = new DefaultContentNodeJcrBindingItemFilter();
-            filter.addPropertyPathExclude(Constants.META_PROP_NODE_NAME);
             filter.addPropertyPathExclude(Constants.META_PROP_NODE_LOCALIZED_NAME);
             filter.addPropertyPathExclude(Constants.META_PROP_NODE_PATH);
             filter.addPropertyPathExclude("hippostdpubwf:*");
@@ -56,13 +65,16 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
         return contentNodeBindingItemFilter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String createOrUpdateBinaryFolder(String folderLocation, String primaryTypeName, String[] folderTypes,
             String[] galleryTypes) throws ContentMigrationException {
         String folderPath = null;
 
         try {
-            final Node folderNode = HippoBinaryUtils.createMissingHippoBinaryFolders(getDocumentManager().getSession(),
+            final Node folderNode = HippoBinaryNodeUtils.createMissingHippoBinaryFolders(getDocumentManager().getSession(),
                     folderLocation, primaryTypeName, folderTypes, galleryTypes);
             getDocumentManager().getSession().save();
             folderPath = folderNode.getPath();
@@ -79,6 +91,9 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
         return folderPath;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String createOrUpdateBinaryFromContentNode(ContentNode contentNode, String primaryTypeName,
             String folderPath, String name) throws ContentMigrationException {
@@ -97,7 +112,7 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
             final Node folderNode = getDocumentManager().getSession().getNode(folderPath);
 
             if (!folderNode.hasNode(name)) {
-                binaryHandleNode = createBinaryFromContentNode(primaryTypeName, folderNode, name);
+                binaryHandleNode = createBinaryHandleAndVariantNode(primaryTypeName, folderNode, name);
                 binaryContentPath = binaryHandleNode.getPath();
             } else {
                 binaryHandleNode = folderNode.getNode(name);
@@ -107,7 +122,7 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
                 getCurrentContentMigrationRecord().setContentId(binaryHandleNode.getIdentifier());
             }
 
-            updateBinaryHandleFromBinarySetContentNode(binaryHandleNode, contentNode);
+            updateBinaryHandleAndVariantNodeFromBinaryVariantContentNode(binaryHandleNode, contentNode);
 
             getDocumentManager().getSession().save();
         } catch (Exception e) {
@@ -123,7 +138,16 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
         return binaryContentPath;
     }
 
-    protected Node createBinaryFromContentNode(String primaryTypeName, Node folderNode, String name)
+    /**
+     * Creates a binary handle and variant node and returns the binary handle node.
+     * @param primaryTypeName primary node type name of the binary variant node
+     * @param folderNode folder node
+     * @param name binary node name
+     * @return created binary handle node
+     * @throws DocumentManagerException if it fails to create the binary handle and variant node
+     * @throws RepositoryException if it fails to create the binary handle and variant node
+     */
+    protected Node createBinaryHandleAndVariantNode(String primaryTypeName, Node folderNode, String name)
             throws DocumentManagerException, RepositoryException {
         Node handle = folderNode.addNode(name, HippoNodeType.NT_HANDLE);
         handle.addMixin("mix:referenceable");
@@ -133,7 +157,14 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
         return handle;
     }
 
-    protected void updateBinaryHandleFromBinarySetContentNode(final Node binaryHandleNode,
+    /**
+     * Update binary handle and variant node from the {@link ContentNode} data containing the binary variant content data.
+     * @param binaryHandleNode binary handle node
+     * @param contentNode {@link ContentNode} data containing the binary variant content data
+     * @throws DocumentManagerException if it fails to update the binary handle and variant node
+     * @throws RepositoryException if it fails to update the binary handle and variant node
+     */
+    protected void updateBinaryHandleAndVariantNodeFromBinaryVariantContentNode(final Node binaryHandleNode,
             final ContentNode contentNode) throws DocumentManagerException, RepositoryException {
         getContentNodeBinder().bind(binaryHandleNode.getNode(binaryHandleNode.getName()), contentNode,
                 getContentNodeBindingItemFilter(), getContentValueConverter());

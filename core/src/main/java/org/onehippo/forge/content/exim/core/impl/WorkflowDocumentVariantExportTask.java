@@ -27,12 +27,22 @@ import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
 import org.onehippo.forge.content.pojo.mapper.jcr.hippo.DefaultHippoJcrItemMappingFilter;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * {@link DocumentVariantExportTask} implementation using Hippo Repository Workflow APIs.
+ */
 public class WorkflowDocumentVariantExportTask extends AbstractContentExportTask implements DocumentVariantExportTask {
 
+    /**
+     * Constructs with {@code documentManager}.
+     * @param documentManager {@link DocumentManager} instance
+     */
     public WorkflowDocumentVariantExportTask(final DocumentManager documentManager) {
         super(documentManager);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentNodeMappingItemFilter<Item> getContentNodeMappingItemFilter() {
         if (contentNodeMappingItemFilter == null) {
@@ -50,6 +60,9 @@ public class WorkflowDocumentVariantExportTask extends AbstractContentExportTask
         return contentNodeMappingItemFilter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentNode exportVariantToContentNode(final Document document) throws ContentMigrationException {
         ContentNode contentNode = null;

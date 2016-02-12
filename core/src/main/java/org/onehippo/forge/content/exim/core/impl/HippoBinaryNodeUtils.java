@@ -25,9 +25,9 @@ import org.hippoecm.repository.api.WorkflowException;
 /**
  * Internal utility for Hippo binary related nodes.
  */
-class HippoBinaryUtils {
+class HippoBinaryNodeUtils {
 
-    private HippoBinaryUtils() {
+    private HippoBinaryNodeUtils() {
     }
 
     /**
@@ -51,7 +51,7 @@ class HippoBinaryUtils {
         String folderNodePath;
 
         for (String folderName : folderNames) {
-            String folderNodeName = HippoWorkflowUtils.DEFAULT_URI_ENCODING.encode(folderName);
+            String folderNodeName = HippoNodeUtils.DEFAULT_URI_ENCODING.encode(folderName);
 
             if (curNode == rootNode) {
                 folderNodePath = "/" + folderNodeName;
@@ -59,7 +59,7 @@ class HippoBinaryUtils {
                 folderNodePath = curNode.getPath() + "/" + folderNodeName;
             }
 
-            Node existingFolderNode = HippoWorkflowUtils.getExistingHippoFolderNode(session, folderNodePath);
+            Node existingFolderNode = HippoNodeUtils.getExistingHippoFolderNode(session, folderNodePath);
 
             if (existingFolderNode == null) {
                 tempFolderNode = curNode.addNode(folderName, primaryTypeName);
@@ -78,10 +78,10 @@ class HippoBinaryUtils {
                 curNode = existingFolderNode;
             }
 
-            curNode = HippoWorkflowUtils.getHippoCanonicalNode(curNode);
+            curNode = HippoNodeUtils.getHippoCanonicalNode(curNode);
 
-            if (HippoWorkflowUtils.isHippoMirrorNode(curNode)) {
-                curNode = HippoWorkflowUtils.getRereferencedNodeByHippoMirror(curNode);
+            if (HippoNodeUtils.isHippoMirrorNode(curNode)) {
+                curNode = HippoNodeUtils.getRereferencedNodeByHippoMirror(curNode);
             }
         }
 

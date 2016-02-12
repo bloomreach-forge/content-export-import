@@ -26,9 +26,17 @@ import org.slf4j.Logger;
  */
 public interface DocumentManager {
 
+    /**
+     * Returns the logger used by DocumentManager.
+     * @return the logger used by DocumentManager
+     */
     public Logger getLogger();
 
-    public void setLogger(Logger migrationLogger);
+    /**
+     * Sets a logger to DocumentManager.
+     * @param logger the logger to be used by DocumentManager
+     */
+    public void setLogger(Logger logger);
 
     /**
      * Returns the JCR session.
@@ -37,103 +45,103 @@ public interface DocumentManager {
     Session getSession();
 
     /**
-     * Creates a document in the specific {@code folderLocation}
-     * with given {@code templateCategory}, {@code prototype}, {@code name} and {@code localizedName}.
-     * @param folderLocation destination folder location
-     * @param primaryTypeName primary node type name
+     * Creates a document in the specific {@code folderLocation}.
+     * @param folderLocation destination folder path
+     * @param primaryTypeName primary node type name of document to be created
      * @param nodeName document node name
-     * @param locale locale name for the document display name
-     * @param localizedName document display name for the locale
-     * @return created document location
-     * @throws DocumentManagerException if fails to process.
+     * @param locale locale for the document display name. e.g, "en"
+     * @param localizedName localized document name associated with the {@code locale}
+     * @return created document handle path
+     * @throws DocumentManagerException if fails to process
      */
-    String createDocument(String folderLocation, String primaryTypeName, String nodeName, String locale, String localizedName)
-            throws DocumentManagerException;
+    String createDocument(String folderLocation, String primaryTypeName, String nodeName, String locale,
+            String localizedName) throws DocumentManagerException;
 
     /**
-     * Obtains an editable draft variant from the document handle location.
-     * @param documentLocation document handle location
-     * @return document if the operation was successful
-     * @throws DocumentManagerException if fails to process.
+     * Obtains an editable draft variant {@link Document} under the given document handle path ({@code documentLocation}).
+     * @param documentLocation document handle path
+     * @return a {@link Document} instance if the operation was successful
+     * @throws DocumentManagerException if fails to process
      */
     Document obtainEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
-     * Update editable document (specified by {@code documentIdentifier}) by the content of the given {@code sourceContentNode}.
-     * @param editableDocument document to edit
+     * Update editable {@link Document} instance ({@code editableDocument}) by the content of the given {@code sourceContentNode}.
+     * @param editableDocument {@link Document} instance to edit
      * @param sourceContentNode source content node
-     * @throws DocumentManagerException if fails to process.
+     * @throws DocumentManagerException if fails to process
      */
     void updateEditableDocument(Document editableDocument, ContentNode sourceContentNode)
             throws DocumentManagerException;
 
     /**
-     * Discards the draft variant currently being edited.
-     * @param documentLocation document handle location
-     * @return document if the operation was successful
-     * @throws DocumentManagerException if fails to process.
+     * Discards the draft variant which is currently being edited.
+     * @param documentLocation document handle path
+     * @return {@link Document} instance discarded if the operation was successful
+     * @throws DocumentManagerException if fails to process
      */
     Document disposeEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
-     * Commits the draft variant currently being edited.
-     * @param documentLocation document handle location
-     * @return document if the operation was successful
-     * @throws DocumentManagerException if fails to process.
+     * Commits the draft variant which is currently being edited.
+     * @param documentLocation document handle path
+     * @return {@link Document} instance committed if the operation was successful
+     * @throws DocumentManagerException if fails to process
      */
     Document commitEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
-     * Publishes the document.
-     * @param documentLocation document handle location
+     * Publishes the document at the given document handle path ({@code documentLocation}).
+     * @param documentLocation document handle path
      * @return true if the operation was successful, false otherwise
-     * @throws DocumentManagerException if fails to process.
+     * @throws DocumentManagerException if fails to process
      */
     boolean publishDocument(String documentLocation) throws DocumentManagerException;
 
     /**
-     * Takes offline the document.
-     * @param documentLocation document handle location
+     * Takes offline the document at the given document handle path ({@code documentLocation}).
+     * @param documentLocation document handle path
      * @return true if the operation was successful, false otherwise
-     * @throws DocumentManagerException if fails to process.
+     * @throws DocumentManagerException if fails to process
      */
     boolean depublishDocument(String documentLocation) throws DocumentManagerException;
 
     /**
-     * Deletes a document at {@code documentLocation}.
-     * @param documentLocation document handle location
-     * @throws DocumentManagerException if fails to process.
+     * Deletes a document at at the given document handle path ({@code documentLocation}).
+     * @param documentLocation document handle path
+     * @throws DocumentManagerException if fails to process
      */
     void deleteDocument(String documentLocation) throws DocumentManagerException;
 
     /**
-     * Copies the {@code sourceDocumentLocation} to {@code targetFolderLocation} with the {@code targetDocumentName}.
-     * @param sourceDocumentLocation source document handle location
-     * @param targetFolderLocation target folder location
+     * Copies a document at the source document handle path ({@code sourceDocumentLocation}) to
+     * the target folder path ({@code targetFolderLocation}) with the given document node name ({@code targetDocumentName}).
+     * @param sourceDocumentLocation source document handle path
+     * @param targetFolderLocation target folder path
      * @param targetDocumentName target document handle node name
-     * @return the copied target document handle location
-     * @throws DocumentManagerException if fails to process.
+     * @return the copied target document handle path
+     * @throws DocumentManagerException if fails to process
      */
     String copyDocument(String sourceDocumentLocation, String targetFolderLocation, String targetDocumentName)
             throws DocumentManagerException;
 
     /**
-     * Translates the {@code sourceFolderLocation} to {@code language} with the {@code name}.
-     * @param sourceFolderLocation source folder location
+     * Translates a folder at the folder path ({@code sourceFolderLocation}) to {@code name} in {@code language}.
+     * @param sourceFolderLocation source folder path
      * @param language target language to translate to
-     * @param name target folder name
-     * @return the translated target folder document
-     * @throws DocumentManagerException if fails to process.
+     * @param name target folder node name
+     * @return the translated target folder {@code Document} instance
+     * @throws DocumentManagerException if fails to process
      */
     Document translateFolder(String sourceFolderLocation, String language, String name) throws DocumentManagerException;
 
     /**
-     * Translates the {@code sourceDocumentLocation} to {@code language} with the {@code name}.
-     * @param sourceDocumentLocation source document handle location
+     * Translates a document at the document handle path ({@code sourceDocumentLocation}) to {@code name} in {@code language}.
+     * @param sourceDocumentLocation source document handle path
      * @param language target language to translate to
-     * @param name target document name
-     * @return the translated target document
-     * @throws DocumentManagerException if fails to process.
+     * @param name target document handle node name
+     * @return the translated target document {@code Document} instance
+     * @throws DocumentManagerException if fails to process
      */
     Document translateDocument(String sourceDocumentLocation, String language, String name)
             throws DocumentManagerException;
