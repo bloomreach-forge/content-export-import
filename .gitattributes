@@ -25,6 +25,7 @@ core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentPathUtils.ja
 core/src/main/java/org/onehippo/forge/content/exim/core/util/FileFilterDepthSelector.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/NamePatternFileFilter.java -text svneol=unset#text/plain
 /pom.xml -text
+src/site/resources/images/updater-editors-view.png -text
 src/site/site.xml -text
 src/site/xdoc/build-from-source.xml -text
 src/site/xdoc/components.xml -text svneol=unset#text/plain
