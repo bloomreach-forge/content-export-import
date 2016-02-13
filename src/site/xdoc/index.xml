@@ -16,7 +16,9 @@
     <title>Introduction</title>
   </properties>
   <body>
+
     <section name="Introduction">
+
       <subsection name="What is Hippo Content EXIM (EXport/IMport)?">
         <p>
           This project is going to provide higher level features of Content Import and Export,
@@ -31,6 +33,13 @@
           Content Export/Import features.
         </p>
       </subsection>
+
+      <subsection name="Main Features">
+        <ul>
+          <li>TODO</li>
+        </ul>
+      </subsection>
+
       <subsection name="Content Migration Task Components">
         <p>
           This project provides migration task componets which can be used in any Java application or in Groovy updater scripts
@@ -46,45 +55,97 @@
             <th>Implementation(s)</th>
           </tr>
           <tr>
-            <td></td>
+            <td><code>BinaryExportTask</code></td>
             <td>
-              
+              <code>ContentMigrationTask</code> to export binary (gallery/asset) data to <code>ContentNode</code> objects.
             </td>
             <td>
-              
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              
-            </td>
-            <td>
-              
+              <code>DefaultBinaryExportTask</code>
             </td>
           </tr>
           <tr>
-            <td></td>
+            <td><code>DocumentVariantExportTask</code></td>
             <td>
-              
+              <code>ContentMigrationTask</code> to export document variant nodes to <code>ContentNode</code> objects.
             </td>
             <td>
-              
+              <code>WorkflowDocumentVariantExportTask</code>
             </td>
           </tr>
           <tr>
-            <td></td>
+            <td><code>BinaryImportTask</code></td>
             <td>
-              
+              <code>ContentMigrationTask</code> to import binary (gallery/asset) data from <code>ContentNode</code> objects.
             </td>
             <td>
-              
+              <code>DefaultBinaryImportTask</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>DocumentVariantImportTask</code></td>
+            <td>
+              <code>ContentMigrationTask</code> to import <code>ContentNode</code> objects and create or update documents.
+            </td>
+            <td>
+              <code>WorkflowDocumentVariantImportTask</code>
             </td>
           </tr>
         </table>
       </subsection>
+
+      <subsection name="Example Groovy Updater Scripts using the Task Components">
+
+        <p>
+          You can find the following example groovy updater scripts using the task components in the demo project:
+        </p>
+
+        <table>
+          <tr>
+            <th>Updater script name</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><strong>Demo - Export Asset and Image Set Content</strong></td>
+            <td>
+              A demo script to export asset and image set content, using <code>BinaryExportTask</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Demo - Export Published Documents</strong></td>
+            <td>
+              A demo script to export published documents, using <code>DocumentVariantExportTask</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Demo - Import Asset and Image Set Content</strong></td>
+            <td>
+              A demo script to import asset and image set content, using <code>BinaryImportTask</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Demo - Import Documents As Unpublished</strong></td>
+            <td>
+              A demo script to import documents as unpublished status, using using <code>DocumentVariantImportTask</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Demo - Clean Hippo Docbase Values Having Paths</strong></td>
+            <td>
+              A demo script to clean interim hippo:docbase values having paths instead of UUIDs.
+            </td>
+          </tr>
+        </table>
+
+      </subsection>
+
+      <p>
+        You will see more explanations in the <a href="tutorials.html">Tutorial pages</a>.
+      </p>
+
     </section>
+
     <section name="Demo Application">
+
       <subsection name="Demo Application with Hippo CMS 10">
         <p>You can check out, build and run demo application, which contains all the examples explained in this site documentation.</p>
         <p>Here are example commands to check out, build and run demo application:</p>
@@ -101,45 +162,18 @@ $ mvn -P cargo.run
           to test it with some example groovy updater scripts using this module like the following:
         </p>
 
-        <table>
-          <tr>
-            <th>Updater script name</th>
-            <th>Description</th>
-          </tr>
-          <tr>
-            <td>Demo - Export Asset and Image Set Content</td>
-            <td>
-              A demo script to export asset and image set content.
-            </td>
-          </tr>
-          <tr>
-            <td>Demo - Export Published Documents</td>
-            <td>
-              A demo script to export published documents.
-            </td>
-          </tr>
-          <tr>
-            <td>Demo - Import Asset and Image Set Content</td>
-            <td>
-              A demo script to import asset and image set content.
-            </td>
-          </tr>
-          <tr>
-            <td>Demo - Import Documents As Unpublished</td>
-            <td>
-              A demo script to import documents as unpublished status.
-            </td>
-          </tr>
-          <tr>
-            <td>Demo - Clean Hippo Docbase Values Having Paths</td>
-            <td>
-              A demo script to clean interim hippo:docbase values having paths instead of UUIDs.
-            </td>
-          </tr>
-        </table>
+        <ul>
+          <li><strong>Demo - Export Asset and Image Set Content</strong></li>
+          <li><strong>Demo - Export Published Documents</strong></li>
+          <li><strong>Demo - Import Asset and Image Set Content</strong></li>
+          <li><strong>Demo - Import Documents As Unpublished</strong></li>
+          <li><strong>Demo - Clean Hippo Docbase Values Having Paths</strong></li>
+        </ul>
 
       </subsection>
+
     </section>
+
     <section name="Project status">
       <p>
         Please see <a href="release-notes.html">Release Notes</a>.
@@ -150,5 +184,6 @@ $ mvn -P cargo.run
         for more info about the project itself.
       </p>
     </section>
+
   </body>
 </document>

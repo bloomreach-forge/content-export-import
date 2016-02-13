@@ -28,6 +28,7 @@ core/src/main/java/org/onehippo/forge/content/exim/core/util/NamePatternFileFilt
 src/site/site.xml -text
 src/site/xdoc/build-from-source.xml -text
 src/site/xdoc/components.xml -text svneol=unset#text/plain
+src/site/xdoc/faq.xml -text svneol=unset#text/plain
 src/site/xdoc/index.xml -text
 src/site/xdoc/install.xml -text
 src/site/xdoc/release-notes.xml -text
