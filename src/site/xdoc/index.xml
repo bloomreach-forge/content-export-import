@@ -36,7 +36,17 @@
 
       <subsection name="Main Features">
         <ul>
-          <li>TODO</li>
+          <li>Binary Exporting / Importing Task Components and Example Groovy Updater Scripts.</li>
+          <li>Document Exporting / Importing Task Components and Example Groovy Updater Scripts.</li>
+          <li>
+            Hippo Folder/Document Workflow Management Component:
+            <a href="apidocs/org/onehippo/forge/content/exim/core/DocumentManager.html">DocumentManager</a>
+          </li>
+          <li>
+            All the components depend only on JCR API, Hippo Repository API and utilities.
+            So they can be used in any applications: CMS, HST (SITE) or stand-alone applications.
+          </li>
+          <li>Running demo project</li>
         </ul>
       </subsection>
 
@@ -130,37 +140,47 @@
             <th>Description</th>
           </tr>
           <tr>
-            <td><strong>Demo - Export Asset and Image Set Content</strong></td>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-export-binaries.xml">Demo - Export Asset and Image Set Content</a>
+            </td>
             <td>
               A demo script to export asset and image set content, using
               <a href="apidocs/org/onehippo/forge/content/exim/core/BinaryExportTask.html">BinaryExportTask</a>.
             </td>
           </tr>
           <tr>
-            <td><strong>Demo - Export Published Documents</strong></td>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-export-published-documents.xml">Demo - Export Published Documents</a>
+            </td>
             <td>
               A demo script to export published documents, using
               <a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantExportTask.html">DocumentVariantExportTask</a>.
             </td>
           </tr>
           <tr>
-            <td><strong>Demo - Import Asset and Image Set Content</strong></td>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-binaries.xml">Demo - Import Asset and Image Set Content</a>
+            </td>
             <td>
               A demo script to import asset and image set content, using
               <a href="apidocs/org/onehippo/forge/content/exim/core/BinaryImportTask.html">BinaryImportTask</a>.
             </td>
           </tr>
           <tr>
-            <td><strong>Demo - Import Documents As Unpublished</strong></td>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-documents-as-unpublished.xml">Demo - Import Documents As Unpublished</a>
+            </td>
             <td>
               A demo script to import documents as unpublished status, using
               <a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantImportTask.html">DocumentVariantImportTask</a>.
             </td>
           </tr>
           <tr>
-            <td><strong>Demo - Clean Hippo Docbase Values Having Paths</strong></td>
             <td>
-              A demo script to clean interim hippo:docbase values having paths instead of UUIDs.
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-values-having-paths.xml">Demo - Clean Hippo Docbase Values Having Paths</a>
+            </td>
+            <td>
+              A demo script to clean up interim hippo:docbase values having paths instead of UUIDs.
             </td>
           </tr>
         </table>
@@ -192,11 +212,11 @@ $ mvn -P cargo.run
         </p>
 
         <ul>
-          <li><strong>Demo - Export Asset and Image Set Content</strong></li>
-          <li><strong>Demo - Export Published Documents</strong></li>
-          <li><strong>Demo - Import Asset and Image Set Content</strong></li>
-          <li><strong>Demo - Import Documents As Unpublished</strong></li>
-          <li><strong>Demo - Clean Hippo Docbase Values Having Paths</strong></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-export-binaries.xml">Demo - Export Asset and Image Set Content</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-export-published-documents.xml">Demo - Export Published Documents</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-binaries.xml">Demo - Import Asset and Image Set Content</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-documents-as-unpublished.xml">Demo - Import Documents As Unpublished</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-values-having-paths.xml">Demo - Clean Hippo Docbase Values Having Paths</a></li>
         </ul>
 
         <img src="images/updater-editors-view.png" alt="Updater Editor" />

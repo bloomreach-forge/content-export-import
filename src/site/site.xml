@@ -34,9 +34,8 @@
   <body>
 
     <menu name="Home">
-      <item name="Home" href="index.html" />
+      <item name="Introduction" href="index.html" />
       <item name="Installation" href="install.html" />
-      <item name="Components" href="components.html" />
       <item name="Tutorials" href="tutorials.html">
         <item name="Exporting Binaries" href="tutorials-export-bins.html" />
         <item name="Exporting Documents" href="tutorials-export-docs.html" />
