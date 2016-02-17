@@ -91,6 +91,12 @@
             supporting (de facto) Industry standards such as Jackson or JAXB.
           </li>
           <li>
+            Use <a href="http://commons.apache.org/proper/commons-vfs/apidocs/org/apache/commons/vfs2/FileObject.html" target="_blank">FileObject</a>
+            of <a href="http://commons.apache.org/proper/commons-vfs/" target="_blank">Apache Commons VFS2</a>
+            whenever marshing/unmarshaling to/from files, in order to take advantage of its flexibility.
+            So, developers can provide any <code>FileObject</code>s to marshal/unmarshal to/from.
+          </li>
+          <li>
             Link resolutions were considered too seriously in content import modules in the past.
             For example, <a href="http://import-tool.forge.onehippo.org/" target="_blank">Hippo CMS Import tool</a>
             tried to build a dependency tree based on link data between the imported content data and

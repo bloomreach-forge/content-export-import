@@ -27,8 +27,232 @@
 
       <subsection name="Introduction">
         <p>
-          TBD. Stay tuned!
+          A document content consists of a handle node and variant nodes (up to max 3: live, preview and draft).
         </p>
+        <p>
+          For example, a document content looks like the following
+          (excerpt from <code>/content/documents/contenteximdemo/news/2016/02/the-medusa-news</code> in the demo project):
+        </p>
+        <div class="brush: xml">
+        <source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<sv:node sv:name="the-medusa-news" xmlns:sv="http://www.jcp.org/jcr/sv/1.0">
+  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>hippo:handle</sv:value>
+  </sv:property>
+  <sv:property sv:multiple="true" sv:name="jcr:mixinTypes" sv:type="Name">
+    <sv:value>mix:referenceable</sv:value>
+    <sv:value>hippo:translated</sv:value>
+  </sv:property>
+  <sv:property sv:name="jcr:uuid" sv:type="String">
+    <sv:value>c580ac64-3874-4717-a6d9-e5ad72080abe</sv:value>
+  </sv:property>
+  <sv:node sv:name="hippo:translation">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:translation</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:language" sv:type="String">
+      <sv:value>en</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:message" sv:type="String">
+      <sv:value>The medusa news</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="the-medusa-news">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>contenteximdemo:newsdocument</sv:value>
+    </sv:property>
+    <sv:property sv:multiple="true" sv:name="jcr:mixinTypes" sv:type="Name">
+      <sv:value>mix:referenceable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>6e4ed59a-d5a7-4254-95a2-c278208f2f5b</sv:value>
+    </sv:property>
+    <sv:property sv:name="contenteximdemo:author" sv:type="String">
+      <sv:value>Alfred Anonymous</sv:value>
+    </sv:property>
+    <sv:property sv:name="contenteximdemo:date" sv:type="Date">
+      <sv:value>2016-02-08T13:38:00.000-05:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="contenteximdemo:documenttype" sv:type="String">
+      <sv:value>news</sv:value>
+    </sv:property>
+    <sv:property sv:name="contenteximdemo:introduction" sv:type="String">
+      <sv:value>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</sv:value>
+    </sv:property>
+    <sv:property sv:name="contenteximdemo:location" sv:type="String">
+      <sv:value>Rotterdam</sv:value>
+    </sv:property>
+    <sv:property sv:name="contenteximdemo:source" sv:type="String">
+      <sv:value/>
+    </sv:property>
+    <sv:property sv:name="contenteximdemo:title" sv:type="String">
+      <sv:value>The medusa news</sv:value>
+    </sv:property>
+    <sv:property sv:multiple="true" sv:name="hippo:availability" sv:type="String">
+      <sv:value>live</sv:value>
+      <sv:value>preview</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:related___pathreference" sv:type="String">
+      <sv:value>the-medusa-news</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostd:holder" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostd:state" sv:type="String">
+      <sv:value>published</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostd:stateSummary" sv:type="String">
+      <sv:value>live</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostdpubwf:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostdpubwf:creationDate" sv:type="Date">
+      <sv:value>2013-11-12T13:03:00.000+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostdpubwf:lastModificationDate" sv:type="Date">
+      <sv:value>2013-11-12T13:04:00.000+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostdpubwf:lastModifiedBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippostdpubwf:publicationDate" sv:type="Date">
+      <sv:value>2013-11-12T13:04:00.000+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippotranslation:id" sv:type="String">
+      <sv:value>81a831f8-9184-48e3-a5e8-20c2f32f54d4</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippotranslation:locale" sv:type="String">
+      <sv:value>en</sv:value>
+    </sv:property>
+    <sv:node sv:name="contenteximdemo:content">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>hippostd:html</sv:value>
+      </sv:property>
+      <sv:property sv:name="hippostd:content" sv:type="String">
+        <sv:value>&lt;html&gt;
+          &lt;body&gt;
+
+          &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+          dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+          sunt in culpa qui officia deserunt mollit anim id est laborum&lt;/p&gt;
+
+          &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+          dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+          sunt in culpa qui officia deserunt mollit anim id est laborum&lt;/p&gt;
+
+          &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+          dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+          sunt in culpa qui officia deserunt mollit anim id est laborum &lt;/p&gt;
+
+          &lt;/body&gt;
+          &lt;/html&gt;</sv:value>
+      </sv:property>
+    </sv:node>
+    <sv:node sv:name="contenteximdemo:image">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>hippogallerypicker:imagelink</sv:value>
+      </sv:property>
+      <sv:property sv:name="hippo:docbase" sv:type="String">
+        <sv:value>4709f797-61ae-4c36-93d4-63b5d50fc200</sv:value>
+      </sv:property>
+      <sv:property sv:multiple="true" sv:name="hippo:facets" sv:type="String"/>
+      <sv:property sv:multiple="true" sv:name="hippo:modes" sv:type="String"/>
+      <sv:property sv:multiple="true" sv:name="hippo:values" sv:type="String"/>
+    </sv:node>
+  </sv:node>
+</sv:node>
+        ]]></source>
+        </div>
+        <p>
+          When exporting a binary content, the wrapper handle node has no significant information in content migration context.
+          Binary content handle node (whether it's asset or image) contain single variant node
+          (type of <code>hippogallery:imageset</code> for image or type of <code>hippogallery:exampleAssetSet</code> for asset) only
+          which is always meant to be for both live and preview mode.
+          Therefore, we can simply export the only variant node of the binary content.
+        </p>
+      </subsection>
+
+      <subsection name="Initializing Export Task">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Starting and Stopping Export Task">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Select Live (or Preview) Variant Nodes in Groovy Updater">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Export Live (or Preview) Variant Node to ContentNode bean">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Replacing document link UUIDs with document paths">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Marshal ContentNode to JSON file">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Log execution summary">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Exported file(s)">
+        <div class="brush: javascript">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
       </subsection>
 
     </section>
