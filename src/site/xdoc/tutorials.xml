@@ -25,10 +25,6 @@
 
     <section name="Tutorials">
 
-      <subsection name="Introduction">
-        TBD. Stay tuned!
-      </subsection>
-
       <subsection name="Tutorials on Exporting/Importing Content">
         <ul>
           <li>
@@ -44,10 +40,6 @@
             <a href="tutorials-port-docs.html">Tutorial: Importing Document Content</a>
           </li>
         </ul>
-      </subsection>
-
-      <subsection name="Cleaning Up Interim Docbase Link Data">
-        TBD. Stay tuned!
       </subsection>
 
     </section>
