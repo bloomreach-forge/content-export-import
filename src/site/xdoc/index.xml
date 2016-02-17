@@ -32,6 +32,9 @@
           this project aims to provide higher level, that is, Hippo Workflow level,
           Content Export/Import features.
         </p>
+        <img src="images/content-exim-export.png" alt="Content EXIM Exporting" />
+        <br/>
+        <img src="images/content-exim-import.png" alt="Content EXIM Importing" />
       </subsection>
 
       <subsection name="Main Features">
