@@ -175,11 +175,10 @@
         ]]></source>
         </div>
         <p>
-          When exporting a binary content, the wrapper handle node has no significant information in content migration context.
-          Binary content handle node (whether it's asset or image) contain single variant node
-          (type of <code>hippogallery:imageset</code> for image or type of <code>hippogallery:exampleAssetSet</code> for asset) only
-          which is always meant to be for both live and preview mode.
-          Therefore, we can simply export the only variant node of the binary content.
+          When exporting a document content, the wrapper handle node has no significant information in content migration context.
+          Document content handle node may contain multiple variant node, but normally we're interested in migrating
+          the live variant or sometimes preview variant only.
+          Therefore, we can simply select only one variant (live or previe) and export the document variant content.
         </p>
       </subsection>
 
