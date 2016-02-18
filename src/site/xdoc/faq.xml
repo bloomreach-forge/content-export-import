@@ -25,7 +25,58 @@
 
     <section name="FAQ">
 
-      <p>TBD. Stay tuned!</p>
+      <subsection name="Q: Why released only for Hippo CMS 10.2+?">
+        <p>
+          The module itself is not really using any new features of Hippo CMS 10.2 or later versions.
+          However, when you write and execute a groovy script, the following code will not work in earlier versions
+          because <code>visitorContext</code> has been supported since 10.2:
+        </p>
+        <div class="brush: java">
+          <source><![CDATA[
+        visitorContext.reportUpdated(documentLocation) //,
+        visitorContext.reportFailed(documentLocation)  //, or
+        visitorContext.reportSkipped(documentLocation)  //.
+          ]]></source>
+        </div>
+        <p>
+          When exporting content based on a query which returns each live or preview variant node to export,
+          you don't have to invoke the methods of <code>visitorContext</code> because the node iteration by the
+          groovy updater engine manages the batch size and threshold automatically based on the node iteration count
+          (which is the same as invocation count on <code>#doUpdate(Node)</code> as a result).
+        </p>
+        <p>
+          However, it is very important to invoke those methods of <code>visitorContext</code>
+          when you import a lot of documents in single <code>#doUpdate(Node)</code> method execution
+          because the groovy updater engine cannot know how to count the execution count
+          if you don't invoke the methods of <code>visitorContext</code> manually.
+          Therefore, it is really important to invoke the methods of <code>visitorContext</code> on each unit of importing task
+          when importing a lot of content in a single <code>#doUpdate(Node)</code> execution in a groovy script.
+          Please see the <strong>Reporting of Execution</strong> section in the
+          <a href="http://www.onehippo.org/library/concepts/update/using-the-updater-editor.html" target="_blank">Using the Updater Editor</a>
+          page for more detail.
+        </p>
+        <p>
+          <em>Note:</em>
+          If you implement a new Java application using the migration task components instead of using Groovy Updater scripts,
+          then it's totally up to you. You should maintain the batch size and threshold for system availability by yourself.
+        </p>
+      </subsection>
+
+      <subsection name="Q: Why named to Content EXIM?">
+        <p>
+          Well, it's about <strong>Content</strong> migration and migration tasks are either <strong>EX</strong>port
+          or <strong>IM</strong>port, right? :-)
+        </p>
+        <p>
+          But also, <strong>EXIM Banks</strong> exist in many countries to help exporters and importers in their country
+          mostly <i>finacially</i>. Most hard work is done by exporters and importers, but their financial help might be helpful.
+        </p>
+        <p>
+          In the same way, <strong>Content EXIM</strong> module wishes to help content exporters and importers
+          mostly <i>technically</i> by providing core components and sharing knowledges in the community.
+          Most hard work is done by content exporters and importers, but the technical support with the community might be helpful. ;-)
+        </p>
+      </subsection>
 
     </section>
 
