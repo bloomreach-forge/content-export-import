@@ -18,8 +18,13 @@ package org.onehippo.forge.content.exim.core.util;
 import org.apache.commons.vfs2.FileDepthSelector;
 import org.apache.commons.vfs2.FileFilter;
 import org.apache.commons.vfs2.FileSelectInfo;
+import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.util.Messages;
 
+/**
+ * A {@link FileSelector} that selects all files in a particular depth range,
+ * with filtering a file by the given {@link FileFilter} instance.
+ */
 public class FileFilterDepthSelector extends FileDepthSelector {
 
     /**
@@ -32,6 +37,9 @@ public class FileFilterDepthSelector extends FileDepthSelector {
         this.fileFilter = fileFilter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean includeFile(final FileSelectInfo fileInfo) {
         if (!super.includeFile(fileInfo)) {
@@ -41,7 +49,12 @@ public class FileFilterDepthSelector extends FileDepthSelector {
         return accept(fileInfo);
     }
 
-    public boolean accept(final FileSelectInfo fileInfo) {
+    /**
+     * Check if {@code fileInfo} is acceptable by using the internal filter.
+     * @param fileInfo fileInfo
+     * @return true if {@code fileInfo} is acceptable by using the internal filter
+     */
+    protected boolean accept(final FileSelectInfo fileInfo) {
         if (fileFilter != null) {
             return fileFilter.accept(fileInfo);
         }

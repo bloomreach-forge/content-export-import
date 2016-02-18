@@ -17,11 +17,19 @@ package org.onehippo.forge.content.exim.core.util;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * Content Node Path related utilities.
+ */
 public class ContentPathUtils {
 
     private ContentPathUtils() {
     }
 
+    /**
+     * Splits the given {@code contentLocation} to an array which consists of a folder path and the node name.
+     * @param contentLocation content node path
+     * @return an array which consists of a folder path and the node name
+     */
     public static String [] splitToFolderPathAndName(final String contentLocation) {
         String [] folderPathAndName = new String [] { "", "" };
         int offset = StringUtils.lastIndexOf(contentLocation, '/');

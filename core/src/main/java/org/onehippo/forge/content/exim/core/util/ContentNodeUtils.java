@@ -25,21 +25,50 @@ import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 
+/**
+ * Utilities to handle {@link ContentNode} objects.
+ */
 public class ContentNodeUtils {
 
+    /**
+     * Default <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression
+     * to select all the nodes having <code>hippo:docbase</code> property.
+     */
     public static final String MIRROR_DOCBASES_XPATH = "//nodes[properties[@itemName='hippo:docbase']]";
 
+    /**
+     * The ROOT node identifier of Jackrabbit Repository.
+     */
     private static final String ROOT_NODE_UUID = "cafebabe-cafe-babe-cafe-babecafebabe";
 
     private ContentNodeUtils() {
     }
 
+    /**
+     * Selects all the {@link ContentNode} objects under {@code baseContentNode}
+     * by the default <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression, {@link #MIRROR_DOCBASES_XPATH}
+     * and replace the <code>hippo:docbase</code> property value by the path of the JCR node found by the existing UUID string value.
+     * {@code session} is used when finding a JCR node associated by the UUID value at the existing {@code hippo:docbase} property.
+     * @param session JCR session
+     * @param baseContentNode base {@link ContentNode} instance
+     * @throws RepositoryException if fails to find a JCR node associated by the UUID value
+     */
     public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode) throws RepositoryException {
         replaceDocbasesByPaths(session, baseContentNode, MIRROR_DOCBASES_XPATH);
     }
 
-    public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode, final String xpath) throws RepositoryException {
-        List<ContentNode> mirrors = baseContentNode.queryNodesByXPath(xpath);
+    /**
+     * Selects all the {@link ContentNode} objects under {@code baseContentNode}
+     * by the given <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression, {@code jxpath}
+     * and replace the <code>hippo:docbase</code> property value by the path of the JCR node found by the existing UUID string value.
+     * {@code session} is used when finding a JCR node associated by the UUID value at the existing {@code hippo:docbase} property.
+     * @param session JCR session
+     * @param baseContentNode base {@link ContentNode} instance
+     * @param jxpath <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression
+     * @throws RepositoryException if fails to find a JCR node associated by the UUID value
+     */
+    public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode, final String jxpath) throws RepositoryException {
+        List<ContentNode> mirrors = baseContentNode.queryNodesByXPath(jxpath);
         Node linkedNode;
 
         for (ContentNode mirror : mirrors) {

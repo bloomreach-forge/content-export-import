@@ -21,6 +21,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.vfs2.FileFilter;
 import org.apache.commons.vfs2.FileSelectInfo;
 
+/**
+ * File name regular expression based {@link FileFilter} implementation.
+ */
 public class NamePatternFileFilter implements FileFilter {
 
     private final Pattern namePattern;
@@ -29,6 +32,9 @@ public class NamePatternFileFilter implements FileFilter {
         this.namePattern = namePattern;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean accept(FileSelectInfo fileInfo) {
         final String name = fileInfo.getFile().getName().getBaseName();
