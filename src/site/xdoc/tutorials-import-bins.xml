@@ -34,7 +34,7 @@
       <subsection name="Introduction">
         <p>
           Importing task requires JSON files which should look like the exported JSON files
-          shown in <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a>.
+          shown in <a href="tutorials-export-docs.html">Tutorial: Exporting Document Content</a>.
         </p>
       </subsection>
 
@@ -122,6 +122,9 @@
 
       // 9. Mark this unit of import task successful.
       record.setSucceeded(true)
+
+      // 10. End the current execution unit record.
+      importTask.endRecord()
     }
           ]]>
           </source>
