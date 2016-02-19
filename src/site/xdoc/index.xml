@@ -41,7 +41,7 @@
 
     <section name="Design Concepts">
 
-      <subsection name="Focus on the core services, trim off chores">
+      <subsection name="Focus on the cores, trim off chores">
         <p>
           In other content import tools such as <a href="http://import-tool.forge.onehippo.org/" target="_blank">Hippo CMS Import tool</a>
           or any custom import modules (e.g, <code>DaemonModule</code> with REST API calls),
