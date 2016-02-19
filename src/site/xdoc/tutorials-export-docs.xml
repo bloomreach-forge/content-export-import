@@ -252,6 +252,7 @@
       // 2. Get the binary content handle path from the currently visiting node and decide the export file location.
       def handlePath = node.parent.path
       def relPath = StringUtils.removeStart(handlePath, "/")
+      def targetBaseFolder = VFS.getManager().resolveFile("file:///var/data/docdata")
       def file = targetBaseFolder.resolveFile(relPath + ".json")
 
       // 3. Mark this unit of export task is being processed before real processing below.

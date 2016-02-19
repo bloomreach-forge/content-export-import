@@ -33,17 +33,18 @@
 
       <subsection name="Introduction">
         <p>
-          TODO
+          Importing task requires JSON files which should look like the exported JSON files
+          shown in <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a>.
         </p>
       </subsection>
 
-      <subsection name="Collect Source JSON Content Files in Groovy Updater">
+      <subsection name="Initializing Import Task">
         <div class="brush: java">
           <source><![CDATA[
     // 1. Initialize (workflow) document manager and binary importing task using the default implementation.
     def documentManager = new WorkflowDocumentManagerImpl(session)
     def importTask = new DefaultBinaryImportTask(documentManager)
-    // 1.1. Sets the logger to the export task, which is useful when running in groovy updater.
+    // 1.1. Sets the logger to the import task, which is useful when running in groovy updater.
     importTask.setLogger(log)
 
     // 2. Starting import task, meaning the task starts the execution record bookkeeping.
@@ -53,10 +54,13 @@
         </div>
       </subsection>
 
-      <subsection name="Initializing Import Task">
+      <subsection name="Collect Source JSON Content Files in Groovy Updater">
         <div class="brush: java">
           <source><![CDATA[
-    def todo
+    // 1. Find all the files which name end with ".json" by the regular expression in the source base VFS folder
+    //    at the minimum depth level, 1, and the maximum depth level, 10.
+    def sourceBaseFolder = VFS.getManager().resolveFile("file:///var/data/bindata")
+    def files = importTask.findFilesByNamePattern(sourceBaseFolder, "^.+\\.json\$" , 1, 10)
           ]]>
           </source>
         </div>
@@ -65,7 +69,60 @@
       <subsection name="Import Binary Content and Create Binary Node">
         <div class="brush: java">
           <source><![CDATA[
-    def todo
+    // 0. Iterate each JSON file from the collection.
+    files.eachWithIndex { file, i ->
+
+      // 1. Read ContentNode from a json file and find its primary type and node location from the meta property (jcr:path).
+      def contentNode = importTask.readContentNodeFromJsonFile(file)
+      def binaryPrimaryTypeName = contentNode.getPrimaryType()
+      // determine the target binary handle node path to create or update binary content from the jcr:path meta property in ContentNode object.
+      def binaryLocation = contentNode.getProperty("jcr:path").getValue()
+
+      // 2. Record this import task unit and set the import soure file path as an attribute.
+      //    The record instances will be collected and summarized when #logSummary() invoked later.
+      def record = importTask.beginRecord("", binaryLocation)
+      record.setAttribute("file", file.name.path)
+
+      // 3. Mark this unit of import task is being processed before real processing below.
+      record.setProcessed(true)
+
+      // 4. Determine the target JCR folder path and binary content node name.
+      def folderPathAndName = ContentPathUtils.splitToFolderPathAndName(binaryLocation)
+      def binaryFolderPath = folderPathAndName[0]
+      def binaryName = folderPathAndName[1]
+
+      // 5. Choose proper binary node type, hippostd:foldertype and hippostd:gallerytype values for either gallery image or asset.
+      //    These are internally used by Hippo Workflow. So let's carefully set those properties in any newly created binary folders.
+      def binaryFolderPrimaryTypeName
+      def binaryFolderFolderTypes
+      def binaryFolderGalleryTypes
+
+      if (binaryPrimaryTypeName == "hippogallery:imageset") {
+        binaryFolderPrimaryTypeName = "hippogallery:stdImageGallery"
+        binaryFolderFolderTypes = [ "new-image-folder" ] as String[]
+        binaryFolderGalleryTypes = [ "hippogallery:imageset" ] as String[]
+      } else if (binaryPrimaryTypeName == "hippogallery:exampleAssetSet") {
+        binaryFolderPrimaryTypeName = "hippogallery:stdAssetGallery"
+        binaryFolderFolderTypes = [ "new-file-folder" ] as String[]
+        binaryFolderGalleryTypes = [ "hippogallery:exampleAssetSet" ] as String[]
+      }
+
+      // 6. Make sure that the binary target folder exists or get it created.
+      def binaryFolderPath =
+          importTask.createOrUpdateBinaryFolder(binaryFolderPath, binaryFolderPrimaryTypeName,
+                                                binaryFolderFolderTypes, binaryFolderGalleryTypes)
+
+      // 7. Create or update binary content from contentNode at the specific location with the name.
+      def updatedBinaryLocation =
+          importTask.createOrUpdateBinaryFromContentNode(contentNode, binaryPrimaryTypeName,
+                                                         binaryFolderPath, binaryName)
+
+      // 8. Report that a unit of import process was done, so groovy updater engine can maintain its batch execution status properly.
+      visitorContext.reportUpdated(binaryLocation)
+
+      // 9. Mark this unit of import task successful.
+      record.setSucceeded(true)
+    }
           ]]>
           </source>
         </div>
@@ -74,10 +131,47 @@
       <subsection name="Log execution summary">
         <div class="brush: java">
           <source><![CDATA[
-    def todo
+    // 1. Stop the import task after processing, which means you stop execution recording.
+    importTask.stop()
+
+    // 2. Log the execution summary finally for administrator.
+    importTask.logSummary()
           ]]>
           </source>
         </div>
+
+        <p>
+          The summary logs above will look like the following:
+        </p>
+
+        <div class="brush: plain">
+          <source><![CDATA[
+INFO 2016-02-19 13:39:31 
+
+===============================================================================================================
+Execution Summary:
+---------------------------------------------------------------------------------------------------------------
+Total: 10, Processed: 10, Suceeded: 10, Failed: 0, Duration: 1835ms
+---------------------------------------------------------------------------------------------------------------
+Details (in CSV format):
+---------------------------------------------------------------------------------------------------------------
+SEQ,PROCESSED,SUCCEEDED,ID,PATH,TYPE,ATTRIBUTES,ERROR
+1,true,true,ab568d89-b9ea-4f32-af56-1e7a19ac704e,/content/assets/contenteximdemo/whitepaper/using-hippo-cms-to-manage-accessible-web-sites_508.pdf,hippogallery:exampleAssetSet,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/assets/contenteximdemo/whitepaper/using-hippo-cms-to-manage-accessible-web-sites_508.pdf.json},
+2,true,true,cb8ee28d-13f4-4eb5-bfba-c45ec93c1e0c,/content/assets/contenteximdemo/whitepaper/whitepaper-seo.pdf,hippogallery:exampleAssetSet,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/assets/contenteximdemo/whitepaper/whitepaper-seo.pdf.json},
+3,true,true,b89d576f-680a-4bbf-9c27-2dced9da3d6c,/content/gallery/contenteximdemo/banners/banner-1.png,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/banners/banner-1.png.json},
+4,true,true,db5907cc-e507-460e-b54d-de5d5c784e0a,/content/gallery/contenteximdemo/banners/banner2.png,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/banners/banner2.png.json},
+5,true,true,4709f797-61ae-4c36-93d4-63b5d50fc200,/content/gallery/contenteximdemo/samples/animal-2883_640.jpg,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/samples/animal-2883_640.jpg.json},
+6,true,true,9f32434e-84e3-4150-a6f2-d89a67be2fb1,/content/gallery/contenteximdemo/samples/blue-199261_150.jpg,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/samples/blue-199261_150.jpg.json},
+7,true,true,c8f03498-56eb-46c9-83b2-cf014f2e03d7,/content/gallery/contenteximdemo/samples/coffee-206142_150.jpg,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/samples/coffee-206142_150.jpg.json},
+8,true,true,d035387b-f9ce-49f6-bcb0-9ab6915a2d5f,/content/gallery/contenteximdemo/samples/pencils-199883_150.jpg,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/samples/pencils-199883_150.jpg.json},
+9,true,true,3c740fcf-8ec5-4f00-a713-ff96caa645c8,/content/gallery/contenteximdemo/samples/snail-193611_640.jpg,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/samples/snail-193611_640.jpg.json},
+10,true,true,beff458e-e07a-4065-8cad-8d96b67d13ec,/content/gallery/contenteximdemo/samples/viognier-grapes-188185_640.jpg,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/temp/content-exim-demo/bindata/content/gallery/contenteximdemo/samples/viognier-grapes-188185_640.jpg.json},
+===============================================================================================================
+
+          ]]>
+          </source>
+        </div>
+
       </subsection>
 
     </section>

@@ -152,7 +152,7 @@
     exportTask.setLogger(log)
 
     // 2. Sets binary attachment VFS folder. If binary data size is big (when the binary value size exceeds the threshold), it can store the data as an attachment.
-    def binaryAttachmentFolderPath = "/var/data/attachments"
+    def binaryAttachmentFolderPath = "file:///var/data/attachments"
     def binaryAttachmentFolder = VFS.getManager().resolveFile(binaryAttachmentFolderPath)
     // 2.1. Set binary attachment VFS folder to export task.
     exportTask.setBinaryValueFileFolder(binaryAttachmentFolder)
@@ -178,6 +178,7 @@
       // 2. Get the binary content handle path from the currently visiting node and decide the export file location.
       def handlePath = node.parent.path
       def relPath = StringUtils.removeStart(handlePath, "/")
+      def targetBaseFolder = VFS.getManager().resolveFile("file:///var/data/bindata")
       def file = targetBaseFolder.resolveFile(relPath + ".json")
 
       // 3. Mark this unit of export task is being processed before real processing below.
