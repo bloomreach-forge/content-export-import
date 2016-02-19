@@ -197,7 +197,7 @@
           Then the Groovy Updater script will iterate all the nodes and invoke the <code>#doUpdate(Node)</code> method
           of the script on each visiting node.
         </p>
-        <div class="brush: java">
+        <div class="brush: plain">
           <source><![CDATA[
 /jcr:root/content/documents//element(*,hippostd:publishable)[@hippostd:state='published']
           ]]>

@@ -33,14 +33,28 @@
 
       <subsection name="Introduction">
         <p>
-          TODO
+          When a document contains mirror link nodes to other documents,
+          the mirror links nodes have <code>hippo:docbase</code> string property containing
+          a UUID of the referenced document handle node.
+        </p>
+        <p>
+          As explained in <a href="tutorials-export-docs.html">Tutorial: Exporting Document Content</a>,
+          the UUIDs might have been replaced by the node paths of the referenced document handle nodes during exporting process.
+        </p>
+        <p>
+          In this case, you can create a simple Groovy Updater script like explained in this page
+          to update the docbase node paths by docbase UUIDs.
         </p>
       </subsection>
 
       <subsection name="Select Hippo Mirror Nodes Having Paths in Groovy Updater">
-        <div class="brush: java">
+        <p>
+          You can use JCR query like the following example in a Groovy Updater script to select
+          all the mirror nodes having a path (e.g, /content/documents/...) in <code>hippo:docbase</code> property instead of UUID.
+        </p>
+        <div class="brush: plain">
           <source><![CDATA[
-    def todo
+//element(*)[jcr:like(@hippo:docbase,'/content/%')]
           ]]>
           </source>
         </div>
@@ -49,7 +63,15 @@
       <subsection name="Updating Hippo Mirror Docbase Properties">
         <div class="brush: java">
           <source><![CDATA[
-    def todo
+    // 1. Read the current hippo:docbase property value.
+    def docbasePath = node.getProperty("hippo:docbase").getString()
+
+    // 2. If the hippo:docbase property value starts with '/' and there exists a node at the path,
+    //    then replace the path by UUID.
+    if (StringUtils.startsWith(docbasePath, "/") && node.session.nodeExists(docbasePath)) {
+      def docbase = node.session.getNode(docbasePath).getIdentifier()
+      node.setProperty("hippo:docbase", docbase)
+    }
           ]]>
           </source>
         </div>
