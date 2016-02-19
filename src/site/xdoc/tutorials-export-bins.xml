@@ -149,7 +149,7 @@
     def documentManager = new WorkflowDocumentManagerImpl(session)
     def exportTask = new DefaultBinaryExportTask(documentManager)
     // 1.1. Sets the logger to the export task, which is useful when running in groovy updater.
-    def exportTask.setLogger(log)
+    exportTask.setLogger(log)
 
     // 2. Sets binary attachment VFS folder. If binary data size is big (when the binary value size exceeds the threshold), it can store the data as an attachment.
     def binaryAttachmentFolderPath = "/var/data/attachments"

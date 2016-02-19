@@ -19,15 +19,15 @@
 -->
 <document>
   <properties>
-    <title>Tutorials - Importing Documents</title>
+    <title>Tutorial - Clean Hippo String Docbase Property Values</title>
   </properties>
   <body>
 
-    <section name="Tutorials - Importing Documents">
+    <section name="Tutorial - Clean Hippo String Docbase Property Values">
 
       <p>
         The code snippets are excerpts (or slightly simplififed ones) from
-        <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-documents-as-unpublished.xml">Demo - Import Documents As Unpublished</a>
+        <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-string-property-values-having-paths.xml">Demo - Clean Hippo String Docbase Property Values Having Paths</a>
         in the <a href="index.html#Demo_Application">demo project</a>.
       </p>
 
@@ -35,16 +35,9 @@
         <p>
           TODO
         </p>
-        <div class="brush: javascript">
-          <source><![CDATA[
-          ]]></source>
-        </div>
-        <p>
-          TODO
-        </p>
       </subsection>
 
-      <subsection name="Collect Source JSON Content Files in Groovy Updater">
+      <subsection name="Select Nodes Having String Docbase Properties in Groovy Updater">
         <div class="brush: java">
           <source><![CDATA[
     def todo
@@ -53,25 +46,7 @@
         </div>
       </subsection>
 
-      <subsection name="Initializing Import Task">
-        <div class="brush: java">
-          <source><![CDATA[
-    def todo
-          ]]>
-          </source>
-        </div>
-      </subsection>
-
-      <subsection name="Import Content from ContentNode bean and Create Document">
-        <div class="brush: java">
-          <source><![CDATA[
-    def todo
-          ]]>
-          </source>
-        </div>
-      </subsection>
-
-      <subsection name="Log execution summary">
+      <subsection name="Updating String Docbase Properties">
         <div class="brush: java">
           <source><![CDATA[
     def todo

@@ -25,14 +25,13 @@
 
     <section name="Tutorials - Importing Binaries">
 
+      <p>
+        The code snippets are excerpts (or slightly simplififed ones) from
+        <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-binaries.xml">Demo - Import Asset and Image Set Content</a>
+        in the <a href="index.html#Demo_Application">demo project</a>.
+      </p>
+
       <subsection name="Introduction">
-        <p>
-          TODO
-        </p>
-        <div class="brush: javascript">
-          <source><![CDATA[
-          ]]></source>
-        </div>
         <p>
           TODO
         </p>
@@ -41,7 +40,14 @@
       <subsection name="Collect Source JSON Content Files in Groovy Updater">
         <div class="brush: java">
           <source><![CDATA[
-    def todo
+    // 1. Initialize (workflow) document manager and binary importing task using the default implementation.
+    def documentManager = new WorkflowDocumentManagerImpl(session)
+    def importTask = new DefaultBinaryImportTask(documentManager)
+    // 1.1. Sets the logger to the export task, which is useful when running in groovy updater.
+    importTask.setLogger(log)
+
+    // 2. Starting import task, meaning the task starts the execution record bookkeeping.
+    importTask.start()
           ]]>
           </source>
         </div>

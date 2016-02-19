@@ -45,6 +45,12 @@
           <li>
             <a href="tutorials-port-docs.html">Tutorial: Importing Document Content</a>
           </li>
+          <li>
+            <a href="tutorials-clean-mirror-docbase.html">Tutorial: Cleaning Hippo Mirror Docbase Values</a>
+          </li>
+          <li>
+            <a href="tutorials-clean-string-docbase.html">Tutorial: Clean Hippo String Docbase Property Values</a>
+          </li>
         </ul>
 
       </subsection>

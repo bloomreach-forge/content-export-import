@@ -34,6 +34,8 @@ src/site/xdoc/faq.xml -text svneol=unset#text/plain
 src/site/xdoc/index.xml -text
 src/site/xdoc/install.xml -text
 src/site/xdoc/release-notes.xml -text
+src/site/xdoc/tutorials-clean-mirror-docbase.xml -text svneol=unset#text/plain
+src/site/xdoc/tutorials-clean-string-docbase.xml -text svneol=unset#text/plain
 src/site/xdoc/tutorials-export-bins.xml -text svneol=unset#text/plain
 src/site/xdoc/tutorials-export-docs.xml -text svneol=unset#text/plain
 src/site/xdoc/tutorials-import-bins.xml -text svneol=unset#text/plain

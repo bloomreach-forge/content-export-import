@@ -29,6 +29,8 @@
         <item name="Exporting Documents" href="tutorials-export-docs.html" />
         <item name="Importing Binaries" href="tutorials-import-bins.html" />
         <item name="Importing Documents" href="tutorials-import-docs.html" />
+        <item name="Cleaning Hippo Mirror Docbase Values" href="tutorials-clean-mirror-docbase.html" />
+        <item name="Clean Hippo String Docbase Property Values" href="tutorials-clean-string-docbase.html" />
       </item>
       <item name="FAQ" href="faq.html" />
       <item name="Build from source" href="build-from-source.html" />
