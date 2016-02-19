@@ -55,6 +55,18 @@
 
       </subsection>
 
+      <subsection name="Extra Examples">
+        <p>
+          In practice, you sometimes might want to convert data in other format (not in JSON or not exactly in the same JSON format)
+          to <code>ContentNode</code> to import data.
+          In that case, please see the following page in the
+          <a href="http://hippo-pojo-bind.forge.onehippo.org/">Hippo JCR POJO Binding</a> project as an example:
+        </p>
+        <ul>
+          <li><a href="http://hippo-pojo-bind.forge.onehippo.org/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
+        </ul>
+      </subsection>
+
     </section>
 
   </body>
