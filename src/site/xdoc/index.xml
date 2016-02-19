@@ -289,10 +289,18 @@
           </tr>
           <tr>
             <td>
-              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-values-having-paths.xml">Demo - Clean Hippo Docbase Values Having Paths</a>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-values-having-paths.xml">Demo - Clean Hippo Mirror Docbase Values Having Paths</a>
             </td>
             <td>
-              A demo script to clean up interim hippo:docbase values having paths instead of UUIDs.
+              A demo script to clean interim hippo:docbase values of Hippo Mirror nodes having paths instead of UUIDs.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-string-property-values-having-paths.xml">Demo - Clean Hippo String Docbase Property Values Having Paths</a>
+            </td>
+            <td>
+              A demo script to clean interim String Docbase property values having paths instead of UUIDs.
             </td>
           </tr>
         </table>
@@ -320,18 +328,31 @@ $ mvn -P cargo.run
         </div>
         <p>
           Visit http://localhost:8080/cms/ and <strong>Control Panel / Updater Editor</strong> in the <strong>Admin</strong> perspective
-          to test it with some example groovy updater scripts using this module like the following:
+          to test it with the following example groovy updater scripts like the following (as ordered):
         </p>
 
-        <ul>
+        <ol>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-export-binaries.xml">Demo - Export Asset and Image Set Content</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-export-published-documents.xml">Demo - Export Published Documents</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-binaries.xml">Demo - Import Asset and Image Set Content</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-import-documents-as-unpublished.xml">Demo - Import Documents As Unpublished</a></li>
-          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-values-having-paths.xml">Demo - Clean Hippo Docbase Values Having Paths</a></li>
-        </ul>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-values-having-paths.xml">Demo - Clean Hippo Mirror Docbase Values Having Paths</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-string-property-values-having-paths.xml">Demo - Clean Hippo String Docbase Property Values Having Paths</a></li>
+        </ol>
 
         <img src="images/updater-editors-view.png" alt="Updater Editor" />
+
+        <p>
+          <em>Note:</em> As a functional testing, you might want to remove the following nodes through CMS Console (http://localhost:8080/cms/console/)
+          to see how it exports and imports content
+          after exporting all the content and before importing all the content back (between #2 and #3).
+        </p>
+
+        <ul>
+          <li><code>/content/gallery/contenteximdemo</code></li>
+          <li><code>/content/assets/contenteximdemo</code></li>
+          <li><code>/content/documents/contenteximdemo</code></li>
+        </ul>
 
       </subsection>
 
