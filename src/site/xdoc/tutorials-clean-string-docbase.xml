@@ -33,23 +33,75 @@
 
       <subsection name="Introduction">
         <p>
-          TODO
+          Since Hippo CMS 10, a document may contains a <code>Docbase</code> string property,
+          which may contain a UUID string value or multiple UUID string values
+          of the referenced document handle node(s).
+        </p>
+        <p>
+          As explained in <a href="tutorials-export-docs.html">Tutorial: Exporting Document Content</a>,
+          the UUIDs might have been replaced by the node paths of the referenced document handle nodes during exporting process.
+        </p>
+        <p>
+          In this case, you can create a simple Groovy Updater script like explained in this page
+          to update the docbase node paths by docbase UUIDs in those <code>Docbase</code> string properties.
         </p>
       </subsection>
 
       <subsection name="Select Nodes Having String Docbase Properties in Groovy Updater">
-        <div class="brush: java">
+        <p>
+          Unlike traditional mirror link nodes, a <code>Docbase</code> string property can be named to anything.
+          So, the query should specify the property names like the following to select nodes having <code>Docbase</code> string properties.
+          In the following example, it supposes <code>contenteximdemo:relatedarticle</code> property is a <code>Docbase</code> string property.
+        </p>
+        <div class="brush: plain">
           <source><![CDATA[
-    def todo
+/jcr:root/content/documents//element(*)[@contenteximdemo:relatedarticle]
           ]]>
           </source>
         </div>
+        <p>
+          If you want to select nodes having <code>Docbase</code> properties by multiple property names,
+          then you add more constraints like the following:
+        </p>
+        <div class="brush: plain">
+          <source><![CDATA[
+/jcr:root/content/documents//element(*)[@contenteximdemo:relatedarticle or @contenteximdemo:author]
+          ]]>
+          </source>
+        </div>
+        <p>
+          So, in the example above, it will select all the nodes having either <code>contenteximdemo:relatedarticle</code>
+          or <code>contenteximdemo:author</code> property. The two are assumed to be <code>Docbase</code> string properties.
+        </p>
       </subsection>
 
       <subsection name="Updating String Docbase Properties">
         <div class="brush: java">
           <source><![CDATA[
-    def todo
+      // 0. Suppose contenteximdemo:relatedarticle is multiple string type property in this example.
+      //    If the property is not multiple, you can simply read the single value without having to iterate each value.
+
+      def docbasePropName = "contenteximdemo:relatedarticle"
+      def valuesUpdated = false
+
+      // 1. Read multiple string property values into array.
+      String [] docbaseValues = JcrUtils.getMultipleStringProperty(node, docbasePropName, ArrayUtils.EMPTY_STRING_ARRAY)
+
+      // 2. Iterate for each docbase string value.
+      docbaseValues.eachWithIndex { docbaseValue, j ->
+        // 2.1. If the docbase string value starts with '/' and there exists a node at the path,
+        //      then replace the value by the UUID.
+        if (StringUtils.startsWith(docbaseValue, "/") && node.session.nodeExists(docbaseValue)) {
+          def docbase = node.session.getNode(docbaseValue).getIdentifier()
+          docbaseValues[j] = docbase
+          valuesUpdated = true
+        }
+      }
+
+      // 3. Reset the docbase property value
+      if (valuesUpdated) {
+        node.setProperty(docbasePropName, docbaseValues)
+      }
           ]]>
           </source>
         </div>
