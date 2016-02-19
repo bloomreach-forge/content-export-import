@@ -33,6 +33,16 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.1">
+        <ul>
+          <li>
+            Add utility, ContentNodeUtils#replaceDocbasePropertiesByPaths(), to support querying/replacing Docbase (string) properties.
+          </li>
+          <li>
+            Bump up hippo-pojo-bind library to 1.1.3.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.0">
         <ul>
           <li>

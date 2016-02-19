@@ -15,6 +15,7 @@
  */
 package org.onehippo.forge.content.exim.core.util;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.ItemNotFoundException;
@@ -22,8 +23,10 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
+import org.onehippo.forge.content.pojo.model.ContentProperty;
 
 /**
  * Utilities to handle {@link ContentNode} objects.
@@ -79,6 +82,49 @@ public class ContentNodeUtils {
                     linkedNode = session.getNodeByIdentifier(docbase);
                     mirror.setProperty("hippo:docbase", linkedNode.getPath());
                 } catch (ItemNotFoundException ignore) {
+                }
+            }
+        }
+    }
+
+    /**
+     * Selects all the {@link ContentProperty} objects under {@code baseContentNode}
+     * by the given <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression, {@code jxpath}
+     * and replace the string docbase property value by the path of the JCR node found by the existing UUID string value.
+     * {@code session} is used when finding a JCR node associated by the UUID value at the existing string UUID property value.
+     * @param session JCR session
+     * @param baseContentNode base {@link ContentNode} instance
+     * @param jxpath <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression
+     * @throws RepositoryException if fails to find a JCR node associated by the UUID value
+     */
+    public static void replaceDocbasePropertiesByPaths(final Session session, final ContentNode baseContentNode, final String jxpath) throws RepositoryException {
+        List<ContentProperty> docbaseProps = baseContentNode.queryPropertiesByXPath(jxpath);
+        Node linkedNode;
+        List<String> docbases;
+        List<String> docpaths;
+
+        for (ContentProperty docbaseProp : docbaseProps) {
+            docbases = docbaseProp.getValues();
+
+            if (CollectionUtils.isNotEmpty(docbases)) {
+                docpaths = new LinkedList<>();
+
+                for (String docbase : docbases) {
+                    String docpath = docbase;
+
+                    try {
+                        linkedNode = session.getNodeByIdentifier(docbase);
+                        docpath = linkedNode.getPath();
+                    } catch (ItemNotFoundException ignore) {
+                    } finally {
+                        docpaths.add(docpath);
+                    }
+                }
+
+                docbaseProp.removeValues();
+
+                for (String docpath : docpaths) {
+                    docbaseProp.addValue(docpath);
                 }
             }
         }
