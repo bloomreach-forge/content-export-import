@@ -26,6 +26,12 @@
     <section name="Tutorials">
 
       <subsection name="Tutorials on Exporting/Importing Content">
+
+        <p>
+          The following tutorials explain the concepts and examples with groovy code
+          which is actually excerpts from the demo groovy updater scripts in the <a href="index.html#Demo_Application">demo project</a>.
+        </p>
+
         <ul>
           <li>
             <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a>
@@ -40,6 +46,7 @@
             <a href="tutorials-port-docs.html">Tutorial: Importing Document Content</a>
           </li>
         </ul>
+
       </subsection>
 
     </section>

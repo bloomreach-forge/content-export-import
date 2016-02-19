@@ -31,7 +31,7 @@
         </p>
         <p>
           For example, a document content looks like the following
-          (excerpt from <code>/content/documents/contenteximdemo/news/2016/02/the-medusa-news</code> in the demo project):
+          (excerpt from <code>/content/documents/contenteximdemo/news/2016/02/the-medusa-news</code> in the <a href="index.html#Demo_Application">demo project</a>):
         </p>
         <div class="brush: xml">
         <source><![CDATA[
