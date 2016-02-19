@@ -182,24 +182,6 @@
         </p>
       </subsection>
 
-      <subsection name="Initializing Export Task">
-        <div class="brush: java">
-          <source><![CDATA[
-    def todo
-          ]]>
-          </source>
-        </div>
-      </subsection>
-
-      <subsection name="Starting and Stopping Export Task">
-        <div class="brush: java">
-          <source><![CDATA[
-    def todo
-          ]]>
-          </source>
-        </div>
-      </subsection>
-
       <subsection name="Select Live (or Preview) Variant Nodes in Groovy Updater">
         <div class="brush: java">
           <source><![CDATA[
@@ -209,25 +191,16 @@
         </div>
       </subsection>
 
+      <subsection name="Initializing Export Task">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
       <subsection name="Export Live (or Preview) Variant Node to ContentNode bean">
-        <div class="brush: java">
-          <source><![CDATA[
-    def todo
-          ]]>
-          </source>
-        </div>
-      </subsection>
-
-      <subsection name="Replacing document link UUIDs with document paths">
-        <div class="brush: java">
-          <source><![CDATA[
-    def todo
-          ]]>
-          </source>
-        </div>
-      </subsection>
-
-      <subsection name="Marshal ContentNode to JSON file">
         <div class="brush: java">
           <source><![CDATA[
     def todo

@@ -23,12 +23,55 @@
   </properties>
   <body>
 
-    <section name="Tutorials - Importing Binaries">
+    <section name="Tutorials - Importing Documents">
 
       <subsection name="Introduction">
         <p>
-          TBD. Stay tuned!
+          TODO
         </p>
+        <div class="brush: javascript">
+          <source><![CDATA[
+          ]]></source>
+        </div>
+        <p>
+          TODO
+        </p>
+      </subsection>
+
+      <subsection name="Collect Source JSON Content Files in Groovy Updater">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Initializing Import Task">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Import Content from ContentNode bean and Create Document">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Log execution summary">
+        <div class="brush: java">
+          <source><![CDATA[
+    def todo
+          ]]>
+          </source>
+        </div>
       </subsection>
 
     </section>
