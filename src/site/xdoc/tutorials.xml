@@ -23,39 +23,39 @@
   </properties>
   <body>
 
-    <section name="Tutorials">
+    <section name="Tutorials on Exporting/Importing Content">
 
-      <subsection name="Tutorials on Exporting/Importing Content">
+      <p>
+        The following tutorials explain the concepts and examples with groovy code
+        which is actually excerpts from the demo groovy updater scripts in the <a href="index.html#Demo_Application">demo project</a>.
+      </p>
 
-        <p>
-          The following tutorials explain the concepts and examples with groovy code
-          which is actually excerpts from the demo groovy updater scripts in the <a href="index.html#Demo_Application">demo project</a>.
-        </p>
+      <ul>
+        <li>
+          <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a>
+        </li>
+        <li>
+          <a href="tutorials-export-docs.html">Tutorial: Exporting Document Content</a>
+        </li>
+        <li>
+          <a href="tutorials-import-bins.html">Tutorial: Importing Binary Content</a>
+        </li>
+        <li>
+          <a href="tutorials-import-docs.html">Tutorial: Importing Document Content</a>
+        </li>
+        <li>
+          <a href="tutorials-clean-mirror-docbase.html">Tutorial: Cleaning Hippo Mirror Docbase Values</a>
+        </li>
+        <li>
+          <a href="tutorials-clean-string-docbase.html">Tutorial: Clean Hippo String Docbase Property Values</a>
+        </li>
+      </ul>
 
-        <ul>
-          <li>
-            <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a>
-          </li>
-          <li>
-            <a href="tutorials-export-docs.html">Tutorial: Exporting Document Content</a>
-          </li>
-          <li>
-            <a href="tutorials-import-bins.html">Tutorial: Importing Binary Content</a>
-          </li>
-          <li>
-            <a href="tutorials-import-docs.html">Tutorial: Importing Document Content</a>
-          </li>
-          <li>
-            <a href="tutorials-clean-mirror-docbase.html">Tutorial: Cleaning Hippo Mirror Docbase Values</a>
-          </li>
-          <li>
-            <a href="tutorials-clean-string-docbase.html">Tutorial: Clean Hippo String Docbase Property Values</a>
-          </li>
-        </ul>
+    </section>
 
-      </subsection>
+    <section name="Extra Examples">
 
-      <subsection name="Extra Examples">
+      <subsection name="Converting CSV to ContentNodes">
         <p>
           In practice, you sometimes might want to convert data in other format (not in JSON or not exactly in the same JSON format)
           to <code>ContentNode</code> to import data.
@@ -65,6 +65,26 @@
         <ul>
           <li><a href="http://hippo-pojo-bind.forge.onehippo.org/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
         </ul>
+      </subsection>
+
+      <subsection name="Creating Thumbnails from Image Files">
+        <p>
+          In practice, you sometimes have to create thumbnail images to import gallery image sets.
+          In that case, you might want to see 
+          <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> project.
+        </p>
+        <p>
+          <strong>Gallery Magick Image Processing</strong> project provides utilities and command classes
+          to manipulate image files.
+        </p>
+        <p>
+          So, for example, you can create <code>ContentNode</code>s like the output shown in
+          <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a> page
+          with the original image file and thumbnail image files.
+          You can simply use <code>file:</code> URI in the <code>ContentNode</code>s.
+          Then <a href="http://hippo-pojo-bind.forge.onehippo.org/">Hippo JCR POJO Binding</a> library
+          will bind the data to JCR nodes properly.
+        </p>
       </subsection>
 
     </section>
