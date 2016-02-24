@@ -41,6 +41,9 @@
           <a href="tutorials-import-bins.html">Tutorial: Importing Binary Content</a>
         </li>
         <li>
+          <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a>
+        </li>
+        <li>
           <a href="tutorials-import-docs.html">Tutorial: Importing Document Content</a>
         </li>
         <li>
@@ -70,20 +73,13 @@
       <subsection name="Creating Thumbnails from Image Files">
         <p>
           In practice, you sometimes have to create thumbnail images to import gallery image sets.
-          In that case, you might want to see 
-          <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> project.
-        </p>
-        <p>
+          <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a> is an example for this use case.
+          The script uses <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library to generate thumbnail files.
           <strong>Gallery Magick Image Processing</strong> project provides utilities and command classes
           to manipulate image files.
         </p>
         <p>
-          So, for example, you can create <code>ContentNode</code>s like the output shown in
-          <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a> page
-          with the original image file and thumbnail image files.
-          You can simply use <code>file:</code> URI in the <code>ContentNode</code>s.
-          Then <a href="http://hippo-pojo-bind.forge.onehippo.org/">Hippo JCR POJO Binding</a> library
-          will bind the data to JCR nodes properly.
+          See <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a> for detail.
         </p>
       </subsection>
 

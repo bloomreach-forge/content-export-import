@@ -280,6 +280,15 @@
           </tr>
           <tr>
             <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>
+            </td>
+            <td>
+              A example script to import image set content by scanning image files in a directory without JSON files, using
+              <a href="apidocs/org/onehippo/forge/content/exim/core/BinaryImportTask.html">BinaryImportTask</a>.
+            </td>
+          </tr>
+          <tr>
+            <td>
               <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-documents-as-unpublished.xml">Example - Import Documents As Unpublished</a>
             </td>
             <td>
@@ -335,6 +344,7 @@ $ mvn -P cargo.run
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-binaries.xml">Example - Export Asset and Image Set Content</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-published-documents.xml">Example - Export Published Documents</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-binaries.xml">Example - Import Asset and Image Set Content</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-binaries.xml">Example - Import Image Files</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-documents-as-unpublished.xml">Example - Import Documents As Unpublished</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-values-having-paths.xml">Example - Clean Hippo Mirror Docbase Values Having Paths</a></li>
           <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.xml">Example - Clean Hippo String Docbase Property Values Having Paths</a></li>

@@ -33,6 +33,13 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.2">
+        <ul>
+          <li>
+            Supports importing gallery image sets from image files with utilities and example groovy scripts.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.1">
         <ul>
           <li>
