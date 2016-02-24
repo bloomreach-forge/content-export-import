@@ -27,8 +27,7 @@
 
       <p>
         The code snippets are excerpts (or slightly simplififed ones) from
-        <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-export-published-documents.xml">Demo - Export Published Documents</a>
-        in the <a href="index.html#Demo_Application">demo project</a>.
+        <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-published-documents.xml">Example - Export Published Documents</a>.
       </p>
 
       <subsection name="Introduction">

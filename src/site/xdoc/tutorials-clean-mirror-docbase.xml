@@ -27,8 +27,7 @@
 
       <p>
         The code snippets are excerpts (or slightly simplififed ones) from
-        <a href="https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk/bootstrap/configuration/src/main/resources/configuration/update/registry/demo-clean-docbase-values-having-paths.xml">Demo - Clean Hippo Mirror Docbase Values Having Paths</a>
-        in the <a href="index.html#Demo_Application">demo project</a>.
+        <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-values-having-paths.xml">Example - Clean Hippo Mirror Docbase Values Having Paths</a>.
       </p>
 
       <subsection name="Introduction">

@@ -56,9 +56,17 @@
         <!-- SNIP -->
 
         <!-- NOTE: You should set a property named 'forge.content-exim.version' to a version of this plugin! -->
+
         <dependency>
           <groupId>org.onehippo.forge.content-exim</groupId>
           <artifactId>content-exim-core</artifactId>
+          <version>${forge.content-exim.version}</version>
+        </dependency>
+
+        <!-- The following is optional: Include this only when you want to bootstrap example groovy updater scripts. -->
+        <dependency>
+          <groupId>org.onehippo.forge.content-exim</groupId>
+          <artifactId>content-exim-updater-examples</artifactId>
           <version>${forge.content-exim.version}</version>
         </dependency>
 
@@ -83,7 +91,12 @@
       <dependency>
         <groupId>org.onehippo.forge.content-exim</groupId>
         <artifactId>content-exim-core</artifactId>
-        <version>${forge.content-exim.version}</version>
+      </dependency>
+
+      <!-- The following is optional: Include this in CMS application module only when you want to bootstrap example groovy updater scripts. -->
+      <dependency>
+        <groupId>org.onehippo.forge.content-exim</groupId>
+        <artifactId>content-exim-updater-examples</artifactId>
       </dependency>
 
       <!-- SNIP -->
