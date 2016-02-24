@@ -20,6 +20,7 @@ core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoNodeUtils.java
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentManagerImpl.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantExportTask.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantImportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentFileObjectUtils.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentNodeUtils.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentPathUtils.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/FileFilterDepthSelector.java -text svneol=unset#text/plain
@@ -48,4 +49,5 @@ updater-examples/src/main/resources/configuration/update/registry/example-export
 updater-examples/src/main/resources/configuration/update/registry/example-export-published-documents.xml -text svneol=unset#text/plain
 updater-examples/src/main/resources/configuration/update/registry/example-import-binaries.xml -text svneol=unset#text/plain
 updater-examples/src/main/resources/configuration/update/registry/example-import-documents-as-unpublished.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml -text svneol=unset#text/plain
 updater-examples/src/main/resources/hippoecm-extension.xml -text svneol=unset#text/plain

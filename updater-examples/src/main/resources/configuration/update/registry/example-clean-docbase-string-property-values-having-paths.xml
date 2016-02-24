@@ -7,7 +7,7 @@
     <sv:value>10</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:description" sv:type="String">
-    <sv:value>A demo script to clean interim String Docbase property values having paths instead of UUIDs.</sv:value>
+    <sv:value>A example script to clean interim String Docbase property values having paths instead of UUIDs.</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:dryrun" sv:type="Boolean">
     <sv:value>false</sv:value>
@@ -22,51 +22,51 @@
     <sv:value>/jcr:root/content/documents//element(*)[@contenteximdemo:relatedarticle]</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:script" sv:type="String">
-    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater&#xd;
-&#xd;
-import java.io.*&#xd;
-import javax.jcr.*&#xd;
-import org.apache.commons.lang.*&#xd;
-import org.onehippo.repository.update.BaseNodeUpdateVisitor&#xd;
-import org.hippoecm.repository.util.*&#xd;
-&#xd;
-class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {&#xd;
-&#xd;
-  boolean doUpdate(Node node) {&#xd;
-    log.debug "Visiting ${node.path}"&#xd;
-    def propsUpdated = false&#xd;
-    def docbase&#xd;
-&#xd;
-    parametersMap.docbasePropNames.eachWithIndex { docbasePropName, i ->&#xd;
-      def valuesUpdated = false&#xd;
-      String [] docbaseValues = JcrUtils.getMultipleStringProperty(node, docbasePropName, ArrayUtils.EMPTY_STRING_ARRAY)&#xd;
-&#xd;
-      docbaseValues.eachWithIndex { docbaseValue, j ->&#xd;
-        if (StringUtils.startsWith(docbaseValue, "/") &amp;&amp; node.session.nodeExists(docbaseValue)) {&#xd;
-          docbase = node.session.getNode(docbaseValue).getIdentifier()&#xd;
-          docbaseValues[j] = docbase&#xd;
-          log.info "Reset ${node.path}/${docbasePropName} value at position ${i} to '${docbase}' from '${docbaseValue}'."&#xd;
-          valuesUpdated = true&#xd;
-        }&#xd;
-      }&#xd;
-&#xd;
-      if (valuesUpdated) {&#xd;
-        node.setProperty(docbasePropName, docbaseValues)&#xd;
+    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater
+
+import java.io.*
+import javax.jcr.*
+import org.apache.commons.lang.*
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+import org.hippoecm.repository.util.*
+
+class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {
+
+  boolean doUpdate(Node node) {
+    log.debug "Visiting ${node.path}"
+    def propsUpdated = false
+    def docbase
+
+    parametersMap.docbasePropNames.eachWithIndex { docbasePropName, i ->
+      def valuesUpdated = false
+      String [] docbaseValues = JcrUtils.getMultipleStringProperty(node, docbasePropName, ArrayUtils.EMPTY_STRING_ARRAY)
+
+      docbaseValues.eachWithIndex { docbaseValue, j ->
+        if (StringUtils.startsWith(docbaseValue, "/") &amp;&amp; node.session.nodeExists(docbaseValue)) {
+          docbase = node.session.getNode(docbaseValue).getIdentifier()
+          docbaseValues[j] = docbase
+          log.info "Reset ${node.path}/${docbasePropName} value at position ${i} to '${docbase}' from '${docbaseValue}'."
+          valuesUpdated = true
+        }
+      }
+
+      if (valuesUpdated) {
+        node.setProperty(docbasePropName, docbaseValues)
         propsUpdated = true
-      }&#xd;
-    }&#xd;
-&#xd;
-    return propsUpdated&#xd;
-&#xd;
-  }&#xd;
-&#xd;
-  boolean undoUpdate(Node node) {&#xd;
-    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')&#xd;
-  }&#xd;
-&#xd;
-  void destroy() {&#xd;
-  }&#xd;
-&#xd;
+      }
+    }
+
+    return propsUpdated
+
+  }
+
+  boolean undoUpdate(Node node) {
+    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+  }
+
+  void destroy() {
+  }
+
 }</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:throttle" sv:type="Long">

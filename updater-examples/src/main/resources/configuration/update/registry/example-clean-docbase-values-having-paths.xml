@@ -7,7 +7,7 @@
     <sv:value>10</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:description" sv:type="String">
-    <sv:value>A demo script to clean interim hippo:docbase values of Hippo Mirror nodes having paths instead of UUIDs.</sv:value>
+    <sv:value>A example script to clean interim hippo:docbase values of Hippo Mirror nodes having paths instead of UUIDs.</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:dryrun" sv:type="Boolean">
     <sv:value>false</sv:value>
@@ -19,38 +19,38 @@
     <sv:value>//element(*)[jcr:like(@hippo:docbase,'/content/%')]</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:script" sv:type="String">
-    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater&#xd;
-&#xd;
-import java.io.*&#xd;
-import javax.jcr.*&#xd;
-import org.apache.commons.lang.*&#xd;
-import org.onehippo.repository.update.BaseNodeUpdateVisitor&#xd;
-&#xd;
-class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {&#xd;
-&#xd;
-  boolean doUpdate(Node node) {&#xd;
-    log.debug "Visiting ${node.path}"&#xd;
-    def docbasePath = node.getProperty("hippo:docbase").getString()&#xd;
-    def docbase&#xd;
-&#xd;
-    if (StringUtils.startsWith(docbasePath, "/") &amp;&amp; node.session.nodeExists(docbasePath)) {&#xd;
-      docbase = node.session.getNode(docbasePath).getIdentifier()&#xd;
-      node.setProperty("hippo:docbase", docbase)&#xd;
-      log.info "Reset ${node.path}/hippo:docbase to '${docbase}' from '${docbasePath}'."&#xd;
-      return true&#xd;
+    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater
+
+import java.io.*
+import javax.jcr.*
+import org.apache.commons.lang.*
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+
+class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {
+
+  boolean doUpdate(Node node) {
+    log.debug "Visiting ${node.path}"
+    def docbasePath = node.getProperty("hippo:docbase").getString()
+    def docbase
+
+    if (StringUtils.startsWith(docbasePath, "/") &amp;&amp; node.session.nodeExists(docbasePath)) {
+      docbase = node.session.getNode(docbasePath).getIdentifier()
+      node.setProperty("hippo:docbase", docbase)
+      log.info "Reset ${node.path}/hippo:docbase to '${docbase}' from '${docbasePath}'."
+      return true
     }
-&#xd;
-    return false&#xd;
-&#xd;
-  }&#xd;
-&#xd;
-  boolean undoUpdate(Node node) {&#xd;
-    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')&#xd;
-  }&#xd;
-&#xd;
-  void destroy() {&#xd;
-  }&#xd;
-&#xd;
+
+    return false
+
+  }
+
+  boolean undoUpdate(Node node) {
+    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+  }
+
+  void destroy() {
+  }
+
 }</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:throttle" sv:type="Long">

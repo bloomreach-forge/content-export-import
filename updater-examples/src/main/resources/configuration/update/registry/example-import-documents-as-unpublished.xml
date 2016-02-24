@@ -7,113 +7,113 @@
     <sv:value>10</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:description" sv:type="String">
-    <sv:value>A demo script to import documents as unpublished status.</sv:value>
+    <sv:value>A example script to import documents as unpublished status.</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:dryrun" sv:type="Boolean">
     <sv:value>false</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:parameters" sv:type="String">
-    <sv:value>{&#xd;
-  "sourceBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/"&#xd;
+    <sv:value>{
+  "sourceBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/"
 }</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:query" sv:type="String">
     <sv:value>/jcr:root</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:script" sv:type="String">
-    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater&#xd;
-&#xd;
-import java.io.*&#xd;
-import javax.jcr.*&#xd;
-import org.apache.commons.io.*&#xd;
-import org.apache.commons.lang.*&#xd;
-import org.apache.commons.lang.text.*&#xd;
-import org.apache.commons.vfs2.*&#xd;
-import org.hippoecm.repository.api.*&#xd;
-import org.onehippo.repository.update.BaseNodeUpdateVisitor&#xd;
-import org.onehippo.forge.content.pojo.model.*&#xd;
-import org.onehippo.forge.content.exim.core.*&#xd;
-import org.onehippo.forge.content.exim.core.impl.*&#xd;
-import org.onehippo.forge.content.exim.core.util.*&#xd;
-&#xd;
-class ImportingDocumentVariantInJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {&#xd;
-&#xd;
-  def documentManager&#xd;
-  def importTask&#xd;
-  def sourceBaseFolder&#xd;
-&#xd;
-  void initialize(Session session) {&#xd;
-    def sourceBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get("sourceBaseFolderPath"))&#xd;
-    sourceBaseFolder = VFS.getManager().resolveFile(sourceBaseFolderPath)&#xd;
-&#xd;
-    documentManager = new WorkflowDocumentManagerImpl(session)&#xd;
-    importTask = new WorkflowDocumentVariantImportTask(documentManager)&#xd;
-    importTask.setLogger(log)&#xd;
-    importTask.start()&#xd;
-  }&#xd;
-&#xd;
-  boolean doUpdate(Node node) {&#xd;
-    def contentNode&#xd;
-    def primaryTypeName&#xd;
-    def documentLocation&#xd;
-    def updatedDocumentLocation&#xd;
-    def locale&#xd;
-    def localizedName&#xd;
-&#xd;
-    // find all the *.json files under the sourceBaseFoler.&#xd;
-    def files = importTask.findFilesByNamePattern(sourceBaseFolder, "^.+\\.json\$" , 1, 10)&#xd;
-    def record&#xd;
-&#xd;
-    files.eachWithIndex { file, i ->&#xd;
-      try {&#xd;
-        // read ContentNode from the json file.&#xd;
-        contentNode = importTask.readContentNodeFromJsonFile(file)&#xd;
-        primaryTypeName = contentNode.getPrimaryType()&#xd;
-        // determine the target document handle node path to create or update content from the jcr:path meta property in ContentNode object.&#xd;
-        documentLocation = contentNode.getProperty("jcr:path").getValue()&#xd;
-&#xd;
-        // record instance to store execution status and detail of a unit of migration work item.&#xd;
-        // these record instances will be collected and summarized when #logSummary() invoked later.&#xd;
-        record = importTask.beginRecord("", documentLocation)&#xd;
-        record.setAttribute("file", file.name.path)&#xd;
-        record.setProcessed(true)&#xd;
-&#xd;
-        locale = contentNode.getProperty("hippotranslation:locale").getValue()&#xd;
-        // find localized document name if jcr:localizedName meta property exists in the ContentNode object.&#xd;
-        localizedName = contentNode.getProperty("jcr:localizedName").getValue()&#xd;
-&#xd;
-        // create or update document at documentLocation from contentNode with localized name.&#xd;
-        updatedDocumentLocation =&#xd;
-            importTask.createOrUpdateDocumentFromVariantContentNode(contentNode, primaryTypeName, documentLocation, locale, localizedName)&#xd;
-&#xd;
-        // By default, the created or updated document is left as preview status.&#xd;
-        // Optionally, if you want, you can publish the document right away here by uncommenting the following line.&#xd;
-        //documentManager.publishDocument(updatedDocumentLocation)&#xd;
-&#xd;
-        visitorContext.reportUpdated(documentLocation)&#xd;
-        log.debug "Imported document from '${file.name.path}' to '${updatedDocumentLocation}'."&#xd;
-        record.setSucceeded(true)&#xd;
-      } catch (e) {&#xd;
-        log.error("Failed to process record.", e)&#xd;
-        visitorContext.reportFailed(documentLocation)&#xd;
-        record.setErrorMessage(e.toString())&#xd;
-      } finally {&#xd;
-        importTask.endRecord()&#xd;
-      }&#xd;
-    }&#xd;
-&#xd;
-    return false&#xd;
-  }&#xd;
-&#xd;
-  boolean undoUpdate(Node node) {&#xd;
-    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')&#xd;
-  }&#xd;
-&#xd;
-  void destroy() {&#xd;
-    importTask.stop()&#xd;
-    importTask.logSummary()&#xd;
-  }&#xd;
-&#xd;
+    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater
+
+import java.io.*
+import javax.jcr.*
+import org.apache.commons.io.*
+import org.apache.commons.lang.*
+import org.apache.commons.lang.text.*
+import org.apache.commons.vfs2.*
+import org.hippoecm.repository.api.*
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+import org.onehippo.forge.content.pojo.model.*
+import org.onehippo.forge.content.exim.core.*
+import org.onehippo.forge.content.exim.core.impl.*
+import org.onehippo.forge.content.exim.core.util.*
+
+class ImportingDocumentVariantInJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {
+
+  def documentManager
+  def importTask
+  def sourceBaseFolder
+
+  void initialize(Session session) {
+    def sourceBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get("sourceBaseFolderPath"))
+    sourceBaseFolder = VFS.getManager().resolveFile(sourceBaseFolderPath)
+
+    documentManager = new WorkflowDocumentManagerImpl(session)
+    importTask = new WorkflowDocumentVariantImportTask(documentManager)
+    importTask.setLogger(log)
+    importTask.start()
+  }
+
+  boolean doUpdate(Node node) {
+    def contentNode
+    def primaryTypeName
+    def documentLocation
+    def updatedDocumentLocation
+    def locale
+    def localizedName
+
+    // find all the *.json files under the sourceBaseFoler.
+    def files = importTask.findFilesByNamePattern(sourceBaseFolder, "^.+\\.json\$" , 1, 10)
+    def record
+
+    files.eachWithIndex { file, i ->
+      try {
+        // read ContentNode from the json file.
+        contentNode = importTask.readContentNodeFromJsonFile(file)
+        primaryTypeName = contentNode.getPrimaryType()
+        // determine the target document handle node path to create or update content from the jcr:path meta property in ContentNode object.
+        documentLocation = contentNode.getProperty("jcr:path").getValue()
+
+        // record instance to store execution status and detail of a unit of migration work item.
+        // these record instances will be collected and summarized when #logSummary() invoked later.
+        record = importTask.beginRecord("", documentLocation)
+        record.setAttribute("file", file.name.path)
+        record.setProcessed(true)
+
+        locale = contentNode.getProperty("hippotranslation:locale").getValue()
+        // find localized document name if jcr:localizedName meta property exists in the ContentNode object.
+        localizedName = contentNode.getProperty("jcr:localizedName").getValue()
+
+        // create or update document at documentLocation from contentNode with localized name.
+        updatedDocumentLocation =
+            importTask.createOrUpdateDocumentFromVariantContentNode(contentNode, primaryTypeName, documentLocation, locale, localizedName)
+
+        // By default, the created or updated document is left as preview status.
+        // Optionally, if you want, you can publish the document right away here by uncommenting the following line.
+        //documentManager.publishDocument(updatedDocumentLocation)
+
+        visitorContext.reportUpdated(documentLocation)
+        log.debug "Imported document from '${file.name.path}' to '${updatedDocumentLocation}'."
+        record.setSucceeded(true)
+      } catch (e) {
+        log.error("Failed to process record.", e)
+        visitorContext.reportFailed(documentLocation)
+        record.setErrorMessage(e.toString())
+      } finally {
+        importTask.endRecord()
+      }
+    }
+
+    return false
+  }
+
+  boolean undoUpdate(Node node) {
+    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+  }
+
+  void destroy() {
+    importTask.stop()
+    importTask.logSummary()
+  }
+
 }</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:throttle" sv:type="Long">

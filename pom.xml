@@ -31,6 +31,7 @@
     <project.build.javaVersion>1.7</project.build.javaVersion>
 
     <forge.hippo-pojo-bind-jcr.version>1.1.3</forge.hippo-pojo-bind-jcr.version>
+    <forge.gallery-magick.version>1.0.0</forge.gallery-magick.version>
     <jackson2.version>2.4.5</jackson2.version>
 
     <javax.jcr.version>2.0</javax.jcr.version>
@@ -133,6 +134,11 @@
       <name>Hippo JCR POJO Binding Maven 2 Repository</name>
       <url>http://forge.onehippo.org/svn/hippo-pojo-bind/maven2/</url>
     </repository>
+    <repository>
+      <id>gallery-magick-maven-repo</id>
+      <name>Gallery Magick Maven 2 Repository</name>
+      <url>http://forge.onehippo.org/svn/gallery-magick/maven2/</url>
+    </repository>
   </repositories>
 
   <dependencyManagement>
@@ -171,6 +177,12 @@
         <groupId>org.onehippo.forge.hippo-pojo-bind</groupId>
         <artifactId>hippo-pojo-bind-jcr</artifactId>
         <version>${forge.hippo-pojo-bind-jcr.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.onehippo.forge.gallery-magick</groupId>
+        <artifactId>gallery-magick-core</artifactId>
+        <version>${forge.gallery-magick.version}</version>
       </dependency>
 
       <dependency>

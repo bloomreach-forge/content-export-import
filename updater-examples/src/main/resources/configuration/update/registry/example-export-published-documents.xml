@@ -7,102 +7,102 @@
     <sv:value>10</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:description" sv:type="String">
-    <sv:value>A demo script to export published documents.</sv:value>
+    <sv:value>A example script to export published documents.</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:dryrun" sv:type="Boolean">
     <sv:value>true</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:parameters" sv:type="String">
-    <sv:value>{&#xd;
-  "targetBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/"&#xd;
+    <sv:value>{
+  "targetBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/"
 }</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:query" sv:type="String">
     <sv:value>/jcr:root/content/documents//element(*,hippostd:publishable)[@hippostd:state='published']</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:script" sv:type="String">
-    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater&#xd;
-&#xd;
-import java.io.*&#xd;
-import javax.jcr.*&#xd;
-import org.apache.commons.io.*&#xd;
-import org.apache.commons.lang.*&#xd;
-import org.apache.commons.lang.text.*&#xd;
-import org.apache.commons.vfs2.*&#xd;
-import org.hippoecm.repository.api.*&#xd;
-import org.onehippo.repository.update.BaseNodeUpdateVisitor&#xd;
-import org.onehippo.forge.content.pojo.model.*&#xd;
-import org.onehippo.forge.content.exim.core.*&#xd;
-import org.onehippo.forge.content.exim.core.impl.*&#xd;
-import org.onehippo.forge.content.exim.core.util.*&#xd;
-&#xd;
-class ExportingDocumentVariantToJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {&#xd;
-&#xd;
-  def documentManager&#xd;
-  def exportTask&#xd;
-  def targetBaseFolder&#xd;
-&#xd;
-  void initialize(Session session) {&#xd;
-    def targetBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get("targetBaseFolderPath"))&#xd;
-    targetBaseFolder = VFS.getManager().resolveFile(targetBaseFolderPath)&#xd;
-&#xd;
-    documentManager = new WorkflowDocumentManagerImpl(session)&#xd;
-    exportTask = new WorkflowDocumentVariantExportTask(documentManager)&#xd;
-    exportTask.setLogger(log)&#xd;
-    exportTask.start()&#xd;
-  }&#xd;
-&#xd;
-  boolean doUpdate(Node node) {&#xd;
-    def record&#xd;
-&#xd;
-    try {&#xd;
-      // record instance to store execution status and detail of a unit of migration work item.&#xd;
-      // these record instances will be collected and summarized when #logSummary() invoked later.&#xd;
-      record = exportTask.beginRecord(node.identifier, node.path)&#xd;
-&#xd;
-      def handlePath = node.parent.path&#xd;
-      // determine the exported json file path based on handle path.&#xd;
-      def relPath = StringUtils.removeStart(handlePath, "/")&#xd;
-      def file = targetBaseFolder.resolveFile(relPath + ".json")&#xd;
-&#xd;
-      def document = new Document(node.identifier)&#xd;
-      record.setProcessed(true)&#xd;
-&#xd;
-      // export document variant content to ContentNode object.&#xd;
-      def contentNode = exportTask.exportVariantToContentNode(document)&#xd;
-&#xd;
-      // replace hippo:docbase UUID properties of mirror nodes inside the exported ContentNode by the corresponding node paths.&#xd;
-      ContentNodeUtils.replaceDocbasesByPaths(documentManager.session, contentNode, ContentNodeUtils.MIRROR_DOCBASES_XPATH)&#xd;
-&#xd;
-      // replace string docbase UUID properties (e.g, contenteximdemo:newsdocument/@contenteximdemo:relatedarticle property) inside the exported ContentNode by the corresponding node paths as well.&#xd;
-      ContentNodeUtils.replaceDocbasePropertiesByPaths(documentManager.session, contentNode, "properties[@itemName='contenteximdemo:relatedarticle']")&#xd;
-&#xd;
-      record.setAttribute("file", file.name.path)&#xd;
-&#xd;
-      // write ContentNode object to json file.&#xd;
-      exportTask.writeContentNodeToJsonFile(contentNode, file)&#xd;
-&#xd;
-      log.debug "Exported document from '${handlePath}' to '${file.name.path}'."&#xd;
-      record.setSucceeded(true)&#xd;
-    } catch (e) {&#xd;
-      log.error("Failed to process record.", e)&#xd;
-      record.setErrorMessage(e.toString())&#xd;
-    } finally {&#xd;
-      exportTask.endRecord()&#xd;
-    }&#xd;
-&#xd;
-    return false&#xd;
-  }&#xd;
-&#xd;
-  boolean undoUpdate(Node node) {&#xd;
-    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')&#xd;
-  }&#xd;
-&#xd;
-  void destroy() {&#xd;
-    exportTask.stop()&#xd;
-    exportTask.logSummary()&#xd;
-  }&#xd;
-&#xd;
+    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater
+
+import java.io.*
+import javax.jcr.*
+import org.apache.commons.io.*
+import org.apache.commons.lang.*
+import org.apache.commons.lang.text.*
+import org.apache.commons.vfs2.*
+import org.hippoecm.repository.api.*
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+import org.onehippo.forge.content.pojo.model.*
+import org.onehippo.forge.content.exim.core.*
+import org.onehippo.forge.content.exim.core.impl.*
+import org.onehippo.forge.content.exim.core.util.*
+
+class ExportingDocumentVariantToJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {
+
+  def documentManager
+  def exportTask
+  def targetBaseFolder
+
+  void initialize(Session session) {
+    def targetBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get("targetBaseFolderPath"))
+    targetBaseFolder = VFS.getManager().resolveFile(targetBaseFolderPath)
+
+    documentManager = new WorkflowDocumentManagerImpl(session)
+    exportTask = new WorkflowDocumentVariantExportTask(documentManager)
+    exportTask.setLogger(log)
+    exportTask.start()
+  }
+
+  boolean doUpdate(Node node) {
+    def record
+
+    try {
+      // record instance to store execution status and detail of a unit of migration work item.
+      // these record instances will be collected and summarized when #logSummary() invoked later.
+      record = exportTask.beginRecord(node.identifier, node.path)
+
+      def handlePath = node.parent.path
+      // determine the exported json file path based on handle path.
+      def relPath = StringUtils.removeStart(handlePath, "/")
+      def file = targetBaseFolder.resolveFile(relPath + ".json")
+
+      def document = new Document(node.identifier)
+      record.setProcessed(true)
+
+      // export document variant content to ContentNode object.
+      def contentNode = exportTask.exportVariantToContentNode(document)
+
+      // replace hippo:docbase UUID properties of mirror nodes inside the exported ContentNode by the corresponding node paths.
+      ContentNodeUtils.replaceDocbasesByPaths(documentManager.session, contentNode, ContentNodeUtils.MIRROR_DOCBASES_XPATH)
+
+      // replace string docbase UUID properties (e.g, contenteximdemo:newsdocument/@contenteximdemo:relatedarticle property) inside the exported ContentNode by the corresponding node paths as well.
+      ContentNodeUtils.replaceDocbasePropertiesByPaths(documentManager.session, contentNode, "properties[@itemName='contenteximdemo:relatedarticle']")
+
+      record.setAttribute("file", file.name.path)
+
+      // write ContentNode object to json file.
+      exportTask.writeContentNodeToJsonFile(contentNode, file)
+
+      log.debug "Exported document from '${handlePath}' to '${file.name.path}'."
+      record.setSucceeded(true)
+    } catch (e) {
+      log.error("Failed to process record.", e)
+      record.setErrorMessage(e.toString())
+    } finally {
+      exportTask.endRecord()
+    }
+
+    return false
+  }
+
+  boolean undoUpdate(Node node) {
+    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+  }
+
+  void destroy() {
+    exportTask.stop()
+    exportTask.logSummary()
+  }
+
 }</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:throttle" sv:type="Long">
