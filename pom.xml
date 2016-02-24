@@ -290,6 +290,7 @@
 
   <modules>
     <module>core</module>
+    <module>updater-examples</module>
   </modules>
 
   <reporting>

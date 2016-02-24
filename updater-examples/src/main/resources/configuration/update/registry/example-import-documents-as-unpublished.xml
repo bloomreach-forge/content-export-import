@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sv:node sv:name="Example - Import Documents As Unpublished" xmlns:sv="http://www.jcp.org/jcr/sv/1.0">
+  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>hipposys:updaterinfo</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:batchsize" sv:type="Long">
+    <sv:value>10</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:description" sv:type="String">
+    <sv:value>A demo script to import documents as unpublished status.</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:dryrun" sv:type="Boolean">
+    <sv:value>false</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:parameters" sv:type="String">
+    <sv:value>{&#xd;
+  "sourceBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/"&#xd;
+}</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:query" sv:type="String">
+    <sv:value>/jcr:root</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:script" sv:type="String">
+    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater&#xd;
+&#xd;
+import java.io.*&#xd;
+import javax.jcr.*&#xd;
+import org.apache.commons.io.*&#xd;
+import org.apache.commons.lang.*&#xd;
+import org.apache.commons.lang.text.*&#xd;
+import org.apache.commons.vfs2.*&#xd;
+import org.hippoecm.repository.api.*&#xd;
+import org.onehippo.repository.update.BaseNodeUpdateVisitor&#xd;
+import org.onehippo.forge.content.pojo.model.*&#xd;
+import org.onehippo.forge.content.exim.core.*&#xd;
+import org.onehippo.forge.content.exim.core.impl.*&#xd;
+import org.onehippo.forge.content.exim.core.util.*&#xd;
+&#xd;
+class ImportingDocumentVariantInJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {&#xd;
+&#xd;
+  def documentManager&#xd;
+  def importTask&#xd;
+  def sourceBaseFolder&#xd;
+&#xd;
+  void initialize(Session session) {&#xd;
+    def sourceBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get("sourceBaseFolderPath"))&#xd;
+    sourceBaseFolder = VFS.getManager().resolveFile(sourceBaseFolderPath)&#xd;
+&#xd;
+    documentManager = new WorkflowDocumentManagerImpl(session)&#xd;
+    importTask = new WorkflowDocumentVariantImportTask(documentManager)&#xd;
+    importTask.setLogger(log)&#xd;
+    importTask.start()&#xd;
+  }&#xd;
+&#xd;
+  boolean doUpdate(Node node) {&#xd;
+    def contentNode&#xd;
+    def primaryTypeName&#xd;
+    def documentLocation&#xd;
+    def updatedDocumentLocation&#xd;
+    def locale&#xd;
+    def localizedName&#xd;
+&#xd;
+    // find all the *.json files under the sourceBaseFoler.&#xd;
+    def files = importTask.findFilesByNamePattern(sourceBaseFolder, "^.+\\.json\$" , 1, 10)&#xd;
+    def record&#xd;
+&#xd;
+    files.eachWithIndex { file, i ->&#xd;
+      try {&#xd;
+        // read ContentNode from the json file.&#xd;
+        contentNode = importTask.readContentNodeFromJsonFile(file)&#xd;
+        primaryTypeName = contentNode.getPrimaryType()&#xd;
+        // determine the target document handle node path to create or update content from the jcr:path meta property in ContentNode object.&#xd;
+        documentLocation = contentNode.getProperty("jcr:path").getValue()&#xd;
+&#xd;
+        // record instance to store execution status and detail of a unit of migration work item.&#xd;
+        // these record instances will be collected and summarized when #logSummary() invoked later.&#xd;
+        record = importTask.beginRecord("", documentLocation)&#xd;
+        record.setAttribute("file", file.name.path)&#xd;
+        record.setProcessed(true)&#xd;
+&#xd;
+        locale = contentNode.getProperty("hippotranslation:locale").getValue()&#xd;
+        // find localized document name if jcr:localizedName meta property exists in the ContentNode object.&#xd;
+        localizedName = contentNode.getProperty("jcr:localizedName").getValue()&#xd;
+&#xd;
+        // create or update document at documentLocation from contentNode with localized name.&#xd;
+        updatedDocumentLocation =&#xd;
+            importTask.createOrUpdateDocumentFromVariantContentNode(contentNode, primaryTypeName, documentLocation, locale, localizedName)&#xd;
+&#xd;
+        // By default, the created or updated document is left as preview status.&#xd;
+        // Optionally, if you want, you can publish the document right away here by uncommenting the following line.&#xd;
+        //documentManager.publishDocument(updatedDocumentLocation)&#xd;
+&#xd;
+        visitorContext.reportUpdated(documentLocation)&#xd;
+        log.debug "Imported document from '${file.name.path}' to '${updatedDocumentLocation}'."&#xd;
+        record.setSucceeded(true)&#xd;
+      } catch (e) {&#xd;
+        log.error("Failed to process record.", e)&#xd;
+        visitorContext.reportFailed(documentLocation)&#xd;
+        record.setErrorMessage(e.toString())&#xd;
+      } finally {&#xd;
+        importTask.endRecord()&#xd;
+      }&#xd;
+    }&#xd;
+&#xd;
+    return false&#xd;
+  }&#xd;
+&#xd;
+  boolean undoUpdate(Node node) {&#xd;
+    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')&#xd;
+  }&#xd;
+&#xd;
+  void destroy() {&#xd;
+    importTask.stop()&#xd;
+    importTask.logSummary()&#xd;
+  }&#xd;
+&#xd;
+}</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:throttle" sv:type="Long">
+    <sv:value>1000</sv:value>
+  </sv:property>
+</sv:node>

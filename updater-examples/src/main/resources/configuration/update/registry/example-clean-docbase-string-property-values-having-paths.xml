@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sv:node sv:name="Example - Clean Hippo String Docbase Property Values Having Paths" xmlns:sv="http://www.jcp.org/jcr/sv/1.0">
+  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>hipposys:updaterinfo</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:batchsize" sv:type="Long">
+    <sv:value>10</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:description" sv:type="String">
+    <sv:value>A demo script to clean interim String Docbase property values having paths instead of UUIDs.</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:dryrun" sv:type="Boolean">
+    <sv:value>false</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:parameters" sv:type="String">
+    <sv:value>{ 
+  "docbasePropNames" : [ "contenteximdemo:relatedarticle" ]
+}
+    </sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:query" sv:type="String">
+    <sv:value>/jcr:root/content/documents//element(*)[@contenteximdemo:relatedarticle]</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:script" sv:type="String">
+    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater&#xd;
+&#xd;
+import java.io.*&#xd;
+import javax.jcr.*&#xd;
+import org.apache.commons.lang.*&#xd;
+import org.onehippo.repository.update.BaseNodeUpdateVisitor&#xd;
+import org.hippoecm.repository.util.*&#xd;
+&#xd;
+class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {&#xd;
+&#xd;
+  boolean doUpdate(Node node) {&#xd;
+    log.debug "Visiting ${node.path}"&#xd;
+    def propsUpdated = false&#xd;
+    def docbase&#xd;
+&#xd;
+    parametersMap.docbasePropNames.eachWithIndex { docbasePropName, i ->&#xd;
+      def valuesUpdated = false&#xd;
+      String [] docbaseValues = JcrUtils.getMultipleStringProperty(node, docbasePropName, ArrayUtils.EMPTY_STRING_ARRAY)&#xd;
+&#xd;
+      docbaseValues.eachWithIndex { docbaseValue, j ->&#xd;
+        if (StringUtils.startsWith(docbaseValue, "/") &amp;&amp; node.session.nodeExists(docbaseValue)) {&#xd;
+          docbase = node.session.getNode(docbaseValue).getIdentifier()&#xd;
+          docbaseValues[j] = docbase&#xd;
+          log.info "Reset ${node.path}/${docbasePropName} value at position ${i} to '${docbase}' from '${docbaseValue}'."&#xd;
+          valuesUpdated = true&#xd;
+        }&#xd;
+      }&#xd;
+&#xd;
+      if (valuesUpdated) {&#xd;
+        node.setProperty(docbasePropName, docbaseValues)&#xd;
+        propsUpdated = true
+      }&#xd;
+    }&#xd;
+&#xd;
+    return propsUpdated&#xd;
+&#xd;
+  }&#xd;
+&#xd;
+  boolean undoUpdate(Node node) {&#xd;
+    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')&#xd;
+  }&#xd;
+&#xd;
+  void destroy() {&#xd;
+  }&#xd;
+&#xd;
+}</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:throttle" sv:type="Long">
+    <sv:value>1000</sv:value>
+  </sv:property>
+</sv:node>
