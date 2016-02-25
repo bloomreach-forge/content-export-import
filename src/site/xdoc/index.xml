@@ -21,10 +21,12 @@
 
       <subsection name="What is Hippo Content EXIM (EXport/IMport)?">
         <p>
-          This project is going to provide higher level features of Content Import and Export,
-          depending on Hipo Workflow API (for higher/workflow level document management) and 
+          This project provides higher level features and examples of Content Import and Export,
+          using Hippo Workflow API (for higher/workflow level document management),
           <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
-          (for lower level JCR mappings/bindings).
+          (for lower level JCR mappings/bindings) and
+          <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library
+          (for thumbnail image generation).
         </p>
         <p>
           So, while <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
