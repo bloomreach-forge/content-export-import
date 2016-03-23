@@ -33,6 +33,13 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.3">
+        <ul>
+          <li>
+            Bump up dependency: <a href="http://hippo-pojo-bind.forge.onehippo.org/release-notes.html">Hippo JCR POJO Binding 1.1.4</a>.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.2">
         <ul>
           <li>
