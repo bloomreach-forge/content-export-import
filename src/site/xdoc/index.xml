@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+    Copyright 2015 Hippo Licensed under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under
+    the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+    OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and
+    limitations under the License.
+  --><!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+  "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<document>
+  <properties>
+    <title>Introduction</title>
+  </properties>
+  <body>
+
+    <section name="Introduction">
+
+      <subsection name="What is Hippo Content EXIM (EXport/IMport)?">
+        <p>
+          This project is going to provide higher level features of Content Import and Export,
+          depending on Hipo Workflow API (for higher/workflow level document management) and 
+          <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
+          (for lower level JCR mappings/bindings).
+        </p>
+        <p>
+          So, while <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library
+          focuses only on JCR Node level mappings and bindings and doesn't provide any Hippo Workflow level operations,
+          this project aims to provide higher level, that is, Hippo Workflow level,
+          Content Export/Import features.
+        </p>
+        <img src="images/content-exim-export.png" alt="Content EXIM Exporting" />
+        <br/>
+        <img src="images/content-exim-import.png" alt="Content EXIM Importing" />
+      </subsection>
+
+    </section>
+
+    <section name="Design Concepts">
+
+      <subsection name="Focus on the cores, trim off chores">
+        <p>
+          In other content import tools such as <a href="http://import-tool.forge.onehippo.org/" target="_blank">Hippo CMS Import tool</a>
+          or any custom import modules (e.g, <code>DaemonModule</code> with REST API calls),
+          you can easily see them very complicated.
+          Those tools do provide too many features such as task execution engine,
+          a specific POJO mapping, link resolutions between imported documents and binaries,
+          specific XML format support, etc.
+        </p>
+        <p>
+          It sounded promising, but those were too much to maintain and furthermore most of those services
+          were not really core features that a content import tool should provide.
+        </p>
+        <p>
+          We believe the core features needed for a content import tool are just as follows instead:
+        </p>
+        <ul>
+          <li>
+            Simple POJO-based mapping from JCR content and simple binding to JCR content back.
+            The POJO can be imported from or exported to whatever types (JSON, XML, etc.) of files nowadays.
+          </li>
+          <li>
+            Easy Hippo Workflow operations for content creation, commit changes with the POJO-based content bean,
+            and publish or depublish content at specific location.
+          </li>
+        </ul>
+        <p>
+          The other features can be easily replaced by other existing services. For example,
+        </p>
+        <ul>
+          <li>
+            Task execution engine can be replaced by
+            <a href="http://www.onehippo.org/library/concepts/update/using-the-updater-editor.html">Groovy Updater Script</a>,
+            which support <code>batch size</code>, <code>throttle</code>, etc. for system availability in batch processes.
+            You can also push a script into the queue using JCR API if you want it scheduled at specific time, too.
+          </li>
+          <li>
+            POJO mapping is not that important, especially if the mapping/binding is not based on Industry standards.
+            So, simple POJO-based bean mapping from/to JCR nodes
+            (provided by <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library)
+            is already good enough in most use cases.
+            The library is also easy enough, so developers can convert from/to their own domain-specific beans easily if needed.
+          </li>
+          <li>
+            The simple POJO-based mapping/binding
+            (provided by <a href="http://hippo-pojo-bind.forge.onehippo.org/" target="_blank">Hippo JCR POJO Binding</a> library)
+            can be easily marshalled/unmarshalled to/from JSON/XML easily,
+            supporting (de facto) Industry standards such as Jackson or JAXB.
+          </li>
+          <li>
+            Use <a href="http://commons.apache.org/proper/commons-vfs/apidocs/org/apache/commons/vfs2/FileObject.html" target="_blank">FileObject</a>
+            of <a href="http://commons.apache.org/proper/commons-vfs/" target="_blank">Apache Commons VFS2</a>
+            whenever marshing/unmarshaling to/from files, in order to take advantage of its flexibility.
+            So, developers can provide any <code>FileObject</code>s to marshal/unmarshal to/from.
+          </li>
+          <li>
+            Link resolutions were considered too seriously in content import modules in the past.
+            For example, <a href="http://import-tool.forge.onehippo.org/" target="_blank">Hippo CMS Import tool</a>
+            tried to build a dependency tree based on link data between the imported content data and
+            keep an in-memory map to keep path-to-uuid pairs to use in ordered content import processing.
+            This has been very error-prone and really complex to maintain.
+            We can now think of a different and simpler way. See the next section for detail.
+          </li>
+        </ul>
+      </subsection>
+
+      <subsection name="Keep it simple, stupid">
+        <p>
+          As mentioned above, link resolution between imported documents caused so complicated implementations
+          in other content import modules in the past.
+        </p>
+        <p>
+          In this module, we would like to avoid that kind of complication by simplifying the approach like the following:
+        </p>
+        <ul>
+          <li>
+            Suppose a document A is to be imported into <code>/content/documents/myhippoproject/A</code>,
+            a document B is to be imported into <code>/content/documents/myhippoproject/B</code>,
+            and the document A is to be linked to the document B (e.g, <code>A/relateddoc/@hippo:docbase="{UUID_of_B}"</code>).
+          </li>
+          <li>
+            In content importing process, let's simply set the link data to the path of B instead of a (becoming-resolved) UUID of B.
+            For example, <code>A/relateddoc/@hippo:docbase="/content/documents/myhippoproject/B"</code>.
+          </li>
+          <li>
+            Because UUID is basically determined by the target repository where all the content are imported to,
+            it is hard to keep correct processing order for all the related document content with holding the path-to-UUID map data
+            properly by its nature. It would be even worse and incomplete if there are any circular relationships.
+          </li>
+          <li>
+            Instead of all those complications, if we simply store the related content paths instead of
+            UUIDs (being determined by the target repository), then we don't have to consider the link relationships between
+            imported content but we can simply focus on each unit of content to import.
+          </li>
+          <li>
+            After all the units of content import process are done, we can simply run another groovy updater script
+            to update any link property having non-UUIDs (e.g, <code>A/relateddoc/@hippo:docbase="/content/documents/myhippoproject/B"</code>)
+            by finding the UUID of the linked content by the path information (e.g, <code>A/relateddoc/@hippo:docbase="{UUID_of_B_resolved_by_the_path}"</code>).
+            It's simple, stupid, isn't it? :-)
+          </li>
+        </ul>
+      </subsection>
+
+    </section>
+
+    <section name="Main Features">
+
+      <ul>
+        <li>Binary Exporting / Importing Task Components and Example Groovy Updater Scripts.</li>
+        <li>Document Exporting / Importing Task Components and Example Groovy Updater Scripts.</li>
+        <li>
+          Hippo Folder/Document Workflow Management Component:
+          <a href="apidocs/org/onehippo/forge/content/exim/core/DocumentManager.html">DocumentManager</a>
+        </li>
+        <li>
+          All the components depend only on JCR API, Hippo Repository API and utilities.
+          So they can be used in any applications: CMS, HST (SITE) or stand-alone applications.
+        </li>
+        <li>Running demo project</li>
+      </ul>
+
+      <subsection name="Content Migration Task Components">
+        <p>
+          This project provides migration task componets which can be used in any Java application or in Groovy updater scripts
+          instead of trying to provide a whole new UI.
+        </p>
+        <p>
+          There are basically four content migration task interfaces for which components are provided by this project:
+        </p>
+        <table>
+          <tr>
+            <th>Interface Name</th>
+            <th>Description</th>
+            <th>Implementation(s)</th>
+          </tr>
+          <tr>
+            <td><a href="apidocs/org/onehippo/forge/content/exim/core/BinaryExportTask.html">BinaryExportTask</a></td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to export binary (gallery/asset) data to
+              <a href="http://hippo-pojo-bind.forge.onehippo.org/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
+            </td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/impl/DefaultBinaryExportTask.html">DefaultBinaryExportTask</a>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantExportTask.html">DocumentVariantExportTask</a></td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to export document variant nodes to
+              <a href="http://hippo-pojo-bind.forge.onehippo.org/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
+            </td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantExportTask.html">WorkflowDocumentVariantExportTask</a>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="apidocs/org/onehippo/forge/content/exim/core/BinaryImportTask.html">BinaryImportTask</a></td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to import binary (gallery/asset) data from
+              <a href="http://hippo-pojo-bind.forge.onehippo.org/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
+            </td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/impl/DefaultBinaryImportTask.html">DefaultBinaryImportTask</a>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantImportTask.html">DocumentVariantImportTask</a></td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to import
+              <a href="http://hippo-pojo-bind.forge.onehippo.org/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects and create or update documents.
+            </td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantImportTask.html">WorkflowDocumentVariantImportTask</a>
+            </td>
+          </tr>
+        </table>
+
+        <p>
+          Also there are some other core components used by the task implementations:
+        </p>
+        <table>
+          <tr>
+            <th>Interface Name</th>
+            <th>Description</th>
+            <th>Implementation(s)</th>
+          </tr>
+          <tr>
+            <td><a href="apidocs/org/onehippo/forge/content/exim/core/DocumentManager.html">DocumentManager</a></td>
+            <td>
+              Hippo CMS Document/Folder Workflow manager to be used when maintaining Hippo folders and documents.
+            </td>
+            <td>
+              <a href="apidocs/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentManagerImpl.html">WorkflowDocumentManagerImpl</a>
+            </td>
+          </tr>
+        </table>
+
+      </subsection>
+
+      <subsection name="Example Groovy Updater Scripts using the Task Components">
+
+        <p>
+          You can find the following example groovy updater scripts using the task components in the demo project:
+        </p>
+
+        <table>
+          <tr>
+            <th>Updater script name</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-binaries.xml">Example - Export Asset and Image Set Content</a>
+            </td>
+            <td>
+              A example script to export asset and image set content, using
+              <a href="apidocs/org/onehippo/forge/content/exim/core/BinaryExportTask.html">BinaryExportTask</a>.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-published-documents.xml">Example - Export Published Documents</a>
+            </td>
+            <td>
+              A example script to export published documents, using
+              <a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantExportTask.html">DocumentVariantExportTask</a>.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-binaries.xml">Example - Import Asset and Image Set Content</a>
+            </td>
+            <td>
+              A example script to import asset and image set content, using
+              <a href="apidocs/org/onehippo/forge/content/exim/core/BinaryImportTask.html">BinaryImportTask</a>.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>
+            </td>
+            <td>
+              A example script to import image set content by scanning image files in a directory without JSON files, using
+              <a href="apidocs/org/onehippo/forge/content/exim/core/BinaryImportTask.html">BinaryImportTask</a>.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-documents-as-unpublished.xml">Example - Import Documents As Unpublished</a>
+            </td>
+            <td>
+              A example script to import documents as unpublished status, using
+              <a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantImportTask.html">DocumentVariantImportTask</a>.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-values-having-paths.xml">Example - Clean Hippo Mirror Docbase Values Having Paths</a>
+            </td>
+            <td>
+              A example script to clean interim hippo:docbase values of Hippo Mirror nodes having paths instead of UUIDs.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.xml">Example - Clean Hippo String Docbase Property Values Having Paths</a>
+            </td>
+            <td>
+              A example script to clean interim String Docbase property values having paths instead of UUIDs.
+            </td>
+          </tr>
+        </table>
+
+      </subsection>
+
+      <p>
+        You will see more explanations in the <a href="tutorials.html">Tutorial pages</a>.
+      </p>
+
+    </section>
+
+    <section name="Demo Application">
+
+      <subsection name="Demo Application with Hippo CMS 10">
+        <p>You can check out, build and run demo application, which contains all the examples explained in this site documentation.</p>
+        <p>Here are example commands to check out, build and run demo application:</p>
+        <div class="brush: bash">
+        <source><![CDATA[
+$ svn checkout https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk content-exim-demo-TRUNK
+$ cd content-exim-demo-TRUNK
+$ mvn clean verify
+$ mvn -P cargo.run
+        ]]></source>
+        </div>
+        <p>
+          Visit http://localhost:8080/cms/ and <strong>Control Panel / Updater Editor</strong> in the <strong>Admin</strong> perspective
+          to test it with the following example groovy updater scripts like the following (as ordered):
+        </p>
+
+        <ol>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-binaries.xml">Example - Export Asset and Image Set Content</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-published-documents.xml">Example - Export Published Documents</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-binaries.xml">Example - Import Asset and Image Set Content</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-binaries.xml">Example - Import Image Files</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-documents-as-unpublished.xml">Example - Import Documents As Unpublished</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-values-having-paths.xml">Example - Clean Hippo Mirror Docbase Values Having Paths</a></li>
+          <li><a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.xml">Example - Clean Hippo String Docbase Property Values Having Paths</a></li>
+        </ol>
+
+        <img src="images/updater-editors-view.png" alt="Updater Editor" />
+
+        <p>
+          <em>Note:</em> As a functional testing, you might want to remove the following nodes through CMS Console (http://localhost:8080/cms/console/)
+          to see how it exports and imports content
+          after exporting all the content and before importing all the content back (between #2 and #3).
+        </p>
+
+        <ul>
+          <li><code>/content/gallery/contenteximdemo</code></li>
+          <li><code>/content/assets/contenteximdemo</code></li>
+          <li><code>/content/documents/contenteximdemo</code></li>
+        </ul>
+
+      </subsection>
+
+    </section>
+
+    <section name="Project status">
+      <p>
+        Please see <a href="release-notes.html">Release Notes</a>.
+      </p>
+      <p>
+        See the
+        <a href="http://forge.onehippo.org/gf/project/content-exim">forge project page</a>
+        for more info about the project itself.
+      </p>
+    </section>
+
+  </body>
+</document>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC
+  "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+  "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<!--
+    Copyright 2015 Hippo
+
+    Licensed under the Apache License, Version 2.0 (the  "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document>
+  <properties>
+    <title>Tutorial: Importing Image Set From Files</title>
+  </properties>
+  <body>
+
+    <section name="Tutorial: Importing Image Set From Files">
+
+      <p>
+        The code snippets are excerpts (or slightly simplififed ones) from
+        <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>.
+      </p>
+
+      <p>
+        <em>NOTE:</em>
+        The example script in this page uses <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library to generate thumbnail files.
+        In order to let it work properly, you MUST install either <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>
+        or <a href="http://www.imagemagick.org/">ImageMagick</a>.
+        Please see <a href="http://gallery-magick.forge.onehippo.org/install.html">Installation</a> page for detail.
+      </p>
+
+      <p>
+        <em>Note:</em>
+        If you want to use <a href="http://www.imagemagick.org/">ImageMagick</a> instead in the example script,
+        then please replace <code>GraphicsMagickCommandUtils.</code> by <code>ImageMagickCommandUtils.</code>.
+      </p>
+
+      <subsection name="Introduction">
+        <p>
+          Sometimes, image files should be directly imported without any interim JSON files, with creating thumbnail files automatically.
+          This tutorial explains it with an example.
+        </p>
+      </subsection>
+
+      <subsection name="Initializing Import Task">
+        <div class="brush: java">
+          <source><![CDATA[
+    // 1. Initialize (workflow) document manager and binary importing task using the default implementation.
+    def documentManager = new WorkflowDocumentManagerImpl(session)
+    def importTask = new DefaultBinaryImportTask(documentManager)
+    // 1.1. Sets the logger to the import task, which is useful when running in groovy updater.
+    importTask.setLogger(log)
+
+    // 2. Starting import task, meaning the task starts the execution record bookkeeping.
+    importTask.start()
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Collect Image Files in Groovy Updater">
+        <div class="brush: java">
+          <source><![CDATA[
+    // 1. Find all the files having file extensions by the regular expression in the source base VFS folder
+    //    at the minimum depth level, 1, and the maximum depth level, 10.
+    def sourceBaseFolder = VFS.getManager().resolveFile("file:///var/data/gallery")
+    def files = importTask.findFilesByNamePattern(sourceBaseFolder, "^\\w+\\.\\w+\$" , 1, 10)
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Import Binary Content and Create Binary Node">
+        <div class="brush: java">
+          <source><![CDATA[
+    // 0. Iterate each image file from the collection.
+    files.eachWithIndex { file, i ->
+
+      // 1. Determine the target binary handle node path to create or update.
+      def binaryLocation = targetBaseFolderNodePath + "/" + file.name.baseName
+
+      // 2. Record instance to store execution status and detail of a unit of migration work item.
+      //    these record instances will be collected and summarized when #logSummary() invoked later.
+      def record = importTask.beginRecord("", binaryLocation)
+      record.setAttribute("file", file.name.path)
+
+      // 3. Mark this unit of import task is being processed before real processing below.
+      record.setProcessed(true)
+
+      // 4. Find mimeType from configuration by extension. If not found, skip processing.
+      //    Suppose extensionMimeTypes is a map like { "jpg":"image/jpeg", "png":"image/png", "gif":"image/gif", "bmp":"image/bmp", "tiff":"image/tiff" }
+      def mimeType = extensionMimeTypes.get(file.name.extension)
+
+      // 5. Find the image dimension of source image file.
+      def dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+
+      // 6. Create Hippo gallery imageset ContentNode.
+      def contentNode = new ContentNode(file.name.baseName, "hippogallery:imageset")
+      contentNode.addMixinType("mix:referenceable")
+      contentNode.setProperty("hippogallery:description", "Description for " + file.name.baseName)
+      contentNode.setProperty("hippogallery:filename", file.name.baseName)
+
+      // 7. Create hippogallery:original child content node and add it to contentNode.
+      def originalNode = new ContentNode("hippogallery:original", "hippogallery:image")
+      originalNode.setProperty("jcr:mimeType", mimeType)
+      originalNode.setProperty("jcr:lastModified", ContentPropertyType.DATE, ISO8601.format(Calendar.getInstance()))
+      originalNode.setProperty("hippogallery:width", ContentPropertyType.LONG, "" + dimension.width)
+      originalNode.setProperty("hippogallery:height", ContentPropertyType.LONG, "" + dimension.height)
+      originalNode.setProperty("jcr:data", ContentPropertyType.BINARY, file.getURL().toString())
+      contentNode.addNode(originalNode)
+
+      // 8. Create a thumbnail image file (in JPEG) from the original and store it to a temporary file by using GraphicsMagickCommandUtils.
+      def thumbnailFile = ContentFileObjectUtils.createTempFile(file.name.baseName, ".jpg")
+      GraphicsMagickCommandUtils.resizeImage(ContentFileObjectUtils.toFile(file), ContentFileObjectUtils.toFile(thumbnailFile), ImageDimension.from("60x60"))
+      // Find the image dimension of thumbnail image file.
+      dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(thumbnailFile))
+
+      // 9. Create hippogallery:thumbnail child content node and add it to contentNode.
+      def thumbnailNode = new ContentNode("hippogallery:thumbnail", "hippogallery:image")
+      thumbnailNode.setProperty("jcr:mimeType", "image/jpeg")
+      thumbnailNode.setProperty("jcr:lastModified", ContentPropertyType.DATE, ISO8601.format(Calendar.getInstance()))
+      thumbnailNode.setProperty("hippogallery:width", ContentPropertyType.LONG, "" + dimension.width)
+      thumbnailNode.setProperty("hippogallery:height", ContentPropertyType.LONG, "" + dimension.height)
+      thumbnailNode.setProperty("jcr:data", ContentPropertyType.BINARY, thumbnailFile.getURL().toString())
+      contentNode.addNode(thumbnailNode)
+
+      // 10. Split target folder path and binary handle node name from the binaryLocation.
+      def folderPathAndName = ContentPathUtils.splitToFolderPathAndName(binaryLocation)
+      def binaryFolderPath = folderPathAndName[0]
+      def binaryName = folderPathAndName[1]
+      // Hippo Gallery image folder properties.
+      def binaryFolderPrimaryTypeName = "hippogallery:stdImageGallery"
+      def binaryFolderFolderTypes = [ "new-image-folder" ] as String[]
+      def binaryFolderGalleryTypes = [ "hippogallery:imageset" ] as String[]
+
+      // 11. Make sure that the binary target folder exists or created.
+      binaryFolderPath =
+          importTask.createOrUpdateBinaryFolder(binaryFolderPath, binaryFolderPrimaryTypeName,
+                                                binaryFolderFolderTypes, binaryFolderGalleryTypes)
+
+      // 12. Create or update binary content from contentNode.
+      def updatedBinaryLocation =
+          importTask.createOrUpdateBinaryFromContentNode(contentNode, binaryPrimaryTypeName,
+                                                       binaryFolderPath, binaryName)
+
+      visitorContext.reportUpdated(binaryLocation)
+      log.debug "Imported binary from '${file.name.path}' to '${updatedBinaryLocation}'."
+
+      // 13. Mark this unit of import task successful.
+      record.setSucceeded(true)
+
+      // 14. End the current execution unit record.
+      importTask.endRecord()
+    }
+          ]]>
+          </source>
+        </div>
+      </subsection>
+
+      <subsection name="Log execution summary">
+        <div class="brush: java">
+          <source><![CDATA[
+    // 1. Stop the import task after processing, which means you stop execution recording.
+    importTask.stop()
+
+    // 2. Log the execution summary finally for administrator.
+    importTask.logSummary()
+          ]]>
+          </source>
+        </div>
+
+        <p>
+          The summary logs above will look like the following:
+        </p>
+
+        <div class="brush: plain">
+          <source><![CDATA[
+INFO 2016-02-24 14:02:15 
+
+===============================================================================================================
+Execution Summary:
+---------------------------------------------------------------------------------------------------------------
+Total: 5, Processed: 5, Suceeded: 5, Failed: 0, Duration: 2475ms
+---------------------------------------------------------------------------------------------------------------
+Details (in CSV format):
+---------------------------------------------------------------------------------------------------------------
+SEQ,PROCESSED,SUCCEEDED,ID,PATH,TYPE,ATTRIBUTES,ERROR
+1,true,true,d26a0531-f035-47ec-827b-e461ee31fce6,/content/gallery/contenteximdemo/imported/hippo.bmp,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/webapps/cms/WEB-INF/data/gallery/hippo.bmp},
+2,true,true,abb60b8b-19a3-4c4e-8a3f-1532acf2bf56,/content/gallery/contenteximdemo/imported/hippo.gif,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/webapps/cms/WEB-INF/data/gallery/hippo.gif},
+3,true,true,063326fa-08e2-4931-9a90-27b792201a0b,/content/gallery/contenteximdemo/imported/hippo.jpg,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/webapps/cms/WEB-INF/data/gallery/hippo.jpg},
+4,true,true,0088f425-8d47-44d6-bf96-b06f23a60dc5,/content/gallery/contenteximdemo/imported/hippo.png,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/webapps/cms/WEB-INF/data/gallery/hippo.png},
+5,true,true,3280837f-fd99-4bbd-aeb9-d919ceac6b63,/content/gallery/contenteximdemo/imported/hippo.tiff,hippogallery:imageset,{file=/home/test/content-exim-demo-TRUNK/target/tomcat8x/webapps/cms/WEB-INF/data/gallery/hippo.tiff},
+===============================================================================================================
+
+          ]]>
+          </source>
+        </div>
+
+      </subsection>
+
+    </section>
+
+  </body>
+</document>
