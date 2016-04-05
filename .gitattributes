@@ -1,0 +1,55 @@
+* text=auto !eol
+core/pom.xml -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/BinaryExportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/BinaryImportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/Constants.java -text
+core/src/main/java/org/onehippo/forge/content/exim/core/ContentMigrationException.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/ContentMigrationRecord.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/ContentMigrationTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/DocumentManager.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/DocumentManagerException.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/DocumentVariantExportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/DocumentVariantImportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/AbstractContentExportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/AbstractContentImportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/AbstractContentMigrationTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/DefaultBinaryExportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/DefaultBinaryImportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoBinaryNodeUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/HippoNodeUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentManagerImpl.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantExportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantImportTask.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentFileObjectUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentNodeUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentPathUtils.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/util/FileFilterDepthSelector.java -text svneol=unset#text/plain
+core/src/main/java/org/onehippo/forge/content/exim/core/util/NamePatternFileFilter.java -text svneol=unset#text/plain
+core/src/test/java/org/onehippo/forge/content/exim/core/util/ContentPathUtilsTest.java -text svneol=unset#text/plain
+/pom.xml -text
+src/site/resources/images/content-exim-export.png -text
+src/site/resources/images/content-exim-import.png -text
+src/site/resources/images/updater-editors-view.png -text
+src/site/site.xml -text
+src/site/xdoc/build-from-source.xml -text
+src/site/xdoc/faq.xml -text svneol=unset#text/plain
+src/site/xdoc/index.xml -text
+src/site/xdoc/install.xml -text
+src/site/xdoc/release-notes.xml -text
+src/site/xdoc/tutorials-clean-mirror-docbase.xml -text svneol=unset#text/plain
+src/site/xdoc/tutorials-clean-string-docbase.xml -text svneol=unset#text/plain
+src/site/xdoc/tutorials-export-bins.xml -text svneol=unset#text/plain
+src/site/xdoc/tutorials-export-docs.xml -text svneol=unset#text/plain
+src/site/xdoc/tutorials-import-bins.xml -text svneol=unset#text/plain
+src/site/xdoc/tutorials-import-docs.xml -text svneol=unset#text/plain
+src/site/xdoc/tutorials-import-image-files.xml -text
+src/site/xdoc/tutorials.xml -text svneol=unset#text/plain
+updater-examples/pom.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-clean-docbase-values-having-paths.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-export-binaries.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-export-published-documents.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-import-binaries.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-import-documents-as-unpublished.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml -text svneol=unset#text/plain
+updater-examples/src/main/resources/hippoecm-extension.xml -text svneol=unset#text/plain

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sv:node sv:name="Example - Clean Hippo Mirror Docbase Values Having Paths" xmlns:sv="http://www.jcp.org/jcr/sv/1.0">
+  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>hipposys:updaterinfo</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:batchsize" sv:type="Long">
+    <sv:value>10</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:description" sv:type="String">
+    <sv:value>A example script to clean interim hippo:docbase values of Hippo Mirror nodes having paths instead of UUIDs.</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:dryrun" sv:type="Boolean">
+    <sv:value>false</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:parameters" sv:type="String">
+    <sv:value></sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:query" sv:type="String">
+    <sv:value>//element(*)[jcr:like(@hippo:docbase,'/content/%')]</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:script" sv:type="String">
+    <sv:value>package org.hippoecm.frontend.plugins.cms.admin.updater
+
+import java.io.*
+import javax.jcr.*
+import org.apache.commons.lang.*
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+
+class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {
+
+  boolean doUpdate(Node node) {
+    log.debug "Visiting ${node.path}"
+    def docbasePath = node.getProperty("hippo:docbase").getString()
+    def docbase
+
+    if (StringUtils.startsWith(docbasePath, "/") &amp;&amp; node.session.nodeExists(docbasePath)) {
+      docbase = node.session.getNode(docbasePath).getIdentifier()
+      node.setProperty("hippo:docbase", docbase)
+      log.info "Reset ${node.path}/hippo:docbase to '${docbase}' from '${docbasePath}'."
+      return true
+    }
+
+    return false
+
+  }
+
+  boolean undoUpdate(Node node) {
+    throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+  }
+
+  void destroy() {
+  }
+
+}</sv:value>
+  </sv:property>
+  <sv:property sv:name="hipposys:throttle" sv:type="Long">
+    <sv:value>1000</sv:value>
+  </sv:property>
+</sv:node>
