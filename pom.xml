@@ -408,7 +408,7 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>${plugin.release.version}</version>
         <configuration>
-          <tagBase>https://forge.onehippo.org/svn/content-exim/tags</tagBase>
+          <tagBase>https://forge.onehippo.org/svn/content-exim/content-exim/tags</tagBase>
         </configuration>
       </plugin>
       <plugin>
