@@ -40,6 +40,7 @@ import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.hippoecm.repository.standardworkflow.FolderWorkflow;
+import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -331,31 +332,42 @@ class HippoNodeUtils {
      */
     static Node getExistingHippoFolderNode(final Session session, final String absPath)
             throws RepositoryException {
-        if (!session.nodeExists(absPath)) {
+
+        if (StringUtils.isEmpty(absPath)) {
             return null;
         }
 
-        Node node = session.getNode(absPath);
-        Node candidateNode = null;
+        String [] pathSegments = StringUtils.split(ContentPathUtils.removeIndexNotationInNodePath(absPath), "/");
 
-        if (session.getRootNode().isSame(node)) {
-            return session.getRootNode();
-        } else {
-            Node parentNode = node.getParent();
-            for (NodeIterator nodeIt = parentNode.getNodes(node.getName()); nodeIt.hasNext();) {
-                Node siblingNode = nodeIt.nextNode();
-                if (!isHippoDocumentHandleOrVariant(siblingNode)) {
-                    candidateNode = siblingNode;
+        Node curFolder = session.getRootNode();
+
+        for (String pathSegment : pathSegments) {
+            if (!curFolder.hasNode(pathSegment)) {
+                return null;
+            }
+
+            boolean found = false;
+
+            for (NodeIterator nodeIt = curFolder.getNodes(pathSegment); nodeIt.hasNext(); ) {
+                Node childNode = nodeIt.nextNode();
+
+                if (childNode != null && !isHippoDocumentHandleOrVariant(childNode)) {
+                    found = true;
+                    curFolder = childNode;
                     break;
                 }
             }
+
+            if (!found) {
+                return null;
+            }
         }
 
-        if (candidateNode == null) {
+        if (curFolder == null) {
             return null;
         }
 
-        Node canonicalFolderNode = getHippoCanonicalNode(candidateNode);
+        Node canonicalFolderNode = getHippoCanonicalNode(curFolder);
 
         if (isHippoMirrorNode(canonicalFolderNode)) {
             canonicalFolderNode = getRereferencedNodeByHippoMirror(canonicalFolderNode);

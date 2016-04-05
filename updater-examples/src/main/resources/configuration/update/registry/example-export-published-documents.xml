@@ -62,7 +62,7 @@ class ExportingDocumentVariantToJsonFileUpdateVisitor extends BaseNodeUpdateVisi
 
       def handlePath = node.parent.path
       // determine the exported json file path based on handle path.
-      def relPath = StringUtils.removeStart(handlePath, "/")
+      def relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(handlePath), "/")
       def file = targetBaseFolder.resolveFile(relPath + ".json")
 
       def document = new Document(node.identifier)

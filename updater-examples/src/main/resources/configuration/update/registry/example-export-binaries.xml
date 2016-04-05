@@ -70,7 +70,7 @@ class ExportingAssetOrImageSetToJsonFileUpdateVisitor extends BaseNodeUpdateVisi
       record = exportTask.beginRecord(node.identifier, node.path)
 
       def handlePath = node.parent.path
-      def relPath = StringUtils.removeStart(handlePath, "/")
+      def relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(handlePath), "/")
       def file = targetBaseFolder.resolveFile(relPath + ".json")
 
       record.setProcessed(true)

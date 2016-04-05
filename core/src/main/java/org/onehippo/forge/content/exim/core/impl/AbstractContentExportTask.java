@@ -23,6 +23,7 @@ import javax.jcr.Value;
 import org.hippoecm.repository.api.HippoNode;
 import org.onehippo.forge.content.exim.core.Constants;
 import org.onehippo.forge.content.exim.core.DocumentManager;
+import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
 import org.onehippo.forge.content.pojo.mapper.jcr.DefaultJcrContentNodeMapper;
@@ -96,14 +97,16 @@ abstract public class AbstractContentExportTask extends AbstractContentMigration
         final Node handle = HippoNodeUtils.getHippoDocumentHandle(sourceNode);
 
         if (handle != null) {
-            contentNode.setProperty(Constants.META_PROP_NODE_PATH, handle.getPath());
+            contentNode.setProperty(Constants.META_PROP_NODE_PATH,
+                    ContentPathUtils.removeIndexNotationInNodePath(handle.getPath()));
 
             if (handle instanceof HippoNode) {
                 contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME,
                         ((HippoNode) handle).getLocalizedName());
             }
         } else {
-            contentNode.setProperty(Constants.META_PROP_NODE_PATH, sourceNode.getPath());
+            contentNode.setProperty(Constants.META_PROP_NODE_PATH,
+                    ContentPathUtils.removeIndexNotationInNodePath(sourceNode.getPath()));
 
             if (sourceNode instanceof HippoNode) {
                 contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME, ((HippoNode) sourceNode).getLocalizedName());

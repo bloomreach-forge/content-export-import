@@ -28,11 +28,18 @@
         </tr>
         <tr>
           <td>1.2.x</td>
-          <td>10.2</td>
+          <td>10.2+</td>
         </tr>
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.4">
+        <ul>
+          <li>
+            Fix a bug failing to import a document when there exists a same-name-sibling folder node.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.3">
         <ul>
           <li>
