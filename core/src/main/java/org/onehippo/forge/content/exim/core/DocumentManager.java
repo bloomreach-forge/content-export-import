@@ -30,19 +30,53 @@ public interface DocumentManager {
      * Returns the logger used by DocumentManager.
      * @return the logger used by DocumentManager
      */
-    public Logger getLogger();
+    Logger getLogger();
 
     /**
      * Sets a logger to DocumentManager.
      * @param logger the logger to be used by DocumentManager
      */
-    public void setLogger(Logger logger);
+    void setLogger(Logger logger);
 
     /**
      * Returns the JCR session.
      * @return the JCR session
      */
     Session getSession();
+
+    /**
+     * Returns true if a document exists at {@code documentLocation}.
+     * @param documentLocation document handle node path
+     * @return true if a document exists at {@code documentLocation}
+     * @throws DocumentManagerException if fails to process
+     */
+    boolean documentExists(String documentLocation) throws DocumentManagerException;
+
+    /**
+     * Returns the physical document handle node path for the logical document location.
+     * Returns null if document doesn't exist at the location.
+     * @param documentLocation logical document location
+     * @return the physical document handle node path for the logical document location
+     * @throws DocumentManagerException if fails to process
+     */
+    String getExistingDocumentPath(String documentLocation) throws DocumentManagerException;
+
+    /**
+     * Returns true if a folder exists at {@code folderLocation}.
+     * @param folderLocation folder node path
+     * @return true if a folder exists at {@code folderLocation}
+     * @throws DocumentManagerException if fails to process
+     */
+    boolean folderExists(String folderLocation) throws DocumentManagerException;
+
+    /**
+     * Returns the physical folder node path for the logical folder location.
+     * Returns null if folder doesn't exist at the location.
+     * @param folderLocation logical folder location
+     * @return the physical folder node path for the logical folder location
+     * @throws DocumentManagerException if fails to process
+     */
+    String getExistingFolderPath(String folderLocation) throws DocumentManagerException;
 
     /**
      * Creates a document in the specific {@code folderLocation}.

@@ -25,6 +25,7 @@ core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentNodeUtils.ja
 core/src/main/java/org/onehippo/forge/content/exim/core/util/ContentPathUtils.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/FileFilterDepthSelector.java -text svneol=unset#text/plain
 core/src/main/java/org/onehippo/forge/content/exim/core/util/NamePatternFileFilter.java -text svneol=unset#text/plain
+core/src/test/java/org/onehippo/forge/content/exim/core/util/ContentPathUtilsTest.java -text svneol=unset#text/plain
 /pom.xml -text
 src/site/resources/images/content-exim-export.png -text
 src/site/resources/images/content-exim-import.png -text

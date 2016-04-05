@@ -79,7 +79,7 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
                 getCurrentContentMigrationRecord().setContentType(primaryTypeName);
             }
 
-            if (!getDocumentManager().getSession().nodeExists(documentLocation)) {
+            if (!getDocumentManager().documentExists(documentLocation)) {
                 createdOrUpdatedDocumentLocation = createDocumentFromVariantContentNode(primaryTypeName,
                         documentLocation, locale, localizedName);
             }

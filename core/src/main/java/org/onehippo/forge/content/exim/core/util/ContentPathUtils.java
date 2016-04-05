@@ -15,6 +15,9 @@
  */
 package org.onehippo.forge.content.exim.core.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -22,7 +25,23 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ContentPathUtils {
 
+    private static final Pattern INDEX_NOTATION_PATTERN = Pattern.compile("\\[\\d+\\](\\/|$)");
+
     private ContentPathUtils() {
+    }
+
+    /**
+     * Removes SNS (Same Name Sibling) index notation in the given {@code nodePath}.
+     * @param nodePath node path
+     * @return a node path without SNS (Same Name Sibling) index notation
+     */
+    public static String removeIndexNotationInNodePath(final String nodePath) {
+        if (nodePath == null) {
+            return nodePath;
+        }
+
+        final Matcher matcher = INDEX_NOTATION_PATTERN.matcher(nodePath);
+        return matcher.replaceAll("$1");
     }
 
     /**

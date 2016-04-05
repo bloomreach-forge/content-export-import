@@ -84,6 +84,41 @@ class HippoNodeUtils {
     }
 
     /**
+     * Finds a child node by {@code childNodeName} and {@code childNodeTypes} under the {@code baseNode}.
+     * @param baseNode base node
+     * @param childNodeName child node name
+     * @param childNodeTypes child node type names
+     * @return a child node by {@code childNodeName} and {@code childNodeTypes} under the {@code baseNode}
+     * @throws RepositoryException if any repository/workflow exception occurs
+     */
+    public static Node getChildNodeOfType(final Node baseNode, final String childNodeName, final String ... childNodeTypes)
+            throws RepositoryException {
+        if (!baseNode.hasNode(childNodeName)) {
+            return null;
+        }
+
+        Node childNode;
+
+        for (NodeIterator nodeIt = baseNode.getNodes(childNodeName); nodeIt.hasNext(); ) {
+            childNode = nodeIt.nextNode();
+
+            if (StringUtils.equals(childNodeName, childNode.getName())) {
+                if (childNodeTypes == null || childNodeTypes.length == 0) {
+                    return childNode;
+                } else {
+                    for (String childNodeType : childNodeTypes) {
+                        if (childNode.isNodeType(childNodeType)) {
+                            return childNode;
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns {@link Workflow} instance by the {@code category} for the {@code node}.
      * @param session JCR session
      * @param category workflow category
