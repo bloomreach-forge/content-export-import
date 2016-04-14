@@ -35,6 +35,7 @@ import org.hippoecm.repository.translation.TranslationWorkflow;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
+import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBinder;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBindingItemFilter;
 import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingItemFilter;
@@ -260,7 +261,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
         try {
             String[] pathSegments =
-                    StringUtils.split(ContentPathUtils.removeIndexNotationInNodePath(documentLocation), "/");
+                    StringUtils.split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(documentLocation)), "/");
             Node curFolder = getSession().getRootNode();
 
             for (int i = 0; i < pathSegments.length - 1; i++) {
@@ -309,7 +310,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
         try {
             String[] pathSegments =
-                    StringUtils.split(ContentPathUtils.removeIndexNotationInNodePath(folderLocation), "/");
+                    StringUtils.split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(folderLocation)), "/");
             Node curFolder = getSession().getRootNode();
 
             for (int i = 0; i < pathSegments.length; i++) {
@@ -346,7 +347,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 folderNode = getSession().getNode(existingFolderPath);
             } else {
                 folderNode = HippoNodeUtils.createMissingHippoFolders(getSession(),
-                        ContentPathUtils.removeIndexNotationInNodePath(folderLocation));
+                        ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(folderLocation)));
 
                 if (folderNode == null) {
                     throw new IllegalArgumentException("Folder is not available at '" + folderLocation + "'.");
@@ -359,7 +360,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
             if (BooleanUtils.isTrue(add)) {
                 createdDocPath = folderWorkflow.add("new-document", primaryTypeName,
-                        ContentPathUtils.removeIndexNotationInNodePath(nodeName));
+                        ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(nodeName)));
                 final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(getSession().getNode(createdDocPath));
                 defaultWorkflow.localizeName(localizedName);
             } else {
@@ -679,7 +680,8 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                         "Source document doesn't exist at '" + sourceDocumentLocation + "'.");
             }
 
-            final Node targetFolderNode = HippoNodeUtils.createMissingHippoFolders(getSession(), targetFolderLocation);
+            final Node targetFolderNode =
+                    HippoNodeUtils.createMissingHippoFolders(getSession(), ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(targetFolderLocation)));
 
             if (targetFolderNode == null) {
                 throw new IllegalArgumentException("Target folder doesn't exist at '" + targetFolderLocation + "'.");

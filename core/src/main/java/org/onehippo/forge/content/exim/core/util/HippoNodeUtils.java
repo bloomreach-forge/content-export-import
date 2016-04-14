@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onehippo.forge.content.exim.core.impl;
+package org.onehippo.forge.content.exim.core.util;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -40,14 +40,13 @@ import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.hippoecm.repository.standardworkflow.FolderWorkflow;
-import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Hippo specific node related utilities.
  */
-class HippoNodeUtils {
+public class HippoNodeUtils {
 
     private static Logger log = LoggerFactory.getLogger(HippoNodeUtils.class);
 
@@ -79,9 +78,17 @@ class HippoNodeUtils {
     /**
      * The codec which is used for the node names
      */
-    static final StringCodec DEFAULT_URI_ENCODING = new StringCodecFactory.UriEncoding();
+    private static final StringCodec DEFAULT_URI_ENCODING = new StringCodecFactory.UriEncoding();
 
     private HippoNodeUtils() {
+    }
+
+    /**
+     * Return the default {@link StringCodec} used in folder and document node name generation.
+     * @return the default {@link StringCodec} used in folder and document node name generation
+     */
+    public static StringCodec getDefaultUriEncoding() {
+        return DEFAULT_URI_ENCODING;
     }
 
     /**

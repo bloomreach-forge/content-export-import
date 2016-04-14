@@ -26,6 +26,7 @@ import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.DocumentManagerException;
 import org.onehippo.forge.content.exim.core.DocumentVariantImportTask;
 import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
+import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.pojo.binder.ContentNodeBindingItemFilter;
 import org.onehippo.forge.content.pojo.binder.jcr.DefaultContentNodeJcrBindingItemFilter;
 import org.onehippo.forge.content.pojo.model.ContentItem;

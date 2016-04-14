@@ -45,6 +45,27 @@ public class ContentPathUtils {
     }
 
     /**
+     * Returns encoded node path where each node name in the {@code nodePath} is encoded
+     * by using Hippo CMS Default URI Encoding strategy.
+     * @param nodePath node path
+     * @return encoded node path where each node name in the {@code nodePath} is encoded
+     *         by using Hippo CMS Default URI Encoding strategy
+     */
+    public static String encodeNodePath(final String nodePath) {
+        String [] nodeNames = StringUtils.splitPreserveAllTokens(nodePath, '/');
+
+        if (nodeNames == null) {
+            return null;
+        }
+
+        for (int i = 0; i < nodeNames.length; i++) {
+            nodeNames[i] = HippoNodeUtils.getDefaultUriEncoding().encode(nodeNames[i]);
+        }
+
+        return StringUtils.join(nodeNames, '/');
+    }
+
+    /**
      * Splits the given {@code contentLocation} to an array which consists of a folder path and the node name.
      * @param contentLocation content node path
      * @return an array which consists of a folder path and the node name

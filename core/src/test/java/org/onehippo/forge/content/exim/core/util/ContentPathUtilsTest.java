@@ -48,4 +48,19 @@ public class ContentPathUtilsTest {
         assertEquals("d", ContentPathUtils.removeIndexNotationInNodePath(nodePath));
     }
 
+    @Test
+    public void testEncodeNodePath() throws Exception {
+        String nodePath = "/a/b/c";
+        assertEquals("/a/b/c", ContentPathUtils.encodeNodePath(nodePath));
+
+        nodePath = "/a/b/C/d/E";
+        assertEquals("/a/b/c/d/e", ContentPathUtils.encodeNodePath(nodePath));
+
+        nodePath = "/a/b/C And D";
+        assertEquals("/a/b/c-and-d", ContentPathUtils.encodeNodePath(nodePath));
+
+        nodePath = "/a/b/C And D/";
+        assertEquals("/a/b/c-and-d/", ContentPathUtils.encodeNodePath(nodePath));
+    }
+
 }

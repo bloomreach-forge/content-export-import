@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onehippo.forge.content.exim.core.impl;
+package org.onehippo.forge.content.exim.core.util;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -25,7 +25,7 @@ import org.hippoecm.repository.api.WorkflowException;
 /**
  * Internal utility for Hippo binary related nodes.
  */
-class HippoBinaryNodeUtils {
+public class HippoBinaryNodeUtils {
 
     private HippoBinaryNodeUtils() {
     }
@@ -51,7 +51,7 @@ class HippoBinaryNodeUtils {
         String folderNodePath;
 
         for (String folderName : folderNames) {
-            String folderNodeName = HippoNodeUtils.DEFAULT_URI_ENCODING.encode(folderName);
+            String folderNodeName = HippoNodeUtils.getDefaultUriEncoding().encode(folderName);
 
             if (curNode == rootNode) {
                 folderNodePath = "/" + folderNodeName;

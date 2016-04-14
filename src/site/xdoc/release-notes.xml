@@ -33,6 +33,14 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.5">
+        <ul>
+          <li>
+            Fix a bug failing to import a document when a document location contains a path
+            which is not compliant with Hippo CMS URI-friendly node name encoding strategy.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.4">
         <ul>
           <li>

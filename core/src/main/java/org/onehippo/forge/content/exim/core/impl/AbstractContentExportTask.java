@@ -24,6 +24,7 @@ import org.hippoecm.repository.api.HippoNode;
 import org.onehippo.forge.content.exim.core.Constants;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
+import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMapper;
 import org.onehippo.forge.content.pojo.mapper.ContentNodeMappingItemFilter;
 import org.onehippo.forge.content.pojo.mapper.jcr.DefaultJcrContentNodeMapper;
