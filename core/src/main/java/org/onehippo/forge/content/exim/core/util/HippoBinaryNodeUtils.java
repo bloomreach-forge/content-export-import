@@ -35,8 +35,8 @@ public class HippoBinaryNodeUtils {
      * @param session JCR session
      * @param absPath absolute binary folder node path
      * @param primaryTypeName primary folder node type name
-     * @param folderType folderType
-     * @param galleryType galleryType
+     * @param folderTypes folderTypes
+     * @param galleryTypes galleryTypes
      * @return the final folder node if successful
      * @throws RepositoryException if any repository exception occurs
      * @throws WorkflowException if any workflow exception occurs

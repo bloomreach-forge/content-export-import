@@ -157,9 +157,9 @@ public class HippoNodeUtils {
     }
 
     /**
-     * Returns a map of variant nodes, keyed by variant states such as {@link HippoStdNodeType.PUBLISHED} or {@link HippoStdNodeType.UNPUBLISHED}.
+     * Returns a map of variant nodes, keyed by variant states such as {@link HippoStdNodeType#PUBLISHED} or {@link HippoStdNodeType#UNPUBLISHED}.
      * @param handle document handle node
-     * @return a map of variant nodes, keyed by variant states such as {@link HippoStdNodeType.PUBLISHED} or {@link HippoStdNodeType.UNPUBLISHED}
+     * @return a map of variant nodes, keyed by variant states such as {@link HippoStdNodeType#PUBLISHED} or {@link HippoStdNodeType#UNPUBLISHED}
      * @throws RepositoryException if any repository/workflow exception occurs
      */
     public static Map<String, Node> getDocumentVariantsMap(final Node handle) throws RepositoryException {
