@@ -57,9 +57,42 @@
         </p>
         <p>
           <em>Note:</em>
-          If you implement a new Java application using the migration task components instead of using Groovy Updater scripts,
-          then it's totally up to you. You should maintain the batch size and threshold for system availability by yourself.
+          If you implement a new Java application using the migration task components instead of using Groovy Updater scripts
+          or need to use an earlier version such as 10.1.x, then it's totally up to you when you import much data in single <code>#doUpdate(Node)</code> execution.
+          You should maintain the batch size and threshold for system availability by yourself.
+          For example, you can invoke <code>javax.jcr.Session#save()</code> on every N processing,
+          or <code>javax.jcr.Session#refresh(false)</code> on any exception
+          to keep consistency and avoid unexpected huge memory consumption like the following example:
         </p>
+        <div class="brush: java">
+          <source><![CDATA[
+            boolean isDryRun = false;
+
+            // do the following in iteration.
+            if (processCount++ % 10 == 0) {
+                if (isDryRun) {
+                    session.refresh(false);
+                } else {
+                    try {
+                        session.save();
+                    } catch (RepositoryException e) {
+                        session.refresh(false);
+                    }
+                }
+            }
+
+            // do the following again to revert or save after getting out iteration.
+            if (isDryRun) {
+                session.refresh(false);
+            } else {
+                try {
+                    session.save();
+                } catch (RepositoryException e) {
+                    session.refresh(false);
+                }
+            }
+          ]]></source>
+        </div>
       </subsection>
 
       <subsection name="Q: Why named to Content EXIM?">
