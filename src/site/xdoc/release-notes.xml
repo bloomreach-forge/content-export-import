@@ -33,6 +33,14 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.6">
+        <ul>
+          <li>
+            Fix a bug failing to import a document when the project content root folder name
+            under /content/documents has upper cases. e.g. /content/documents/MyHippoProject
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.5">
         <ul>
           <li>

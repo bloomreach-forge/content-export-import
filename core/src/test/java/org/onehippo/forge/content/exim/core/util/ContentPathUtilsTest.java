@@ -63,4 +63,19 @@ public class ContentPathUtilsTest {
         assertEquals("/a/b/c-and-d/", ContentPathUtils.encodeNodePath(nodePath));
     }
 
+    @Test
+    public void testEncodeHippoContentNodePath() throws Exception {
+        String nodePath = "/content/documents/MyHippoProject/a/b/c";
+        assertEquals("/content/documents/MyHippoProject/a/b/c", ContentPathUtils.encodeNodePath(nodePath));
+
+        nodePath = "/content/documents/MyHippoProject/a/b/C/d/E";
+        assertEquals("/content/documents/MyHippoProject/a/b/c/d/e", ContentPathUtils.encodeNodePath(nodePath));
+
+        nodePath = "/content/documents/MyHippoProject/a/b/C And D";
+        assertEquals("/content/documents/MyHippoProject/a/b/c-and-d", ContentPathUtils.encodeNodePath(nodePath));
+
+        nodePath = "/content/documents/MyHippoProject/a/b/C And D/";
+        assertEquals("/content/documents/MyHippoProject/a/b/c-and-d/", ContentPathUtils.encodeNodePath(nodePath));
+    }
+
 }

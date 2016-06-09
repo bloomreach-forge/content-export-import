@@ -361,9 +361,9 @@ $ mvn -P cargo.run
         </p>
 
         <ul>
-          <li><code>/content/gallery/contenteximdemo</code></li>
-          <li><code>/content/assets/contenteximdemo</code></li>
-          <li><code>/content/documents/contenteximdemo</code></li>
+          <li><code>/content/gallery/contenteximdemo/*</code></li>
+          <li><code>/content/assets/contenteximdemo/*</code></li>
+          <li><code>/content/documents/contenteximdemo/*</code></li>
         </ul>
 
       </subsection>

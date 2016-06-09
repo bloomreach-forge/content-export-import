@@ -189,19 +189,18 @@ public class HippoNodeUtils {
      */
     public static Node createMissingHippoFolders(final Session session, String absPath)
             throws RepositoryException, WorkflowException {
-        String[] folderNames = StringUtils.split(absPath, "/");
+
+        String[] folderNames = StringUtils.split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(absPath)), "/");
 
         Node rootNode = session.getRootNode();
         Node curNode = rootNode;
         String folderNodePath;
 
         for (String folderName : folderNames) {
-            String folderNodeName = DEFAULT_URI_ENCODING.encode(folderName);
-
             if (curNode == rootNode) {
-                folderNodePath = "/" + folderNodeName;
+                folderNodePath = "/" + folderName;
             } else {
-                folderNodePath = curNode.getPath() + "/" + folderNodeName;
+                folderNodePath = curNode.getPath() + "/" + folderName;
             }
 
             Node existingFolderNode = getExistingHippoFolderNode(session, folderNodePath);
@@ -344,7 +343,7 @@ public class HippoNodeUtils {
             return null;
         }
 
-        String [] pathSegments = StringUtils.split(ContentPathUtils.removeIndexNotationInNodePath(absPath), "/");
+        String [] pathSegments = StringUtils.split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(absPath)), "/");
 
         Node curFolder = session.getRootNode();
 

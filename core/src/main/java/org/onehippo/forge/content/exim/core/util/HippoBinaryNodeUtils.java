@@ -43,7 +43,7 @@ public class HippoBinaryNodeUtils {
      */
     public static Node createMissingHippoBinaryFolders(final Session session, String absPath, String primaryTypeName,
             String [] folderTypes, String [] galleryTypes) throws RepositoryException, WorkflowException {
-        String[] folderNames = StringUtils.split(absPath, "/");
+        String[] folderNames = StringUtils.split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(absPath)), "/");
 
         Node rootNode = session.getRootNode();
         Node curNode = rootNode;
@@ -51,12 +51,11 @@ public class HippoBinaryNodeUtils {
         String folderNodePath;
 
         for (String folderName : folderNames) {
-            String folderNodeName = HippoNodeUtils.getDefaultUriEncoding().encode(folderName);
 
             if (curNode == rootNode) {
-                folderNodePath = "/" + folderNodeName;
+                folderNodePath = "/" + folderName;
             } else {
-                folderNodePath = curNode.getPath() + "/" + folderNodeName;
+                folderNodePath = curNode.getPath() + "/" + folderName;
             }
 
             Node existingFolderNode = HippoNodeUtils.getExistingHippoFolderNode(session, folderNodePath);

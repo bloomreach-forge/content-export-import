@@ -27,6 +27,9 @@ public class ContentPathUtils {
 
     private static final Pattern INDEX_NOTATION_PATTERN = Pattern.compile("\\[\\d+\\](\\/|$)");
 
+    private static final Pattern HIPPO_CONTENT_PATH_PREFIX_PATTERN =
+            Pattern.compile("^\\/content\\/(documents|gallery|assets)\\/[^\\\\]+");
+
     private ContentPathUtils() {
     }
 
@@ -58,7 +61,17 @@ public class ContentPathUtils {
             return null;
         }
 
-        for (int i = 0; i < nodeNames.length; i++) {
+        // If the nodePath starts with typical Hippo content node path like '/content/documents/MyHippoProject/...',
+        // DO NOT encode the first three path segments
+        // because the third path segment might be in upper-cases unlike descendant nodes.
+
+        int begin = 0;
+        final Matcher m = HIPPO_CONTENT_PATH_PREFIX_PATTERN.matcher(nodePath);
+        if (m.lookingAt()) {
+            begin = 4;
+        }
+
+        for (int i = begin; i < nodeNames.length; i++) {
             nodeNames[i] = HippoNodeUtils.getDefaultUriEncoding().encode(nodeNames[i]);
         }
 
