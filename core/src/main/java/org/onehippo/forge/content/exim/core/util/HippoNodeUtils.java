@@ -28,6 +28,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hippoecm.repository.HippoStdNodeType;
 import org.hippoecm.repository.api.HippoNode;
@@ -40,6 +41,7 @@ import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.hippoecm.repository.standardworkflow.FolderWorkflow;
+import org.hippoecm.repository.util.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,15 +101,15 @@ public class HippoNodeUtils {
      * @return a child node by {@code childNodeName} and {@code childNodeTypes} under the {@code baseNode}
      * @throws RepositoryException if any repository/workflow exception occurs
      */
-    public static Node getChildNodeOfType(final Node baseNode, final String childNodeName, final String ... childNodeTypes)
-            throws RepositoryException {
+    public static Node getChildNodeOfType(final Node baseNode, final String childNodeName,
+            final String... childNodeTypes) throws RepositoryException {
         if (!baseNode.hasNode(childNodeName)) {
             return null;
         }
 
         Node childNode;
 
-        for (NodeIterator nodeIt = baseNode.getNodes(childNodeName); nodeIt.hasNext(); ) {
+        for (NodeIterator nodeIt = baseNode.getNodes(childNodeName); nodeIt.hasNext();) {
             childNode = nodeIt.nextNode();
 
             if (StringUtils.equals(childNodeName, childNode.getName())) {
@@ -167,7 +169,7 @@ public class HippoNodeUtils {
         Node variantNode = null;
         String hippoState;
 
-        for (NodeIterator nodeIt = handle.getNodes(handle.getName()); nodeIt.hasNext(); ) {
+        for (NodeIterator nodeIt = handle.getNodes(handle.getName()); nodeIt.hasNext();) {
             variantNode = nodeIt.nextNode();
 
             if (variantNode.hasProperty(HippoStdNodeType.HIPPOSTD_STATE)) {
@@ -177,6 +179,55 @@ public class HippoNodeUtils {
         }
 
         return variantsMap;
+    }
+
+    /**
+     * Finds a variant node by the {@link HippoStdNodeType#HIPPOSTD_STATE} property value
+     * such as {@link HippoStdNodeType#PUBLISHED} or {@link HippoStdNodeType#UNPUBLISHED}.
+     * @param handle document handle node
+     * @param hippoStdState {@link HippoStdNodeType#HIPPOSTD_STATE} property value such as {@link HippoStdNodeType#PUBLISHED} or {@link HippoStdNodeType#UNPUBLISHED}
+     * @return a variant node by the {@link HippoStdNodeType#HIPPOSTD_STATE} property value
+     * @throws RepositoryException if any repository/workflow exception occurs
+     */
+    public static Node getDocumentVariantByHippoStdState(final Node handle, final String hippoStdState)
+            throws RepositoryException {
+        Node variantNode = null;
+        String state;
+
+        for (NodeIterator nodeIt = handle.getNodes(handle.getName()); nodeIt.hasNext();) {
+            variantNode = nodeIt.nextNode();
+
+            if (variantNode.hasProperty(HippoStdNodeType.HIPPOSTD_STATE)) {
+                state = variantNode.getProperty(HippoStdNodeType.HIPPOSTD_STATE).getString();
+                if (StringUtils.equals(hippoStdState, state)) {
+                    return variantNode;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Detects if the document handle is representing a live document at the moment.
+     * @param handle document handle node
+     * @return true if the document handle is representing a live document at the moment
+     * @throws RepositoryException if any repository/workflow exception occurs
+     */
+    public static boolean isDocumentHandleLive(final Node handle) throws RepositoryException {
+        Node liveVariant = getDocumentVariantByHippoStdState(handle, HippoStdNodeType.PUBLISHED);
+
+        if (liveVariant != null) {
+            String[] availabilities = JcrUtils.getMultipleStringProperty(liveVariant, HippoNodeType.HIPPO_AVAILABILITY,
+                    ArrayUtils.EMPTY_STRING_ARRAY);
+            for (String availability : availabilities) {
+                if (StringUtils.equals("live", availability)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -190,7 +241,8 @@ public class HippoNodeUtils {
     public static Node createMissingHippoFolders(final Session session, String absPath)
             throws RepositoryException, WorkflowException {
 
-        String[] folderNames = StringUtils.split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(absPath)), "/");
+        String[] folderNames = StringUtils
+                .split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(absPath)), "/");
 
         Node rootNode = session.getRootNode();
         Node curNode = rootNode;
@@ -206,8 +258,8 @@ public class HippoNodeUtils {
             Node existingFolderNode = getExistingHippoFolderNode(session, folderNodePath);
 
             if (existingFolderNode == null) {
-                curNode = session
-                        .getNode(createHippoFolderNodeByWorkflow(session, curNode, DEFAULT_HIPPO_FOLDER_NODE_TYPE, folderName));
+                curNode = session.getNode(
+                        createHippoFolderNodeByWorkflow(session, curNode, DEFAULT_HIPPO_FOLDER_NODE_TYPE, folderName));
             } else {
                 curNode = existingFolderNode;
             }
@@ -336,14 +388,14 @@ public class HippoNodeUtils {
      * @return a hippo folder node located at {@code absPath} if found. If not found, returns null
      * @throws RepositoryException if unexpected repository exception occurs
      */
-    static Node getExistingHippoFolderNode(final Session session, final String absPath)
-            throws RepositoryException {
+    static Node getExistingHippoFolderNode(final Session session, final String absPath) throws RepositoryException {
 
         if (StringUtils.isEmpty(absPath)) {
             return null;
         }
 
-        String [] pathSegments = StringUtils.split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(absPath)), "/");
+        String[] pathSegments = StringUtils
+                .split(ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(absPath)), "/");
 
         Node curFolder = session.getRootNode();
 
@@ -354,7 +406,7 @@ public class HippoNodeUtils {
 
             boolean found = false;
 
-            for (NodeIterator nodeIt = curFolder.getNodes(pathSegment); nodeIt.hasNext(); ) {
+            for (NodeIterator nodeIt = curFolder.getNodes(pathSegment); nodeIt.hasNext();) {
                 Node childNode = nodeIt.nextNode();
 
                 if (childNode != null && !isHippoDocumentHandleOrVariant(childNode)) {
@@ -462,8 +514,8 @@ public class HippoNodeUtils {
                 }
                 Node addedNode = folderNode.getSession().getNode(added);
                 if (!nodeName.equals(name)) {
-                    DefaultWorkflow defaultWorkflow = (DefaultWorkflow) getHippoWorkflow(session, DEFAULT_WORKFLOW_CATEGORY,
-                            addedNode);
+                    DefaultWorkflow defaultWorkflow = (DefaultWorkflow) getHippoWorkflow(session,
+                            DEFAULT_WORKFLOW_CATEGORY, addedNode);
                     defaultWorkflow.localizeName(name);
                 }
 

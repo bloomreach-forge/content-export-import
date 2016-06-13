@@ -33,6 +33,13 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.8">
+        <ul>
+          <li>
+            Improving <code>HippoNodeUtils</code> utility.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.7">
         <ul>
           <li>
