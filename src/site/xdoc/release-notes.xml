@@ -33,6 +33,14 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.7">
+        <ul>
+          <li>
+            Improving <code>DocumentManager</code> API by exposing <code>#getDocumentWorkflow(final Node documentHandleNode)</code>
+            which can be useful when invoking multiple workflow operations on the same document.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.6">
         <ul>
           <li>

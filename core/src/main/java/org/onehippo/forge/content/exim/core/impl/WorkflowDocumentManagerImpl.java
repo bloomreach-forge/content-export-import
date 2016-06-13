@@ -806,6 +806,18 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     }
 
     /**
+     * {@inheritDoc}
+     * @param documentHandleNode document handle node
+     * @return a document workflow on {@code documentHandleNode}
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
+    @Override
+    public DocumentWorkflow getDocumentWorkflow(final Node documentHandleNode) throws RepositoryException {
+        return (DocumentWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(), getDocumentWorkflowCategory(),
+                documentHandleNode);
+    }
+
+    /**
      * Returns a folder workflow instance on {@code folderNode}.
      * @param folderNode folder node
      * @return a folder workflow instance on {@code folderNode}
@@ -813,17 +825,6 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
      */
     protected FolderWorkflow getFolderWorkflow(final Node folderNode) throws RepositoryException {
         return (FolderWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(), getFolderWorkflowCategory(), folderNode);
-    }
-
-    /**
-     * Returns a document workflow on {@code documentHandleNode}.
-     * @param documentHandleNode document handle node
-     * @return a document workflow on {@code documentHandleNode}
-     * @throws RepositoryException if unexpected repository exception occurs
-     */
-    protected DocumentWorkflow getDocumentWorkflow(final Node documentHandleNode) throws RepositoryException {
-        return (DocumentWorkflow) HippoNodeUtils.getHippoWorkflow(getSession(), getDocumentWorkflowCategory(),
-                documentHandleNode);
     }
 
     /**

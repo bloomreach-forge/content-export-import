@@ -15,10 +15,13 @@
  */
 package org.onehippo.forge.content.exim.core;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.pojo.model.ContentNode;
+import org.onehippo.repository.documentworkflow.DocumentWorkflow;
 import org.slf4j.Logger;
 
 /**
@@ -179,5 +182,13 @@ public interface DocumentManager {
      */
     Document translateDocument(String sourceDocumentLocation, String language, String name)
             throws DocumentManagerException;
+
+    /**
+     * Returns a document workflow on {@code documentHandleNode}.
+     * @param documentHandleNode document handle node
+     * @return a document workflow on {@code documentHandleNode}
+     * @throws RepositoryException if unexpected repository exception occurs
+     */
+    public DocumentWorkflow getDocumentWorkflow(final Node documentHandleNode) throws RepositoryException;
 
 }
