@@ -39,7 +39,7 @@
     <hippo.services.version>2.2.0</hippo.services.version>
     <commons-lang.version>2.6</commons-lang.version>
     <commons-collections.version>3.2.2</commons-collections.version>
-    <commons-vfs2.version>2.0</commons-vfs2.version>
+    <commons-vfs2.version>2.1</commons-vfs2.version>
     <commons-io.version>2.4</commons-io.version>
     <commons-csv.version>1.2</commons-csv.version>
 

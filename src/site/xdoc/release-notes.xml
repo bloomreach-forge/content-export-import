@@ -38,6 +38,9 @@
           <li>
             Added an option to read/write ContentNode to XML files instead of the default JSON files.
           </li>
+          <li>
+            Upgrade Apache Commons VFS2 to 2.1.
+          </li>
         </ul>
       </subsection>
       <subsection name="1.2.8">
