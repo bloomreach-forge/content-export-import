@@ -30,6 +30,12 @@
         <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-export-binaries.xml">Example - Export Asset and Image Set Content</a>.
       </p>
 
+      <p>
+        The example below exports data to JSON files by default.
+        You may see the source linked above if you want to export data to XML files instead.
+        The script in the link uses <code>fileInJson</code> parameter to choose either JSON or XML format.
+      </p>
+
       <subsection name="Introduction">
         <p>
           A binary content (asset or image) consists of a handle node and a variant node.
