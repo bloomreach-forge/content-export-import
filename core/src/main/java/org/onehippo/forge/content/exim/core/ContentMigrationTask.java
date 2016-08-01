@@ -106,4 +106,22 @@ public interface ContentMigrationTask {
     public void writeContentNodeToJsonFile(ContentNode contentNode, FileObject targetFile)
             throws ContentMigrationException;
 
+    /**
+     * Reads {@code sourceFile} containing a {@link ContentNode} data in XML format
+     * and returns a parsed {@link ContentNode} object.
+     * @param sourceFile source file containing a {@link ContentNode} data in XML format
+     * @return a parsed {@link ContentNode} object
+     * @throws ContentMigrationException if reading fails.
+     */
+    public ContentNode readContentNodeFromXmlFile(FileObject sourceFile) throws ContentMigrationException;
+
+    /**
+     * Writes {@code contentNode} object into {@code targetFile} in XML format.
+     * @param contentNode a {@link ContentNode} object
+     * @param targetFile target file to write the {@code contentNode}
+     * @throws ContentMigrationException if writing fails.
+     */
+    public void writeContentNodeToXmlFile(ContentNode contentNode, FileObject targetFile)
+            throws ContentMigrationException;
+
 }

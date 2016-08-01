@@ -33,6 +33,13 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.9">
+        <ul>
+          <li>
+            Added an option to read/write ContentNode to XML files instead of the default JSON files.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.8">
         <ul>
           <li>

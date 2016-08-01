@@ -47,7 +47,7 @@ import org.onehippo.forge.content.exim.core.util.*
 import org.onehippo.forge.gallerymagick.core.*
 import org.onehippo.forge.gallerymagick.core.command.*
 
-class ImportingAssetOrImageSetFromJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {
+class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisitor {
 
   def documentManager
   def importTask

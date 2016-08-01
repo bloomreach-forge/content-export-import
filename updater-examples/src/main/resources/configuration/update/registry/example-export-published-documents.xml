@@ -14,6 +14,7 @@
   </sv:property>
   <sv:property sv:name="hipposys:parameters" sv:type="String">
     <sv:value>{
+  "fileInJson": true,
   "targetBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/"
 }</sv:value>
   </sv:property>
@@ -36,13 +37,18 @@ import org.onehippo.forge.content.exim.core.*
 import org.onehippo.forge.content.exim.core.impl.*
 import org.onehippo.forge.content.exim.core.util.*
 
-class ExportingDocumentVariantToJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {
+class ExportingDocumentVariantToFileUpdateVisitor extends BaseNodeUpdateVisitor {
 
+  def fileInJson = true
   def documentManager
   def exportTask
   def targetBaseFolder
 
   void initialize(Session session) {
+    if (parametersMap.containsKey("fileInJson")) {
+      fileInJson = parametersMap.get("fileInJson")
+    }
+
     def targetBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get("targetBaseFolderPath"))
     targetBaseFolder = VFS.getManager().resolveFile(targetBaseFolderPath)
 
@@ -61,9 +67,16 @@ class ExportingDocumentVariantToJsonFileUpdateVisitor extends BaseNodeUpdateVisi
       record = exportTask.beginRecord(node.identifier, node.path)
 
       def handlePath = node.parent.path
-      // determine the exported json file path based on handle path.
+      // determine the exported file path based on handle path.
       def relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(handlePath), "/")
-      def file = targetBaseFolder.resolveFile(relPath + ".json")
+
+      // file to export in json (or xml).
+      def file
+      if (fileInJson) {
+        file = targetBaseFolder.resolveFile(relPath + ".json")
+      } else {
+        file = targetBaseFolder.resolveFile(relPath + ".xml")
+      }
 
       def document = new Document(node.identifier)
       record.setProcessed(true)
@@ -79,8 +92,12 @@ class ExportingDocumentVariantToJsonFileUpdateVisitor extends BaseNodeUpdateVisi
 
       record.setAttribute("file", file.name.path)
 
-      // write ContentNode object to json file.
-      exportTask.writeContentNodeToJsonFile(contentNode, file)
+      // write ContentNode object to json (or xml) file.
+      if (fileInJson) {
+        exportTask.writeContentNodeToJsonFile(contentNode, file)
+      } else {
+        exportTask.writeContentNodeToXmlFile(contentNode, file)
+      }
 
       log.debug "Exported document from '${handlePath}' to '${file.name.path}'."
       record.setSucceeded(true)

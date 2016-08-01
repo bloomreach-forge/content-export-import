@@ -29,6 +29,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.jcr.Value;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -400,6 +404,32 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
      * {@inheritDoc}
      */
     @Override
+    public ContentNode readContentNodeFromXmlFile(final FileObject sourceFile) throws ContentMigrationException {
+        ContentNode contentNode = null;
+
+        InputStream is = null;
+        BufferedInputStream bis = null;
+
+        try {
+            is = sourceFile.getContent().getInputStream();
+            bis = new BufferedInputStream(is);
+            JAXBContext jaxbContext = JAXBContext.newInstance(ContentNode.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            contentNode = (ContentNode) jaxbUnmarshaller.unmarshal(bis);
+        } catch (IOException | JAXBException e) {
+            throw new ContentMigrationException(e.toString(), e);
+        } finally {
+            IOUtils.closeQuietly(bis);
+            IOUtils.closeQuietly(is);
+        }
+
+        return contentNode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void writeContentNodeToJsonFile(final ContentNode contentNode, final FileObject targetFile)
             throws ContentMigrationException {
         OutputStream os = null;
@@ -410,6 +440,30 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
             bos = new BufferedOutputStream(os);
             getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(bos, contentNode);
         } catch (IOException e) {
+            throw new ContentMigrationException(e.toString(), e);
+        } finally {
+            IOUtils.closeQuietly(bos);
+            IOUtils.closeQuietly(os);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeContentNodeToXmlFile(final ContentNode contentNode, final FileObject targetFile)
+            throws ContentMigrationException {
+        OutputStream os = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            os = targetFile.getContent().getOutputStream();
+            bos = new BufferedOutputStream(os);
+            JAXBContext jaxbContext = JAXBContext.newInstance(ContentNode.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(contentNode, bos);
+        } catch (IOException | JAXBException e) {
             throw new ContentMigrationException(e.toString(), e);
         } finally {
             IOUtils.closeQuietly(bos);

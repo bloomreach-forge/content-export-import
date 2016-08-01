@@ -14,6 +14,7 @@
   </sv:property>
   <sv:property sv:name="hipposys:parameters" sv:type="String">
     <sv:value>{
+  "fileInJson": true,
   "sourceBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/bindata/"
 }</sv:value>
   </sv:property>
@@ -36,13 +37,18 @@ import org.onehippo.forge.content.exim.core.*
 import org.onehippo.forge.content.exim.core.impl.*
 import org.onehippo.forge.content.exim.core.util.*
 
-class ImportingAssetOrImageSetFromJsonFileUpdateVisitor extends BaseNodeUpdateVisitor {
+class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisitor {
 
+  def fileInJson = true
   def documentManager
   def importTask
   def sourceBaseFolder
 
   void initialize(Session session) {
+    if (parametersMap.containsKey("fileInJson")) {
+      fileInJson = parametersMap.get("fileInJson")
+    }
+
     def sourceBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get("sourceBaseFolderPath"))
     sourceBaseFolder = VFS.getManager().resolveFile(sourceBaseFolderPath)
 
@@ -63,13 +69,25 @@ class ImportingAssetOrImageSetFromJsonFileUpdateVisitor extends BaseNodeUpdateVi
     def binaryName
     def updatedBinaryLocation
 
-    def files = importTask.findFilesByNamePattern(sourceBaseFolder, "^.+\\.json\$" , 1, 10)
+    // import input files in json (or xml) format
+    def files
+    if (fileInJson) {
+      files = importTask.findFilesByNamePattern(sourceBaseFolder, "^.+\\.json\$" , 1, 10)
+    } else {
+      files = importTask.findFilesByNamePattern(sourceBaseFolder, "^.+\\.xml\$" , 1, 10)
+    }
+
     def record
 
     files.eachWithIndex { file, i ->
       try {
-        // read ContentNode from json file.
-        contentNode = importTask.readContentNodeFromJsonFile(file)
+        // read ContentNode from json (or xml) file.
+        if (fileInJson) {
+          contentNode = importTask.readContentNodeFromJsonFile(file)
+        } else {
+          contentNode = importTask.readContentNodeFromXmlFile(file)
+        }
+
         binaryPrimaryTypeName = contentNode.getPrimaryType()
         // determine the target binary handle node path to create or update binary content from the jcr:path meta property in ContentNode object.
         binaryLocation = contentNode.getProperty("jcr:path").getValue()
