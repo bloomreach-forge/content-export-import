@@ -107,6 +107,10 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
         if (StringUtils.isNotBlank(mimeType)) {
           record.setProcessed(true)
 
+          // NOTE: Replace GraphicsMagickCommandUtils by ImageMagickCommandUtils below
+          //       if you want to use ImageMagick instead of GraphicsMagick.
+          //       ref) http://gallery-magick.forge.onehippo.org/prerequisites.html
+
           // Find the image dimension of source image file.
           dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
 

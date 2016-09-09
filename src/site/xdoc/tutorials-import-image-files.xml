@@ -38,12 +38,6 @@
         Please see <a href="http://gallery-magick.forge.onehippo.org/install.html">Installation</a> page for detail.
       </p>
 
-      <p>
-        <em>Note:</em>
-        If you want to use <a href="http://www.imagemagick.org/">ImageMagick</a> instead in the example script,
-        then please replace <code>GraphicsMagickCommandUtils.</code> by <code>ImageMagickCommandUtils.</code>.
-      </p>
-
       <subsection name="Introduction">
         <p>
           Sometimes, image files should be directly imported without any interim JSON files, with creating thumbnail files automatically.
@@ -80,6 +74,20 @@
       </subsection>
 
       <subsection name="Import Binary Content and Create Binary Node">
+
+        <p>
+          <em>Note:</em> The following example uses <code>GraphicsMagickCommandUtils</code> utility methods
+          provided by <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library
+          to identify and resize image files by default.
+          <code>GraphicsMagickCommandUtils</code> uses <strong>GraphicsMagick</strong> commands whereas
+          <code>ImageMagickCommandUtils</code> uses <strong>ImageMagick</strong> commands intead.
+          Therefore, please replace <code>GraphicsMagickCommandUtils</code> by
+          <code>ImageMagickCommandUtils</code> in the following example
+          if you need to use <strong>ImageMagick</strong> commands instead of <strong>GraphicsMagick</strong> commands.
+          See <a href="http://gallery-magick.forge.onehippo.org/prerequisites.html">http://gallery-magick.forge.onehippo.org/prerequisites.html</a>
+          for more information.
+        </p>
+
         <div class="brush: java">
           <source><![CDATA[
     // 0. Iterate each image file from the collection.
@@ -99,6 +107,10 @@
       // 4. Find mimeType from configuration by extension. If not found, skip processing.
       //    Suppose extensionMimeTypes is a map like { "jpg":"image/jpeg", "png":"image/png", "gif":"image/gif", "bmp":"image/bmp", "tiff":"image/tiff" }
       def mimeType = extensionMimeTypes.get(file.name.extension)
+
+      // NOTE: Replace GraphicsMagickCommandUtils by ImageMagickCommandUtils below
+      //       if you want to use ImageMagick instead of GraphicsMagick.
+      //       ref) http://gallery-magick.forge.onehippo.org/prerequisites.html
 
       // 5. Find the image dimension of source image file.
       def dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
