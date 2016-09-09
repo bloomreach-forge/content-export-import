@@ -122,6 +122,9 @@
           importTask.createOrUpdateBinaryFromContentNode(contentNode, binaryPrimaryTypeName,
                                                          binaryFolderPath, binaryName)
 
+      // 7.1. Extract text from binary if possible (e.g., application/pdf) and save hippo:text property underneath.
+      HippoBinaryNodeUtils.extractTextFromBinariesAndSaveHippoTextsUnderHandlePath(documentManager.session, updatedBinaryLocation)
+
       // 8. Report that a unit of import process was done, so groovy updater engine can maintain its batch execution status properly.
       visitorContext.reportUpdated(binaryLocation)
 

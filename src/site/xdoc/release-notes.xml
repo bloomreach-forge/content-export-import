@@ -33,6 +33,14 @@
       </table>
     </section>
     <section name="Release Notes">
+      <subsection name="1.2.10">
+        <ul>
+          <li>
+            <code>hippo:text</code> property setting by extracting text content from PDF binary resources in example scripts,
+            using <code>org.onehippo.forge.content.exim.core.util.HippoBinaryNodeUtils#extractTextFromBinariesAndSaveHippoTextsUnderHandlePath(Session, String)</code> utility.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.9">
         <ul>
           <li>

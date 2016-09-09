@@ -15,11 +15,22 @@
  */
 package org.onehippo.forge.content.exim.core.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jcr.Binary;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tika.exception.TikaException;
+import org.hippoecm.repository.api.HippoNodeType;
 import org.hippoecm.repository.api.WorkflowException;
 
 /**
@@ -85,6 +96,93 @@ public class HippoBinaryNodeUtils {
         }
 
         return curNode;
+    }
+
+    /**
+     * Finds binary resource node ({@code hippo:resource}) under the {@code handlePath}, extracts text content
+     * and saves {@code hippo:text} property if the binary data is {@code application/pdf} content.
+     * @param session JCR session
+     * @param handlePath binary handle node path
+     * @throws RepositoryException if repository exception occurs
+     * @throws IOException if IO exception occurs
+     * @throws TikaException if TIKA exception occurs
+     */
+    public static void extractTextFromBinariesAndSaveHippoTextsUnderHandlePath(final Session session, final String handlePath)
+            throws RepositoryException, IOException, TikaException {
+        if (StringUtils.isBlank(handlePath)) {
+            return;
+        }
+
+        if (!session.nodeExists(handlePath)) {
+            return;
+        }
+
+        extractTextFromBinariesAndSaveHippoTexts(session, session.getNode(handlePath));
+    }
+
+    /**
+     * Finds binary resource node ({@code hippo:resource}) under the {@code handle}, extracts text content
+     * and saves {@code hippo:text} property if the binary data is {@code application/pdf} content.
+     * @param session JCR session
+     * @param handle binary handle node
+     * @throws RepositoryException if repository exception occurs
+     * @throws IOException if IO exception occurs
+     * @throws TikaException if TIKA exception occurs
+     */
+    public static void extractTextFromBinariesAndSaveHippoTexts(final Session session, final Node handle)
+            throws RepositoryException, IOException, TikaException {
+        List<Node> resourceNodes = new ArrayList<>();
+
+        if (handle.isNodeType(HippoNodeType.NT_RESOURCE)) {
+            resourceNodes.add(handle);
+        } else if (handle.getParent().isNodeType(HippoNodeType.NT_HANDLE)) {
+            Node resourceNode;
+            for (NodeIterator nodeIt = handle.getNodes(); nodeIt.hasNext(); ) {
+                resourceNode = nodeIt.nextNode();
+                if (resourceNode != null && resourceNode.isNodeType(HippoNodeType.NT_RESOURCE)) {
+                    resourceNodes.add(resourceNode);
+                }
+            }
+        } else if (handle.isNodeType(HippoNodeType.NT_HANDLE)) {
+            Node assetSetNode;
+            Node resourceNode;
+            for (NodeIterator nodeIt1 = handle.getNodes(handle.getName()); nodeIt1.hasNext(); ) {
+                assetSetNode = nodeIt1.nextNode();
+                if (assetSetNode != null) {
+                    for (NodeIterator nodeIt2 = assetSetNode.getNodes(); nodeIt2.hasNext(); ) {
+                        resourceNode = nodeIt2.nextNode();
+                        if (resourceNode != null && resourceNode.isNodeType(HippoNodeType.NT_RESOURCE)) {
+                            resourceNodes.add(resourceNode);
+                        }
+                    }
+                }
+            }
+        }
+
+        String mimeType = null;
+        InputStream dataInput = null;
+        String textContent = null;
+        InputStream textInput = null;
+        Binary textBinary = null;
+
+        for (Node resourceNode : resourceNodes) {
+            mimeType = (resourceNode.hasProperty("jcr:mimeType")) ? resourceNode.getProperty("jcr:mimeType").getString()
+                    : null;
+
+            if (!StringUtils.equals("application/pdf", mimeType)) {
+                continue;
+            }
+
+            try {
+                dataInput = resourceNode.getProperty("jcr:data").getBinary().getStream();
+                textContent = TikaUtils.parsePdfToString(dataInput);
+                textInput = new ByteArrayInputStream(textContent.getBytes());
+                textBinary = session.getValueFactory().createBinary(textInput);
+                resourceNode.setProperty(HippoNodeType.HIPPO_TEXT, textBinary);
+            } finally {
+                IOUtils.closeQuietly(textInput);
+            }
+        }
     }
 
 }

@@ -125,6 +125,9 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
               importTask.createOrUpdateBinaryFromContentNode(contentNode, binaryPrimaryTypeName,
                                                              binaryFolderPath, binaryName)
 
+          // Extract text from binary if possible (e.g., application/pdf) and save hippo:text property underneath.
+          HippoBinaryNodeUtils.extractTextFromBinariesAndSaveHippoTextsUnderHandlePath(documentManager.session, updatedBinaryLocation)
+
           visitorContext.reportUpdated(binaryLocation)
           log.debug "Imported binary from '${file.name.path}' to '${updatedBinaryLocation}'."
           record.setSucceeded(true)
