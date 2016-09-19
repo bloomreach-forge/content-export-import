@@ -117,6 +117,7 @@ public class DefaultBinaryImportTask extends AbstractContentImportTask implement
                 binaryContentPath = binaryHandleNode.getPath();
             } else {
                 binaryHandleNode = folderNode.getNode(name);
+                binaryContentPath = binaryHandleNode.getPath();
             }
 
             if (getCurrentContentMigrationRecord() != null) {
