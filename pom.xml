@@ -21,7 +21,7 @@
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>1.3.0</version>
+  <version>1.3.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>http://content-exim.forge.onehippo.org/</url>
 
@@ -97,9 +97,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/tags/content-exim-1.3.0</connection>
-    <developerConnection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/tags/content-exim-1.3.0</developerConnection>
-    <url>https://forge.onehippo.org/svn/content-exim/content-exim/tags/content-exim-1.3.0</url>
+    <connection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/trunk</connection>
+    <developerConnection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/trunk</developerConnection>
+    <url>https://forge.onehippo.org/svn/content-exim/content-exim/trunk</url>
   </scm>
 
   <issueManagement>
