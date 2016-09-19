@@ -37,6 +37,16 @@
       </table>
     </section>
     <section name="Release Notes of 1.3.x">
+      <subsection name="1.3.1">
+        <ul>
+          <li>
+            Bug fix: return created or updated binary handle path on BinaryImportTask#createOrUpdateBinaryFromContentNode() call.
+          </li>
+          <li>
+            Bug fix: return created document handle path on DocumentManager#createDocument() call.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.3.0">
         <ul>
           <li>
@@ -46,6 +56,13 @@
       </subsection>
     </section>
     <section name="Release Notes of 1.2.x">
+      <subsection name="1.2.11">
+        <ul>
+          <li>
+            Bug fix: return created or updated binary handle path on BinaryImportTask#createOrUpdateBinaryFromContentNode() call.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.10">
         <ul>
           <li>
