@@ -97,9 +97,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/trunk</connection>
-    <developerConnection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/trunk</developerConnection>
-    <url>https://forge.onehippo.org/svn/content-exim/content-exim/trunk</url>
+    <connection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/branches/content-exim-1.2.xx</connection>
+    <developerConnection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/branches/content-exim-1.2.xx</developerConnection>
+    <url>https://forge.onehippo.org/svn/content-exim/content-exim/branches/content-exim-1.2.xx</url>
   </scm>
 
   <issueManagement>
