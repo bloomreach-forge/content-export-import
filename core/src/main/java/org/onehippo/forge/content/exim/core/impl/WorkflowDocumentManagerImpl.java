@@ -362,7 +362,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
                 createdDocPath = folderWorkflow.add("new-document", primaryTypeName,
                         ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(nodeName)));
                 final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(getSession().getNode(createdDocPath));
-                defaultWorkflow.localizeName(localizedName);
+                defaultWorkflow.setDisplayName(localizedName);
             } else {
                 throw new IllegalStateException("Folder at '" + folderLocation + "' is not allowed to add a document.");
             }

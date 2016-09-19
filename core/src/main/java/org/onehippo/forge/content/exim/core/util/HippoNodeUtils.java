@@ -516,7 +516,7 @@ public class HippoNodeUtils {
                 if (!nodeName.equals(name)) {
                     DefaultWorkflow defaultWorkflow = (DefaultWorkflow) getHippoWorkflow(session,
                             DEFAULT_WORKFLOW_CATEGORY, addedNode);
-                    defaultWorkflow.localizeName(name);
+                    defaultWorkflow.setDisplayName(name);
                 }
 
                 if (DEFAULT_NEW_DOCUMENT_WORKFLOW_CATEGORY.equals(category)) {

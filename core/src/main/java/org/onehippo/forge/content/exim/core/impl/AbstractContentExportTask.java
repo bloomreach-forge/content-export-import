@@ -103,14 +103,14 @@ abstract public class AbstractContentExportTask extends AbstractContentMigration
 
             if (handle instanceof HippoNode) {
                 contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME,
-                        ((HippoNode) handle).getLocalizedName());
+                        ((HippoNode) handle).getDisplayName());
             }
         } else {
             contentNode.setProperty(Constants.META_PROP_NODE_PATH,
                     ContentPathUtils.removeIndexNotationInNodePath(sourceNode.getPath()));
 
             if (sourceNode instanceof HippoNode) {
-                contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME, ((HippoNode) sourceNode).getLocalizedName());
+                contentNode.setProperty(Constants.META_PROP_NODE_LOCALIZED_NAME, ((HippoNode) sourceNode).getDisplayName());
             }
         }
     }
