@@ -359,10 +359,12 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             Boolean add = (Boolean) folderWorkflow.hints().get("add");
 
             if (BooleanUtils.isTrue(add)) {
-                createdDocPath = folderWorkflow.add("new-document", primaryTypeName,
+                final String addedDocPath = folderWorkflow.add("new-document", primaryTypeName,
                         ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(nodeName)));
-                final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(getSession().getNode(createdDocPath));
+                final Node handle = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(addedDocPath));
+                final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(handle);
                 defaultWorkflow.setDisplayName(localizedName);
+                createdDocPath = handle.getPath();
             } else {
                 throw new IllegalStateException("Folder at '" + folderLocation + "' is not allowed to add a document.");
             }
