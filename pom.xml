@@ -21,7 +21,7 @@
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>1.2.11-SNAPSHOT</version>
+  <version>1.2.11</version>
   <packaging>pom</packaging>
   <url>http://content-exim.forge.onehippo.org/</url>
 
@@ -97,9 +97,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/branches/content-exim-1.2.xx</connection>
-    <developerConnection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/branches/content-exim-1.2.xx</developerConnection>
-    <url>https://forge.onehippo.org/svn/content-exim/content-exim/branches/content-exim-1.2.xx</url>
+    <connection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/tags/content-exim-1.2.11</connection>
+    <developerConnection>scm:svn:https://forge.onehippo.org/svn/content-exim/content-exim/tags/content-exim-1.2.11</developerConnection>
+    <url>https://forge.onehippo.org/svn/content-exim/content-exim/tags/content-exim-1.2.11</url>
   </scm>
 
   <issueManagement>
