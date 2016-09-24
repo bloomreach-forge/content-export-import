@@ -16,7 +16,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>1.2.12-SNAPSHOT</version>
+    <version>1.2.12</version>
   </parent>
 
   <name>Hippo Content Export / Import Core</name>
