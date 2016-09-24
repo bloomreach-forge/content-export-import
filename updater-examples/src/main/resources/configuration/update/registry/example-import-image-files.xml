@@ -16,12 +16,12 @@
     <sv:value>{
   "sourceBaseFolderPath": "file:${catalina.base}/webapps/cms/WEB-INF/data/gallery/",
   "targetBaseFolderNodePath" : "/content/gallery/contenteximdemo/imported",
+  "imageProcessor" : "org.onehippo.forge.gallerymagick.core.command.ScalrProcessorUtils",
   "extensionMimeTypes" : {
     "jpg" : "image/jpeg",
     "png" : "image/png",
     "gif" : "image/gif",
-    "bmp" : "image/bmp",
-    "tiff" : "image/tiff"
+    "bmp" : "image/bmp"
   }
 }</sv:value>
   </sv:property>
@@ -53,6 +53,7 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
   def importTask
   def sourceBaseFolder
   def targetBaseFolderNodePath
+  def imageProcessor
   def extensionMimeTypes
 
   void initialize(Session session) {
@@ -60,6 +61,9 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
     sourceBaseFolder = VFS.getManager().resolveFile(sourceBaseFolderPath)
 
     targetBaseFolderNodePath = parametersMap.get("targetBaseFolderNodePath")
+
+    imageProcessor = parametersMap.get("imageProcessor")
+
     extensionMimeTypes = parametersMap.get("extensionMimeTypes")
 
     documentManager = new WorkflowDocumentManagerImpl(session)
@@ -107,12 +111,8 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
         if (StringUtils.isNotBlank(mimeType)) {
           record.setProcessed(true)
 
-          // NOTE: Replace GraphicsMagickCommandUtils by ImageMagickCommandUtils below
-          //       if you want to use ImageMagick instead of GraphicsMagick.
-          //       ref) http://gallery-magick.forge.onehippo.org/prerequisites.html
-
           // Find the image dimension of source image file.
-          dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+          dimension = identifyDimension(file)
 
           // Create Hippo gallery imageset ContentNode.
           contentNode = new ContentNode(file.name.baseName, "hippogallery:imageset")
@@ -131,9 +131,9 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
 
           // Create a thumbnail image file (in JPEG) from the original and store it to a temporary file by using GraphicsMagickCommandUtils.
           thumbnailFile = ContentFileObjectUtils.createTempFile(file.name.baseName, ".jpg")
-          GraphicsMagickCommandUtils.resizeImage(ContentFileObjectUtils.toFile(file), ContentFileObjectUtils.toFile(thumbnailFile), ImageDimension.from("60x60"))
+          resizeImage(file, thumbnailFile, ImageDimension.from("60x60"))
           // Find the image dimension of thumbnail image file.
-          dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(thumbnailFile))
+          dimension = identifyDimension(thumbnailFile)
 
           // Create hippogallery:thumbnail child content node and add it to contentNode.
           thumbnailNode = new ContentNode("hippogallery:thumbnail", "hippogallery:image")
@@ -167,8 +167,6 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
           visitorContext.reportUpdated(binaryLocation)
           log.debug "Imported binary from '${file.name.path}' to '${updatedBinaryLocation}'."
           record.setSucceeded(true)
-        } else {
-          record.setSkipped(true)
         }
       } catch (e) {
         log.error("Failed to process record.", e)
@@ -194,6 +192,31 @@ class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisito
     importTask.logSummary()
   }
 
+  ImageDimension identifyDimension(FileObject file) {
+    // By default, use the pure-Java solution, ScalrProcessorUtils.
+    // Optionally, use either GraphicsMagickCommandUtils or ImageMagickCommandUtils.
+    def dimension
+    if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.GraphicsMagickCommandUtils") {
+      dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+    } else if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.ImageMagickCommandUtils") {
+      dimension = ImageMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+    } else {
+      dimension = ScalrProcessorUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+    }
+    return dimension
+  }
+
+  void resizeImage(FileObject sourceFile, FileObject targetFile, ImageDimension dimension) {
+    // By default, use the pure-Java solution, ScalrProcessorUtils.
+    // Optionally, use either GraphicsMagickCommandUtils or ImageMagickCommandUtils.
+    if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.GraphicsMagickCommandUtils") {
+      GraphicsMagickCommandUtils.resizeImage(ContentFileObjectUtils.toFile(sourceFile), ContentFileObjectUtils.toFile(targetFile), dimension)
+    } else if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.ImageMagickCommandUtils") {
+      ImageMagickCommandUtils.resizeImage(ContentFileObjectUtils.toFile(sourceFile), ContentFileObjectUtils.toFile(targetFile), dimension)
+    } else {
+      ScalrProcessorUtils.resizeImage(ContentFileObjectUtils.toFile(sourceFile), ContentFileObjectUtils.toFile(targetFile), dimension)
+    }
+  }
 }</sv:value>
   </sv:property>
   <sv:property sv:name="hipposys:throttle" sv:type="Long">
