@@ -32,10 +32,22 @@
 
       <p>
         <em>NOTE:</em>
-        The example script in this page uses <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library to generate thumbnail files.
-        In order to let it work properly, you MUST install either <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>
+        The example script in this page uses any of the following through
+        <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library:
+      </p>
+      <ul>
+        <li><a href="https://github.com/rkalla/imgscalr">imgscalr - Java Image-Scaling Library</a></li>
+        <li><a href="http://www.graphicsmagick.org/">GraphicsMagick</a></li>
+        <li><a href="http://www.imagemagick.org/">ImageMagick</a></li>
+      </ul>
+      <p>
+        By default, the script uses the pure Java solution, <a href="https://github.com/rkalla/imgscalr">imgscalr - Java Image-Scaling Library</a>.
+      </p>
+      <p>
+        In order to let it resize images with non-Java solutions,
+        you MUST install either <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>
         or <a href="http://www.imagemagick.org/">ImageMagick</a>.
-        Please see <a href="http://gallery-magick.forge.onehippo.org/install.html">Installation</a> page for detail.
+        Please see the <a href="http://gallery-magick.forge.onehippo.org/prerequisites.html">Prerequisites</a> page for detail.
       </p>
 
       <subsection name="Introduction">
@@ -113,7 +125,7 @@
       //       ref) http://gallery-magick.forge.onehippo.org/prerequisites.html
 
       // 5. Find the image dimension of source image file.
-      def dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+      def dimension = identifyDimension(file)
 
       // 6. Create Hippo gallery imageset ContentNode.
       def contentNode = new ContentNode(file.name.baseName, "hippogallery:imageset")
@@ -132,9 +144,9 @@
 
       // 8. Create a thumbnail image file (in JPEG) from the original and store it to a temporary file by using GraphicsMagickCommandUtils.
       def thumbnailFile = ContentFileObjectUtils.createTempFile(file.name.baseName, ".jpg")
-      GraphicsMagickCommandUtils.resizeImage(ContentFileObjectUtils.toFile(file), ContentFileObjectUtils.toFile(thumbnailFile), ImageDimension.from("60x60"))
+      resizeImage(file, thumbnailFile, ImageDimension.from("60x60"))
       // Find the image dimension of thumbnail image file.
-      dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(thumbnailFile))
+      dimension = identifyDimension(thumbnailFile)
 
       // 9. Create hippogallery:thumbnail child content node and add it to contentNode.
       def thumbnailNode = new ContentNode("hippogallery:thumbnail", "hippogallery:image")
@@ -176,6 +188,46 @@
           ]]>
           </source>
         </div>
+        <p>
+          The script shown above uses the following methods in the script itself:
+        </p>
+        <div class="brush: java">
+          <source><![CDATA[
+  ImageDimension identifyDimension(FileObject file) {
+    // By default, use the pure-Java solution, ScalrProcessorUtils.
+    // Optionally, use either GraphicsMagickCommandUtils or ImageMagickCommandUtils.
+    def dimension
+    if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.GraphicsMagickCommandUtils") {
+      dimension = GraphicsMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+    } else if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.ImageMagickCommandUtils") {
+      dimension = ImageMagickCommandUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+    } else {
+      dimension = ScalrProcessorUtils.identifyDimension(ContentFileObjectUtils.toFile(file))
+    }
+    return dimension
+  }
+
+  void resizeImage(FileObject sourceFile, FileObject targetFile, ImageDimension dimension) {
+    // By default, use the pure-Java solution, ScalrProcessorUtils.
+    // Optionally, use either GraphicsMagickCommandUtils or ImageMagickCommandUtils.
+    if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.GraphicsMagickCommandUtils") {
+      GraphicsMagickCommandUtils.resizeImage(ContentFileObjectUtils.toFile(sourceFile), ContentFileObjectUtils.toFile(targetFile), dimension)
+    } else if (imageProcessor == "org.onehippo.forge.gallerymagick.core.command.ImageMagickCommandUtils") {
+      ImageMagickCommandUtils.resizeImage(ContentFileObjectUtils.toFile(sourceFile), ContentFileObjectUtils.toFile(targetFile), dimension)
+    } else {
+      ScalrProcessorUtils.resizeImage(ContentFileObjectUtils.toFile(sourceFile), ContentFileObjectUtils.toFile(targetFile), dimension)
+    }
+  }
+          ]]>
+          </source>
+        </div>
+        <p>
+          <em>Note: </em> The two methods checks the <strong>imageProcessor</strong> parameter/member
+          to decide which backend library or command to use in order to identify or resize an image file.
+          By default, it uses the pure Java based solution (<code>org.onehippo.forge.gallerymagick.core.command.ScalrProcessorUtils</code>).
+          You can set the parameter to either <code>org.onehippo.forge.gallerymagick.core.command.GraphicsMagickCommandUtils</code> or
+          <code>org.onehippo.forge.gallerymagick.core.command.ImageMagickCommandUtils</code> to use either non-Java based solution instead.
+        </p>
       </subsection>
 
       <subsection name="Log execution summary">
