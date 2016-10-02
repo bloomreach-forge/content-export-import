@@ -69,6 +69,13 @@
       </subsection>
     </section>
     <section name="Release Notes of 1.2.x">
+      <subsection name="1.2.13">
+        <ul>
+          <li>
+            Bug fix: return created document handle path on DocumentManager#createDocument() call.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="1.2.12">
         <ul>
           <li>
