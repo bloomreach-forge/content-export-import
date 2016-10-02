@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2016 Hippo B.V. (http://www.onehippo.com)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -63,7 +63,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     private String folderWorkflowCategory = "threepane";
 
     /**
-     * The workflow category name to get a document workflow. 
+     * The workflow category name to get a document workflow.
      */
     private String documentWorkflowCategory = "default";
 
@@ -359,10 +359,12 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
             Boolean add = (Boolean) folderWorkflow.hints().get("add");
 
             if (BooleanUtils.isTrue(add)) {
-                createdDocPath = folderWorkflow.add("new-document", primaryTypeName,
+                final String addedDocPath = folderWorkflow.add("new-document", primaryTypeName,
                         ContentPathUtils.encodeNodePath(ContentPathUtils.removeIndexNotationInNodePath(nodeName)));
-                final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(getSession().getNode(createdDocPath));
+                final Node handle = HippoNodeUtils.getHippoDocumentHandle(getSession().getNode(addedDocPath));
+                final DefaultWorkflow defaultWorkflow = getDefaultWorkflow(handle);
                 defaultWorkflow.localizeName(localizedName);
+                createdDocPath = handle.getPath();
             } else {
                 throw new IllegalStateException("Folder at '" + folderLocation + "' is not allowed to add a document.");
             }
