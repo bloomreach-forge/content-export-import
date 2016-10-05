@@ -326,13 +326,19 @@
 
     <section name="Demo Application">
 
+      <subsection name="Demo Application with Hippo CMS 11">
+        <p>
+          A demo project with Hippo CMS 11 is not prepared yet. Please run the demo for Hippo CMS 10 described below.
+        </p>
+      </subsection>
+
       <subsection name="Demo Application with Hippo CMS 10">
         <p>You can check out, build and run demo application, which contains all the examples explained in this site documentation.</p>
         <p>Here are example commands to check out, build and run demo application:</p>
         <div class="brush: bash">
         <source><![CDATA[
-$ svn checkout https://forge.onehippo.org/svn/content-exim/content-exim-demo/trunk content-exim-demo-TRUNK
-$ cd content-exim-demo-TRUNK
+$ svn checkout https://forge.onehippo.org/svn/content-exim/content-exim-demo/branches/content-exim-demo-1.2.xx content-exim-demo-1.2.xx
+$ cd content-exim-demo-1.2.xx
 $ mvn clean verify
 $ mvn -P cargo.run
         ]]></source>
