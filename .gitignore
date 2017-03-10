@@ -1,1 +1,5 @@
-core/log4j.log
+.idea
+*.iml
+target
+storage
+overlays

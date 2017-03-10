@@ -63,10 +63,10 @@
           In practice, you sometimes might want to convert data in other format (not in JSON or not exactly in the same JSON format)
           to <code>ContentNode</code> to import data.
           In that case, please see the following page in the
-          <a href="http://hippo-pojo-bind.forge.onehippo.org/">Hippo JCR POJO Binding</a> project as an example:
+          <a href="https://onehippo-forge.github.io/jcr-pojo-bind/">Hippo JCR POJO Binding</a> project as an example:
         </p>
         <ul>
-          <li><a href="http://hippo-pojo-bind.forge.onehippo.org/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
+          <li><a href="https://onehippo-forge.github.io/jcr-pojo-bind/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
         </ul>
       </subsection>
 
@@ -74,7 +74,7 @@
         <p>
           In practice, you sometimes have to create thumbnail images to import gallery image sets.
           <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a> is an example for this use case.
-          The script uses <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library to generate thumbnail files.
+          The script uses <a href="https://onehippo-forge.github.io/gallery-magick/">Gallery Magick Image Processing</a> library to generate thumbnail files.
           <strong>Gallery Magick Image Processing</strong> project provides utilities and command classes
           to manipulate image files.
         </p>

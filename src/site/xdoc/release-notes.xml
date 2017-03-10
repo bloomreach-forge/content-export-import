@@ -47,11 +47,11 @@
       <subsection name="1.3.2">
         <ul>
           <li>
-            Bump up <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library
+            Bump up <a href="https://onehippo-forge.github.io/gallery-magick/">Gallery Magick Image Processing</a> library
             dependency to 1.0.5 which supports pure Java based image processing
             by using <a href="https://github.com/rkalla/imgscalr">imgscalr - Java Image-Scaling Library</a>
             (used by Hippo CMS authoring application as well).
-            Also, <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>
+            Also, <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>
             now uses the pure Java based solution by default and it can use the other non-Java based solution
             based on <strong>imageProcessor</strong> parameter.
           </li>
@@ -93,11 +93,11 @@
       <subsection name="1.2.12">
         <ul>
           <li>
-            Bump up <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library
+            Bump up <a href="https://onehippo-forge.github.io/gallery-magick/">Gallery Magick Image Processing</a> library
             dependency to 1.0.5 which supports pure Java based image processing
             by using <a href="https://github.com/rkalla/imgscalr">imgscalr - Java Image-Scaling Library</a>
             (used by Hippo CMS authoring application as well).
-            Also, <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>
+            Also, <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>
             now uses the pure Java based solution by default and it can use the other non-Java based solution
             based on <strong>imageProcessor</strong> parameter.
           </li>
@@ -169,7 +169,7 @@
       <subsection name="1.2.3">
         <ul>
           <li>
-            Bump up dependency: <a href="http://hippo-pojo-bind.forge.onehippo.org/release-notes.html">Hippo JCR POJO Binding 1.1.4</a>.
+            Bump up dependency: <a href="https://onehippo-forge.github.io/jcr-popjo-binding/release-notes.html">Hippo JCR POJO Binding 1.1.4</a>.
           </li>
         </ul>
       </subsection>

@@ -36,9 +36,9 @@
       <!-- SNIP -->
 
       <repository>
-        <id>hippo-content-exim-maven-repo</id>
-        <name>Hippo Content EXIM (Export / Import) Maven 2 Repository</name>
-        <url>http://forge.onehippo.org/svn/content-exim/maven2/</url>
+        <id>hippo-maven2</id>
+        <name>Hippo Maven 2 Repository</name>
+        <url>https://maven.onehippo.com/maven2-forge//</url>
       </repository>
 
       <!-- SNIP -->

@@ -27,13 +27,13 @@
 
       <p>
         The code snippets are excerpts (or slightly simplififed ones) from
-        <a href="https://forge.onehippo.org/svn/content-exim/content-exim/trunk/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>.
+        <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/configuration/update/registry/example-import-image-files.xml">Example - Import Image Files</a>.
       </p>
 
       <p>
         <em>NOTE:</em>
         The example script in this page uses any of the following through
-        <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library:
+        <a href="https://onehippo-forge.github.io/gallery-magick">Gallery Magick Image Processing</a> library:
       </p>
       <ul>
         <li><a href="https://github.com/rkalla/imgscalr">imgscalr - Java Image-Scaling Library</a></li>
@@ -47,7 +47,7 @@
         In order to let it resize images with non-Java solutions,
         you MUST install either <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>
         or <a href="http://www.imagemagick.org/">ImageMagick</a>.
-        Please see the <a href="http://gallery-magick.forge.onehippo.org/prerequisites.html">Prerequisites</a> page for detail.
+        Please see the <a href="https://onehippo-forge.github.io/gallery-magickprerequisites.html">Prerequisites</a> page for detail.
       </p>
 
       <subsection name="Introduction">
@@ -89,14 +89,14 @@
 
         <p>
           <em>Note:</em> The following example uses <code>GraphicsMagickCommandUtils</code> utility methods
-          provided by <a href="http://gallery-magick.forge.onehippo.org/">Gallery Magick Image Processing</a> library
+          provided by <a href="https://onehippo-forge.github.io/gallery-magick">Gallery Magick Image Processing</a> library
           to identify and resize image files by default.
           <code>GraphicsMagickCommandUtils</code> uses <strong>GraphicsMagick</strong> commands whereas
           <code>ImageMagickCommandUtils</code> uses <strong>ImageMagick</strong> commands intead.
           Therefore, please replace <code>GraphicsMagickCommandUtils</code> by
           <code>ImageMagickCommandUtils</code> in the following example
           if you need to use <strong>ImageMagick</strong> commands instead of <strong>GraphicsMagick</strong> commands.
-          See <a href="http://gallery-magick.forge.onehippo.org/prerequisites.html">http://gallery-magick.forge.onehippo.org/prerequisites.html</a>
+          See <a href="https://onehippo-forge.github.io/gallery-magickprerequisites.html">https://onehippo-forge.github.io/gallery-magickprerequisites.html</a>
           for more information.
         </p>
 
@@ -122,7 +122,7 @@
 
       // NOTE: Replace GraphicsMagickCommandUtils by ImageMagickCommandUtils below
       //       if you want to use ImageMagick instead of GraphicsMagick.
-      //       ref) http://gallery-magick.forge.onehippo.org/prerequisites.html
+      //       ref) https://onehippo-forge.github.io/gallery-magickprerequisites.html
 
       // 5. Find the image dimension of source image file.
       def dimension = identifyDimension(file)
