@@ -39,6 +39,9 @@
         <img src="images/content-exim-import.png" alt="Content EXIM Importing" />
       </subsection>
 
+      <subsection name="Code base on GitHub">
+        <p>The code of this project is on GitHub at <a href="https://github.com/onehippo-forge/content-export-import/">https://github.com/onehippo-forge/content-export-import/</a>.</p>
+      </subsection>
     </section>
 
     <section name="Design Concepts">
