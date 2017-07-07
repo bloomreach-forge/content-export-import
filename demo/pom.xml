@@ -63,6 +63,8 @@
     <!--***START temporary override of versions*** -->
     <!-- ***END temporary override of versions*** -->
 
+    <content-exim.version>${project.version}</content-exim.version>
+
     <essentials.version>4.0.0</essentials.version>
     <jsp-api.version>2.2</jsp-api.version>
     <taglibs.version>1.2.1</taglibs.version>
@@ -85,7 +87,21 @@
   </repositories>
 
   <dependencyManagement>
+
     <dependencies>
+
+      <dependency>
+        <groupId>org.onehippo.forge.content-exim</groupId>
+        <artifactId>content-exim-core</artifactId>
+        <version>${content-exim.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.onehippo.forge.content-exim</groupId>
+        <artifactId>content-exim-updater-examples</artifactId>
+        <version>${content-exim.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-essentials-plugin-sdk-api</artifactId>

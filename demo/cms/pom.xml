@@ -11,7 +11,19 @@
   <packaging>war</packaging>
   <name>Hippo Content Export / Import Demo CMS</name>
   <description>Hippo Content Export / Import Demo CMS</description>
+
   <dependencies>
+
+    <dependency>
+      <groupId>org.onehippo.forge.content-exim</groupId>
+      <artifactId>content-exim-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.onehippo.forge.content-exim</groupId>
+      <artifactId>content-exim-updater-examples</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.onehippo.cms7.hst.dependencies</groupId>
       <artifactId>hst-repository-dependencies</artifactId>
