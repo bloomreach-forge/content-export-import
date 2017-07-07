@@ -1,6 +1,6 @@
 definitions:
   config:
-    /Example - Clean Hippo Mirror Docbase Values Having Paths:
+    /hippo:configuration/hippo:update/hippo:registry/Example - Clean Hippo Mirror Docbase Values Having Paths:
       jcr:primaryType: hipposys:updaterinfo
       hipposys:batchsize: 10
       hipposys:description: A example script to clean interim hippo:docbase values of

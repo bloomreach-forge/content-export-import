@@ -1,6 +1,6 @@
 definitions:
   config:
-    /Example - Export Asset and Image Set Content:
+    /hippo:configuration/hippo:update/hippo:registry/Example - Export Asset and Image Set Content:
       jcr:primaryType: hipposys:updaterinfo
       hipposys:batchsize: 10
       hipposys:description: A example script to export asset and image set content.

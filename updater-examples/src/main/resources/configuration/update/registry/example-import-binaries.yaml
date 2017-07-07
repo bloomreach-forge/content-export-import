@@ -1,6 +1,6 @@
 definitions:
   config:
-    /Example - Import Asset and Image Set Content:
+    /hippo:configuration/hippo:update/hippo:registry/Example - Import Asset and Image Set Content:
       jcr:primaryType: hipposys:updaterinfo
       hipposys:batchsize: 10
       hipposys:description: A example script to import asset and image set content.
