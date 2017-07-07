@@ -1,0 +1,87 @@
+definitions:
+  config:
+    /hst:hst/hst:configurations/contenteximdemo/hst:sitemap:
+      jcr:primaryType: hst:sitemap
+      /root:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/homepage
+        hst:refId: root
+      /_any_:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/pagenotfound
+      /pagenotfound:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/pagenotfound
+        hst:refId: pagenotfound
+      /events:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/eventslist
+        hst:relativecontentpath: events
+        /_any_.html:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/eventspage
+          hst:relativecontentpath: ${parent}/${1}
+        /_any_:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/eventslist
+          hst:relativecontentpath: ${parent}/${1}
+      /faq:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/faqlist
+        hst:relativecontentpath: faq
+        /_any_.html:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/faqpage
+          hst:relativecontentpath: ${parent}/${1}
+        /_default_.html:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/faqlist
+          hst:relativecontentpath: ${parent}/${1}
+      /news:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/newslist
+        hst:relativecontentpath: news
+        /_any_.html:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/newspage
+          hst:relativecontentpath: ${parent}/${1}
+        /_any_:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/newslist
+          hst:relativecontentpath: ${parent}/${1}
+      /content:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/contentlist
+        hst:relativecontentpath: content
+        /_any_.html:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/contentpage
+          hst:relativecontentpath: ${parent}/${1}
+        /_any_:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/contentlist
+          hst:relativecontentpath: ${parent}/${1}
+      /blog:
+        jcr:primaryType: hst:sitemapitem
+        hst:componentconfigurationid: hst:pages/bloglist
+        hst:relativecontentpath: blog
+        /_any_.html:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/blogpage
+          hst:relativecontentpath: ${parent}/${1}
+        /_any_:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/bloglist
+          hst:relativecontentpath: ${parent}/${1}
+        /facet:
+          jcr:primaryType: hst:sitemapitem
+          hst:componentconfigurationid: hst:pages/bloglist
+          hst:relativecontentpath: blogFacets
+          /_default_.html:
+            jcr:primaryType: hst:sitemapitem
+            hst:componentconfigurationid: hst:pages/blogpage
+            hst:relativecontentpath: ${parent}/hippo:resultset/${1}
+          /_any_:
+            jcr:primaryType: hst:sitemapitem
+            hst:componentconfigurationid: hst:pages/bloglist
+            hst:relativecontentpath: ${parent}/${1}

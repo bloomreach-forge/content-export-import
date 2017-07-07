@@ -1,0 +1,4 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:modules/essentials-eventbus-listener/hippo:moduleconfig:
+      projectNamespace: contenteximdemo
