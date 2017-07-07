@@ -9,5 +9,5 @@ definitions:
       hipposys:query: "//element(*)[jcr:like(@hippo:docbase,'/content/%')]"
       hipposys:script:
         type: string
-        resource: /configuration/update/registry/example-clean-docbase-values-having-paths
+        resource: /configuration/update/registry/example-clean-docbase-values-having-paths.groovy
       hipposys:throttle: 10
