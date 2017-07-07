@@ -459,6 +459,16 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
         <version>${plugin.clean.version}</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>docs</directory>
+              <includes>
+                <include>**/*.html</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
