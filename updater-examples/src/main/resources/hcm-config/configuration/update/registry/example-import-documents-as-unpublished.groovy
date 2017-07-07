@@ -88,7 +88,7 @@ class ImportingDocumentVariantInFileUpdateVisitor extends BaseNodeUpdateVisitor 
         record.setAttribute("file", file.name.path)
         record.setProcessed(true)
 
-        locale = contentNode.getProperty("hippotranslation:locale").getValue()
+        locale = (contentNode.hasProperty("hippotranslation:locale")) ? contentNode.getProperty("hippotranslation:locale").getValue() : null
         // find localized document name if jcr:localizedName meta property exists in the ContentNode object.
         localizedName = contentNode.getProperty("jcr:localizedName").getValue()
 
