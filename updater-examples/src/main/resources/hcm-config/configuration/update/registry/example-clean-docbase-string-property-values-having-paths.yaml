@@ -1,0 +1,13 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths:
+      jcr:primaryType: hipposys:updaterinfo
+      hipposys:batchsize: 100
+      hipposys:description: 'A example script to clean interim String Docbase property values having paths instead of UUIDs.'
+      hipposys:dryrun: false
+      hipposys:parameters: '{ "docbasePropNames": [ "contenteximdemo:relatedarticle" ] }'
+      hipposys:query: "/jcr:root/content/documents//element(*)[@contenteximdemo:relatedarticle]"
+      hipposys:script:
+        type: string
+        resource: /configuration/update/registry/example-clean-docbase-string-property-values-having-paths.groovy
+      hipposys:throttle: 10

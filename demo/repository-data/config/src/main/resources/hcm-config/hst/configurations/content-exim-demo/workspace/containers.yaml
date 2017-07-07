@@ -1,0 +1,179 @@
+definitions:
+  config:
+    /hst:hst/hst:configurations/contenteximdemo/hst:workspace/hst:containers:
+      jcr:primaryType: hst:containercomponentfolder
+      /base:
+        jcr:primaryType: hst:containercomponentfolder
+        /top:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Top
+          hst:xtype: hst.vbox
+        /footer:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Footer
+          hst:xtype: hst.vbox
+      /homepage:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Home Page Main
+          hst:xtype: hst.vbox
+      /pagenotfound:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Page-Not-Found Main
+          hst:xtype: hst.vbox
+      /eventslist:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Event List Main
+          hst:xtype: hst.vbox
+          /eventslist:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsEventsComponent
+            hst:label: Events List
+            hst:parameternames: [hidePastEvents, documentTypes, sortField, sortOrder,
+              includeSubtypes, showPagination, path, pageSize, documentDateField]
+            hst:parametervalues: ['on', 'contenteximdemo:eventsdocument', '', desc,
+              'off', 'on', '', '10', 'contenteximdemo:enddate']
+            hst:template: eventslist-main-eventslist
+            hst:xtype: hst.item
+      /eventspage:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Event Page Main
+          hst:xtype: hst.vbox
+          /content:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsContentComponent
+            hst:template: eventspage-main
+            hst:xtype: hst.item
+      /faqlist:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Faq Main
+          hst:xtype: hst.vbox
+          /faq:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsDocumentComponent
+            hst:iconpath: images/component-icon-faq.png
+            hst:label: Faq
+            hst:parameternames: [document]
+            hst:parametervalues: [faq/about-faq]
+            hst:template: faqlist-main
+            hst:xtype: hst.item
+      /newslist:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: News List Main
+          hst:xtype: hst.vbox
+          /newslist:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsNewsComponent
+            hst:label: News List
+            hst:parameternames: [hidePastEvents, documentTypes, sortField, sortOrder,
+              includeSubtypes, showPagination, path, pageSize, documentDateField,
+              hideFutureItems]
+            hst:parametervalues: ['on', 'contenteximdemo:newsdocument', '', desc,
+              'off', 'on', '', '10', 'contenteximdemo:date', 'on']
+            hst:template: newslist-main-newslist
+            hst:xtype: hst.item
+      /newspage:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: News Page Main
+          hst:xtype: hst.vbox
+          /content:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsContentComponent
+            hst:template: newspage-main
+            hst:xtype: hst.item
+      /contentlist:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Content List Main
+          hst:xtype: hst.vbox
+          /contentlist:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsListComponent
+            hst:label: Content list
+            hst:parameternames: [documentTypes, sortField, sortOrder, includeSubtypes,
+              showPagination, path, pageSize]
+            hst:parametervalues: ['contenteximdemo:contentdocument', '', desc, 'off',
+              'on', '', '10']
+            hst:template: contentlist-main-contentlist
+            hst:xtype: hst.item
+      /contentpage:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Content Page Main
+          hst:xtype: hst.vbox
+          /content:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsContentComponent
+            hst:template: contentpage-main
+            hst:xtype: hst.item
+      /bloglistdetail:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Blog List Main
+          hst:xtype: hst.vbox
+          /content:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsBlogComponent
+            hst:label: Blog List
+            hst:parameternames: [documentTypes, sortField, sortOrder, showPagination,
+              includeSubtypes, pageSize, path]
+            hst:parametervalues: ['contenteximdemo:blogpost', '', desc, 'on', 'off',
+              '1', '']
+            hst:template: blog-list
+            hst:xtype: hst.item
+      /bloglistsidebar:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Blog List Sidebar
+          hst:xtype: hst.vbox
+          /content:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsFacetsComponent
+            hst:label: Facets
+            hst:parameternames: [facetPath, showPagination, pageSize]
+            hst:parametervalues: [blogFacets, 'on', '10']
+            hst:template: blog-facet
+            hst:xtype: hst.item
+      /blogpagesidebar:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Blog Page Sidebar
+          hst:xtype: hst.vbox
+          /blogauthorposts:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsBlogAuthorPostsComponent
+            hst:iconpath: images/essentials/catalog-component-icons/blogposts-by-author.png
+            hst:label: Blogposts by Author
+            hst:template: blog-author-posts
+            hst:xtype: hst.item
+      /blogpagedetail:
+        jcr:primaryType: hst:containercomponentfolder
+        /main:
+          jcr:primaryType: hst:containercomponent
+          hst:label: Blog Page Main
+          hst:lastmodified: 2014-04-15T15:02:10.775+02:00
+          hst:xtype: hst.vbox
+          /content:
+            jcr:primaryType: hst:containeritemcomponent
+            hst:componentclassname: org.onehippo.cms7.essentials.components.EssentialsContentComponent
+            hst:label: Blog Detail
+            hst:template: blog-detail
+            hst:xtype: hst.item

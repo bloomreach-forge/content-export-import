@@ -1,0 +1,13 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Import_Asset_and_Image_Set_Content:
+      jcr:primaryType: hipposys:updaterinfo
+      hipposys:batchsize: 100
+      hipposys:description: 'A example script to import asset and image set content.'
+      hipposys:dryrun: true
+      hipposys:parameters: '{ "fileInJson": true, "sourceBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/bindata/" }'
+      hipposys:query: "/jcr:root"
+      hipposys:script:
+        type: string
+        resource: /configuration/update/registry/example-import-binaries.groovy
+      hipposys:throttle: 10

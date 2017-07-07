@@ -1,0 +1,13 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Import_Image_Files:
+      jcr:primaryType: hipposys:updaterinfo
+      hipposys:batchsize: 100
+      hipposys:description: 'A example script to import gallery image files with creating thumbnails.'
+      hipposys:dryrun: true
+      hipposys:parameters: '{ "sourceBaseFolderPath": "file:${catalina.base}/webapps/cms/WEB-INF/data/gallery/", "targetBaseFolderNodePath" : "/content/gallery/contenteximdemo/imported", "imageProcessor" : "org.onehippo.forge.gallerymagick.core.command.ScalrProcessorUtils", "extensionMimeTypes" : { "jpg" : "image/jpeg", "png" : "image/png", "gif" : "image/gif", "bmp" : "image/bmp" } }'
+      hipposys:query: "/jcr:root"
+      hipposys:script:
+        type: string
+        resource: /configuration/update/registry/example-import-image-files.groovy
+      hipposys:throttle: 10

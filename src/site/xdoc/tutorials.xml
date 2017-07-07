@@ -63,10 +63,10 @@
           In practice, you sometimes might want to convert data in other format (not in JSON or not exactly in the same JSON format)
           to <code>ContentNode</code> to import data.
           In that case, please see the following page in the
-          <a href="https://onehippo-forge.github.io/jcr-pojo-bind/">Hippo JCR POJO Binding</a> project as an example:
+          <a href="https://onehippo-forge.github.io/jcr-pojo-binding/">Hippo JCR POJO Binding</a> project as an example:
         </p>
         <ul>
-          <li><a href="https://onehippo-forge.github.io/jcr-pojo-bind/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
+          <li><a href="https://onehippo-forge.github.io/jcr-pojo-binding/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
         </ul>
       </subsection>
 

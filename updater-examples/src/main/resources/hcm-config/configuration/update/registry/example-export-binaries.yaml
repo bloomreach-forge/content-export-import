@@ -1,0 +1,13 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Export_Asset_and_Image_Set_Content:
+      jcr:primaryType: hipposys:updaterinfo
+      hipposys:batchsize: 100
+      hipposys:description: 'A example script to export asset and image set content.'
+      hipposys:dryrun: true
+      hipposys:parameters: '{ "fileInJson": true, "targetBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/bindata/", "binaryAttachmentFolderPath": "file:${java.io.tmpdir}/content-exim-demo/attachments/" }'
+      hipposys:query: "/jcr:root/content//element(*,hippo:document)[@jcr:primaryType='hippogallery:imageset' or @jcr:primaryType='hippogallery:exampleAssetSet']"
+      hipposys:script:
+        type: string
+        resource: /configuration/update/registry/example-export-binaries.groovy
+      hipposys:throttle: 10

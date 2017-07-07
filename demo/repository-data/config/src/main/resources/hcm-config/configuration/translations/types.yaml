@@ -1,0 +1,342 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:bannerdocument:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Content
+        contenteximdemo:image: Image
+        contenteximdemo:link: Link
+        contenteximdemo:title: Title
+        jcr:name: Banner
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Inhoud
+        contenteximdemo:image: Afbeelding
+        contenteximdemo:link: Link
+        contenteximdemo:title: Titel
+        jcr:name: Banner
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Contenu
+        contenteximdemo:image: Image
+        contenteximdemo:link: Lien
+        contenteximdemo:title: Titre
+        jcr:name: Bannière
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Inhalt
+        contenteximdemo:image: Abbildung
+        contenteximdemo:link: Link
+        contenteximdemo:title: Titel
+        jcr:name: Banner
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:eventsdocument:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Content
+        contenteximdemo:date: Start date
+        contenteximdemo:enddate: End date
+        contenteximdemo:image: Image
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:location: Location
+        contenteximdemo:title: Title
+        jcr:name: Event
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Inhoud
+        contenteximdemo:date: Startdatum
+        contenteximdemo:enddate: Einddatum
+        contenteximdemo:image: Afbeelding
+        contenteximdemo:introduction: Introductie
+        contenteximdemo:location: Locatie
+        contenteximdemo:title: Titel
+        jcr:name: Evenement
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Contenu
+        contenteximdemo:date: Date de début
+        contenteximdemo:enddate: Date de fin
+        contenteximdemo:image: Image
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:location: Lieu
+        contenteximdemo:title: Titre
+        jcr:name: Événement
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Inhalt
+        contenteximdemo:date: Startdatum
+        contenteximdemo:enddate: Enddatum
+        contenteximdemo:image: Abbildung
+        contenteximdemo:introduction: Einführung
+        contenteximdemo:location: Standort
+        contenteximdemo:title: Titel
+        jcr:name: Event
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:faqitem:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:answer: Answer
+        contenteximdemo:question: Question
+        jcr:name: FAQ Item
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:answer: Antwoord
+        contenteximdemo:question: Vraag
+        jcr:name: FAQ Item
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:answer: Réponse
+        contenteximdemo:question: Question
+        jcr:name: Élément de FAQ
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:answer: Antwort
+        contenteximdemo:question: Frage
+        jcr:name: FAQ-Item
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:faqlist:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Description
+        contenteximdemo:faqitem: FAQ items
+        contenteximdemo:title: Title
+        jcr:name: FAQ List
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Beschrijving
+        contenteximdemo:faqitem: FAQ items
+        contenteximdemo:title: Titel
+        jcr:name: FAQ Lijst
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Description
+        contenteximdemo:faqitem: Éléments de FAQ
+        contenteximdemo:title: Titre
+        jcr:name: Liste de FAQ
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Beschreibung
+        contenteximdemo:faqitem: FAQ-Items
+        contenteximdemo:title: Titel
+        jcr:name: FAQ-Liste
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:newsdocument:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:author: Author
+        contenteximdemo:content: Content
+        contenteximdemo:date: Date
+        contenteximdemo:image: Image
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:location: Location
+        contenteximdemo:source: Source
+        contenteximdemo:title: Title
+        jcr:name: News Item
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:author: Auteur
+        contenteximdemo:content: Inhoud
+        contenteximdemo:date: Datum
+        contenteximdemo:image: Afbeelding
+        contenteximdemo:introduction: Introductie
+        contenteximdemo:location: Locatie
+        contenteximdemo:source: Bron
+        contenteximdemo:title: Titel
+        jcr:name: Nieuwsbericht
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:author: Verfasser
+        contenteximdemo:content: Inhalt
+        contenteximdemo:date: Datum
+        contenteximdemo:image: Abbildung
+        contenteximdemo:introduction: Einführung
+        contenteximdemo:location: Standort
+        contenteximdemo:source: Quelle
+        contenteximdemo:title: Titel
+        jcr:name: News
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:author: Auteur
+        contenteximdemo:content: Contenu
+        contenteximdemo:date: Date
+        contenteximdemo:image: Image
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:location: Lieu
+        contenteximdemo:source: Source
+        contenteximdemo:title: Titre
+        jcr:name: Message d'info
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:contentdocument:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Content
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:publicationdate: Publication date
+        contenteximdemo:title: Title
+        jcr:name: Simple Document
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Inhoud
+        contenteximdemo:introduction: Introductie
+        contenteximdemo:publicationdate: Publicatiedatum
+        contenteximdemo:title: Titel
+        jcr:name: Eenvoudig Document
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Contenu
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:publicationdate: Date de publication
+        contenteximdemo:title: Titre
+        jcr:name: Document simple
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:content: Inhalt
+        contenteximdemo:introduction: Einführung
+        contenteximdemo:publicationdate: Publikationsdatum
+        contenteximdemo:title: Titel
+        jcr:name: Einfaches Dokument
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:video:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Description
+        contenteximdemo:link: Video URL
+        contenteximdemo:title: Title
+        jcr:name: Video
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Beschrijving
+        contenteximdemo:link: Video URL
+        contenteximdemo:title: Titel
+        jcr:name: Video
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Description
+        contenteximdemo:link: URL vidéo
+        contenteximdemo:title: Titre
+        jcr:name: Vidéo
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:description: Beschreibung
+        contenteximdemo:link: Video-URL
+        contenteximdemo:title: Titel
+        jcr:name: Video
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:blogpost:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:authors: Author(s)
+        contenteximdemo:authors#hint: Link to author document(s)
+        contenteximdemo:categories: Categories
+        contenteximdemo:content: Content
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:publicationdate: Publication Date
+        contenteximdemo:title: Title
+        jcr:name: Blogpost
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:authors: Auteur(s)
+        contenteximdemo:authors#hint: Link naar auteur document(en)
+        contenteximdemo:categories: Categorieën
+        contenteximdemo:content: Inhoud
+        contenteximdemo:introduction: Introductie
+        contenteximdemo:publicationdate: Publicatiedatum
+        contenteximdemo:title: Titel
+        jcr:name: Blogpost
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:authors: Auteur(s)
+        contenteximdemo:authors#hint: Lien vers le(s) document(s) de l'auteur
+        contenteximdemo:categories: Catégories
+        contenteximdemo:content: Contenu
+        contenteximdemo:introduction: Introduction
+        contenteximdemo:publicationdate: Date de publication
+        contenteximdemo:title: Titre
+        jcr:name: Post blog
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:authors: Verfasser
+        contenteximdemo:authors#hint: Link zu Verfasserdokument(en)
+        contenteximdemo:categories: Kategorien
+        contenteximdemo:content: Inhalt
+        contenteximdemo:introduction: Einführung
+        contenteximdemo:publicationdate: Publikationsdatum
+        contenteximdemo:title: Titel
+        jcr:name: Blog-Post
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:author:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:accounts: Accounts
+        contenteximdemo:accounts#hint: External social media accounts
+        contenteximdemo:content: Description
+        contenteximdemo:content#hint: Information about the author
+        contenteximdemo:fullname: Name
+        contenteximdemo:fullname#hint: Full name
+        contenteximdemo:photo: Photo
+        contenteximdemo:photo#hint: Photo of the author
+        contenteximdemo:role: Role
+        jcr:name: Author
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:accounts: Accounts
+        contenteximdemo:accounts#hint: Externe social media accounts
+        contenteximdemo:content: Beschrijving
+        contenteximdemo:content#hint: Informatie over de auteur
+        contenteximdemo:fullname: Naam
+        contenteximdemo:fullname#hint: Volledige naam
+        contenteximdemo:photo: Foto
+        contenteximdemo:photo#hint: Foto van de auteur
+        contenteximdemo:role: Rol
+        jcr:name: Auteur
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:accounts: Konten
+        contenteximdemo:accounts#hint: Comptes médias sociaux externes
+        contenteximdemo:content: Description
+        contenteximdemo:content#hint: Informations sur l'auteur
+        contenteximdemo:fullname: Nom
+        contenteximdemo:fullname#hint: Nom complet
+        contenteximdemo:photo: Photo
+        contenteximdemo:photo#hint: Photo de l'auteur
+        contenteximdemo:role: Rôle
+        jcr:name: Auteur
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:accounts: Comptes
+        contenteximdemo:accounts#hint: Externe Konten soziale Medien
+        contenteximdemo:content: Beschreibung
+        contenteximdemo:content#hint: Informationen über den Verfasser
+        contenteximdemo:fullname: Name
+        contenteximdemo:fullname#hint: Vollständiger Name
+        contenteximdemo:photo: Foto
+        contenteximdemo:photo#hint: Foto des Verfassers
+        contenteximdemo:role: Rolle
+        jcr:name: Verfasser
+    /hippo:configuration/hippo:translations/hippo:types/contenteximdemo:account:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:link: Link
+        contenteximdemo:link#hint: External link to the account
+        contenteximdemo:type: Type
+        jcr:name: Account (Compound)
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:link: Link
+        contenteximdemo:link#hint: Externe link naar het account
+        contenteximdemo:type: Soort
+        jcr:name: Account (Compound)
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:link: Lien
+        contenteximdemo:link#hint: Lien externe vers le compte
+        contenteximdemo:type: Type
+        jcr:name: Compte (Compound)
+      /de:
+        jcr:primaryType: hipposys:resourcebundle
+        contenteximdemo:link: Link
+        contenteximdemo:link#hint: Externer Link zum Konto
+        contenteximdemo:type: Art
+        jcr:name: Konto (Compound)

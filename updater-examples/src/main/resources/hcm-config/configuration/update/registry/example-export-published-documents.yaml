@@ -1,0 +1,13 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Export_Published_Documents:
+      jcr:primaryType: hipposys:updaterinfo
+      hipposys:batchsize: 100
+      hipposys:description: 'A example script to export published documents.'
+      hipposys:dryrun: true
+      hipposys:parameters: '{ "fileInJson": true, "targetBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/" }'
+      hipposys:query: "/jcr:root/content/documents//element(*,hippostd:publishable)[@hippostd:state='published']"
+      hipposys:script:
+        type: string
+        resource: /configuration/update/registry/example-export-published-documents.groovy
+      hipposys:throttle: 10

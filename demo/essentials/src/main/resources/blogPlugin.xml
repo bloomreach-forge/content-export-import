@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <installerDocument>
     <name>blogPlugin</name>
-    <dateInstalled>2016-02-08T13:37:45.035-05:00</dateInstalled>
-    <installationState>boarding</installationState>
+    <dateAdded>2017-07-07T13:01:37.003-04:00</dateAdded>
+    <dateInstalled>2017-07-07T12:58:49.157-04:00</dateInstalled>
+    <installationState>installed</installationState>
 </installerDocument>

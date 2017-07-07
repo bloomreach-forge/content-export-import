@@ -1,0 +1,13 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Import_Documents_As_Unpublished:
+      jcr:primaryType: hipposys:updaterinfo
+      hipposys:batchsize: 100
+      hipposys:description: 'A example script to import documents as unpublished status.'
+      hipposys:dryrun: false
+      hipposys:parameters: '{ "fileInJson": true, "sourceBaseFolderPath": "file:${java.io.tmpdir}/content-exim-demo/docdata/" }'
+      hipposys:query: "/jcr:root"
+      hipposys:script:
+        type: string
+        resource: /configuration/update/registry/example-import-documents-as-unpublished.groovy
+      hipposys:throttle: 10
