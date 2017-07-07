@@ -2,7 +2,7 @@ definitions:
   config:
     /hippo:configuration/hippo:modules/autoexport:
       /hippo:moduleconfig:
-        autoexport:enabled: false
+        autoexport:enabled: true
         autoexport:modules:
           operation: override
           type: string

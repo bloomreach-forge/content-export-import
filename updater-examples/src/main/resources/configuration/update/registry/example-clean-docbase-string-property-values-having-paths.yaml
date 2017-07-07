@@ -1,59 +1,13 @@
 definitions:
   config:
-    /hippo:configuration/hippo:update/hippo:registry/Example - Clean Hippo String Docbase Property Values Having Paths:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths:
       jcr:primaryType: hipposys:updaterinfo
-      hipposys:batchsize: 10
-      hipposys:description: A example script to clean interim String Docbase property
-        values having paths instead of UUIDs.
+      hipposys:batchsize: 100
+      hipposys:description: 'A example script to clean interim String Docbase property values having paths instead of UUIDs.'
       hipposys:dryrun: false
-      hipposys:parameters: "{ \n  \"docbasePropNames\" : [ \"contenteximdemo:relatedarticle\"\
-        \ ]\n}\n    "
-      hipposys:query: /jcr:root/content/documents//element(*)[@contenteximdemo:relatedarticle]
-      hipposys:script: |-
-        package org.hippoecm.frontend.plugins.cms.admin.updater
-
-        import java.io.*
-        import javax.jcr.*
-        import org.apache.commons.lang.*
-        import org.onehippo.repository.update.BaseNodeUpdateVisitor
-        import org.hippoecm.repository.util.*
-
-        class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {
-
-          boolean doUpdate(Node node) {
-            log.debug "Visiting ${node.path}"
-            def propsUpdated = false
-            def docbase
-
-            parametersMap.docbasePropNames.eachWithIndex { docbasePropName, i ->
-              def valuesUpdated = false
-              String [] docbaseValues = JcrUtils.getMultipleStringProperty(node, docbasePropName, ArrayUtils.EMPTY_STRING_ARRAY)
-
-              docbaseValues.eachWithIndex { docbaseValue, j ->
-                if (StringUtils.startsWith(docbaseValue, "/") && node.session.nodeExists(docbaseValue)) {
-                  docbase = node.session.getNode(docbaseValue).getIdentifier()
-                  docbaseValues[j] = docbase
-                  log.info "Reset ${node.path}/${docbasePropName} value at position ${i} to '${docbase}' from '${docbaseValue}'."
-                  valuesUpdated = true
-                }
-              }
-
-              if (valuesUpdated) {
-                node.setProperty(docbasePropName, docbaseValues)
-                propsUpdated = true
-              }
-            }
-
-            return propsUpdated
-
-          }
-
-          boolean undoUpdate(Node node) {
-            throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
-          }
-
-          void destroy() {
-          }
-
-        }
-      hipposys:throttle: 1000
+      hipposys:parameters: '{ "docbasePropNames": [ "contenteximdemo:relatedarticle" ] }'
+      hipposys:query: "/jcr:root/content/documents//element(*)[@contenteximdemo:relatedarticle]"
+      hipposys:script:
+        type: string
+        resource: /configuration/update/registry/example-clean-docbase-string-property-values-having-paths.groovy
+      hipposys:throttle: 10
