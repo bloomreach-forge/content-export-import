@@ -21,22 +21,22 @@
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>1.4.0-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>https://github.com/onehippo-forge/content-export-import</url>
 
   <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.javaVersion>1.7</project.build.javaVersion>
+    <project.build.javaVersion>1.8</project.build.javaVersion>
 
     <forge.hippo-pojo-bind-jcr.version>1.1.5</forge.hippo-pojo-bind-jcr.version>
-    <forge.gallery-magick.version>1.0.6</forge.gallery-magick.version>
+    <forge.gallery-magick.version>2.0.0</forge.gallery-magick.version>
     <jackson2.version>2.4.5</jackson2.version>
 
     <javax.jcr.version>2.0</javax.jcr.version>
-    <hippo.repository.version>4.0.3</hippo.repository.version>
-    <hippo.services.version>2.2.0</hippo.services.version>
+    <hippo.repository.version>5.0.0</hippo.repository.version>
+    <hippo.services.version>4.0.0</hippo.services.version>
     <commons-lang.version>2.6</commons-lang.version>
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-vfs2.version>2.1</commons-vfs2.version>
@@ -45,10 +45,10 @@
     <tika-core.version>1.3</tika-core.version>
     <tika-parsers.version>1.3</tika-parsers.version>
 
-    <lib.junit.version>4.8.2</lib.junit.version>
-    <lib.easymock.version>3.0</lib.easymock.version>
-    <lib.slf4j.version>1.7.6</lib.slf4j.version>
-    <lib.log4j.version>1.2.17</lib.log4j.version>
+    <lib.junit.version>4.12</lib.junit.version>
+    <lib.easymock.version>3.4</lib.easymock.version>
+    <lib.slf4j.version>1.7.25</lib.slf4j.version>
+    <lib.log4j2.version>2.8.2</lib.log4j2.version>
 
     <plugin.compiler.version>3.1</plugin.compiler.version>
     <plugin.clean.version>2.5</plugin.clean.version>
@@ -339,22 +339,33 @@
 
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${lib.slf4j.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
         <version>${lib.slf4j.version}</version>
         <scope>test</scope>
       </dependency>
-
       <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${lib.log4j.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${lib.log4j2.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${lib.log4j2.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${lib.log4j2.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- only (should) be needed to (test)compile log4j1.x (backward compatible) usages -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-1.2-api</artifactId>
+        <version>${lib.log4j2.version}</version>
         <scope>test</scope>
       </dependency>
 
