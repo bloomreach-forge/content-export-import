@@ -489,9 +489,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>${plugin.site.version}</version>
-        <configuration>
-          <outputDirectory>docs</outputDirectory>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -518,5 +515,24 @@
     </extensions>
 
   </build>
+
+  <profiles>
+    <!-- Only for generating/publishing GitHub Site Pages into docs/ folder from master branch. -->
+    <profile>
+      <id>github.pages</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>${plugin.site.version}</version>
+            <configuration>
+              <outputDirectory>docs</outputDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
