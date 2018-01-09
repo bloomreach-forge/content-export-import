@@ -108,6 +108,28 @@
           Now, you're ready to use the plugin!
         </p>
       </subsection>
+
+      <subsection name="Optional Dependencies with Apache Commons VFS Library">
+        <p>
+          Some Groovy script examples in some documentation pages
+          (e.g, <a href="tutorials-import-docs.html">Tutorials - Importing Documents</a>)
+          use <a href="https://commons.apache.org/proper/commons-vfs/">Apache Commons VFS library</a>.
+        </p>
+        <p>
+          If you want to use other
+          <a href="https://commons.apache.org/proper/commons-vfs/filesystems.html">File Systems</a>
+          other than <a href="https://commons.apache.org/proper/commons-vfs/filesystems.html#Local_Files">Local Files</a>,
+          please make sure you add necessary optional dependencies additionally
+          as <a href="https://commons.apache.org/proper/commons-vfs/">Apache Commons VFS library</a> doesn't
+          include those optional depencencies by default. See the following for those optional dependnecies:
+        </p>
+        <ul>
+          <li>
+            <a href="https://commons.apache.org/proper/commons-vfs/download.html">https://commons.apache.org/proper/commons-vfs/download.html</a>
+          </li>
+        </ul>
+      </subsection>
+
     </section>
   </body>
 </document>
