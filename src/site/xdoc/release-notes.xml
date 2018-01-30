@@ -27,8 +27,12 @@
           </th>
         </tr>
         <tr>
-          <td>2.x</td>
-          <td>12.x</td>
+          <td>2.1.x</td>
+          <td>12.1.x</td>
+        </tr>
+        <tr>
+          <td>2.0.x</td>
+          <td>12.0.x</td>
         </tr>
         <tr>
           <td>1.3.x</td>
@@ -40,11 +44,20 @@
         </tr>
       </table>
     </section>
-    <section name="Release Notes of 2.x">
+    <section name="Release Notes of 2.1.x">
+      <subsection name="2.1.0">
+        <ul>
+          <li>
+            Compliant with Hippo CMS 12.1.
+          </li>
+        </ul>
+      </subsection>
+    </section>
+    <section name="Release Notes of 2.0.x">
       <subsection name="2.0.0">
         <ul>
           <li>
-            Compliant with Hippo CMS 12.
+            Compliant with Hippo CMS 12.0.
           </li>
         </ul>
       </subsection>
