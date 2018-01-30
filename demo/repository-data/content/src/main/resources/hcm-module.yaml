@@ -1,6 +1,6 @@
 group: 
   name: content-exim-demo
-  after: hippo-cms
+  after: [hippo-cms, hippo-forge]
 project: content-exim-demo
 module: 
   name: content-exim-demo-repository-data-content
