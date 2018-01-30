@@ -25,6 +25,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.onehippo.forge.content-exim</groupId>
+      <artifactId>content-exim-repository-jaxrs</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.onehippo.cms7.hst.dependencies</groupId>
       <artifactId>hst-repository-dependencies</artifactId>
       <type>pom</type>
