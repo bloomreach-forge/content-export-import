@@ -28,6 +28,7 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
 
     private static final String DEFAULT_END_POINT = "/content-exim";
 
+    private ContentEximService contentEximService;
     private String modulePath;
     private String endpoint;
 
@@ -39,9 +40,12 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
 
     @Override
     protected void doInitialize(Session session) throws RepositoryException {
+        contentEximService = new ContentEximService();
+        contentEximService.setSession(session);
+
         RepositoryJaxrsService.addEndpoint(
                 new RepositoryJaxrsEndpoint(endpoint)
-                .singleton(new ContentEximService())
+                .singleton(contentEximService)
                 .authorized(modulePath, RepositoryJaxrsService.HIPPO_REST_PERMISSION));
     }
 
