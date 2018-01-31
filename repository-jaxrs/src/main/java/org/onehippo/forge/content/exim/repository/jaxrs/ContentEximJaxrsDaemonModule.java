@@ -41,7 +41,7 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
     @Override
     protected void doInitialize(Session session) throws RepositoryException {
         contentEximService = new ContentEximService();
-        contentEximService.setSession(session);
+        contentEximService.setDaemonSession(session);
 
         RepositoryJaxrsService.addEndpoint(
                 new RepositoryJaxrsEndpoint(endpoint)

@@ -22,8 +22,12 @@ import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Map;
 
+import javax.jcr.Credentials;
+import javax.jcr.LoginException;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -67,21 +71,23 @@ public class ContentEximService {
 
     private static Logger log = LoggerFactory.getLogger(ContentEximService.class);
 
+    private static final Credentials SYSTEM_CREDENTIALS = new SimpleCredentials("system", new char[] {});
+
     private static final String ZIP_TEMP_BASE_FOLDER_PREFIX = "_content_exim_";
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private Session session;
+    private Session daemonSession;
 
     public ContentEximService() {
     }
 
-    public Session getSession() {
-        return session;
+    public Session getDaemonSession() {
+        return daemonSession;
     }
 
-    public void setSession(Session session) {
-        this.session = session;
+    public void setDaemonSession(Session daemonSession) {
+        this.daemonSession = daemonSession;
     }
 
     @Path("/export")
@@ -91,17 +97,27 @@ public class ContentEximService {
     public StreamingOutput exportContentToZip(String exportParamsJson, @Context HttpServletResponse response) {
         File baseFolder = null;
 
+        Session session = null;
+
         try {
+            session = createSession();
             ExportParams params = objectMapper.readValue(exportParamsJson, ExportParams.class);
-            Result result = ContentItemSetCollector.collectItemsFromExportParams(getSession(), params);
-            DocumentManager documentManager = new WorkflowDocumentManagerImpl(getSession());
+            Result result = ContentItemSetCollector.collectItemsFromExportParams(session, params);
+            session.refresh(false);
+
+            DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
             baseFolder = Files.createTempDirectory(ZIP_TEMP_BASE_FOLDER_PREFIX).toFile();
             FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());
 
-            exportBinaries(documentManager, result, baseFolderObject);
-            exportDocuments(documentManager, result, baseFolderObject);
+            int batchCount = 0;
+            batchCount = exportBinaries(params, documentManager, result, batchCount, baseFolderObject);
+            batchCount = exportDocuments(params, documentManager, result, batchCount, baseFolderObject);
 
-            String fileName = "content-exim-export-" + DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd-HHmmss") + ".zip";
+            session.logout();
+            session = null;
+
+            String fileName = "content-exim-export-" + DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd-HHmmss")
+                    + ".zip";
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
             final File zipBaseFolder = baseFolder;
@@ -136,6 +152,10 @@ public class ContentEximService {
                     output.write(message.getBytes());
                 }
             };
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
         }
     }
 
@@ -154,8 +174,12 @@ public class ContentEximService {
         }
     }
 
-    private void exportBinaries(DocumentManager documentManager, Result result, FileObject baseFolder)
-            throws Exception {
+    protected Session createSession() throws LoginException, RepositoryException {
+        return getDaemonSession().impersonate(SYSTEM_CREDENTIALS);
+    }
+
+    private int exportBinaries(ExportParams params, DocumentManager documentManager, Result result, int batchCount,
+            FileObject baseFolder) throws Exception {
         DefaultBinaryExportTask exportTask = new DefaultBinaryExportTask(documentManager);
 
         exportTask.setLogger(log);
@@ -209,15 +233,24 @@ public class ContentEximService {
                 if (record != null) {
                     exportTask.endRecord();
                 }
+                ++batchCount;
+                if (batchCount % params.getBatchSize() == 0) {
+                    documentManager.getSession().refresh(false);
+                    if (params.getThreshold() > 0) {
+                        Thread.sleep(params.getThreshold());
+                    }
+                }
             }
         }
 
         exportTask.stop();
         exportTask.logSummary();
+
+        return batchCount;
     }
 
-    private void exportDocuments(DocumentManager documentManager, Result result, FileObject baseFolder)
-            throws Exception {
+    private int exportDocuments(ExportParams params, DocumentManager documentManager, Result result, int batchCount,
+            FileObject baseFolder) throws Exception {
         WorkflowDocumentVariantExportTask exportTask = new WorkflowDocumentVariantExportTask(documentManager);
 
         exportTask.setLogger(log);
@@ -278,11 +311,20 @@ public class ContentEximService {
                 if (record != null) {
                     exportTask.endRecord();
                 }
+                ++batchCount;
+                if (batchCount % params.getBatchSize() == 0) {
+                    documentManager.getSession().refresh(false);
+                    if (params.getThreshold() > 0) {
+                        Thread.sleep(params.getThreshold());
+                    }
+                }
             }
         }
 
         exportTask.stop();
         exportTask.logSummary();
+
+        return batchCount;
     }
 
 }

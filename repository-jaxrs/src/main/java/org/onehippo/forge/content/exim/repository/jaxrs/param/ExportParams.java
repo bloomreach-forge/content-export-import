@@ -17,8 +17,35 @@ package org.onehippo.forge.content.exim.repository.jaxrs.param;
 
 public class ExportParams {
 
+    private static final int DEFAULT_BATCH_SIZE = 200;
+    private static final long DEFAULT_THRESHOLD = 10L;
+
+    private Integer batchSize;
+    private Long threshold;
     private QueriesAndPaths binaries;
     private QueriesAndPaths documents;
+
+    public Integer getBatchSize() {
+        if (batchSize == null || batchSize <= 0) {
+            return DEFAULT_BATCH_SIZE;
+        }
+        return batchSize;
+    }
+
+    public void setBatchSize(Integer batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    public Long getThreshold() {
+        if (threshold == null) {
+            return DEFAULT_THRESHOLD;
+        }
+        return threshold;
+    }
+
+    public void setThreshold(Long threshold) {
+        this.threshold = threshold;
+    }
 
     public QueriesAndPaths getBinaries() {
         return binaries;
