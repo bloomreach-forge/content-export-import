@@ -183,6 +183,77 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
         return tlCurrentContentMigrationRecord.get();
     }
 
+    @Override
+    public String getSummary() {
+        StringWriter sw = new StringWriter(1024);
+        PrintWriter out = new PrintWriter(sw);
+        CSVPrinter csvPrinter = null;
+
+        try {
+            sw = new StringWriter(1024);
+            out = new PrintWriter(sw);
+
+            int totalCount = 0;
+            int processedCount = 0;
+            int successCount = 0;
+
+            for (ContentMigrationRecord record : getContentMigrationRecords()) {
+                ++totalCount;
+
+                if (record.isProcessed()) {
+                    ++processedCount;
+
+                    if (record.isSucceeded()) {
+                        ++successCount;
+                    }
+                }
+            }
+
+            out.println(
+                    "===============================================================================================================");
+            out.println("Execution Summary:");
+            out.println(
+                    "---------------------------------------------------------------------------------------------------------------");
+            out.printf("Total: %d, Processed: %d, Suceeded: %d, Failed: %d, Duration: %dms", totalCount, processedCount,
+                    successCount, processedCount - successCount, getStoppedTimeMillis() - getStartedTimeMillis());
+            out.println();
+            out.println(
+                    "---------------------------------------------------------------------------------------------------------------");
+            out.println("Details (in CSV format):");
+            out.println(
+                    "---------------------------------------------------------------------------------------------------------------");
+
+            try {
+                csvPrinter = CSVFormat.DEFAULT
+                        .withHeader("SEQ", "PROCESSED", "SUCCEEDED", "ID", "PATH", "TYPE", "ATTRIBUTES", "ERROR")
+                        .print(out);
+
+                int seq = 0;
+
+                for (ContentMigrationRecord record : getContentMigrationRecords()) {
+                    csvPrinter.printRecord(++seq, record.isProcessed(), record.isSucceeded(),
+                            StringUtils.defaultString(record.getContentId()),
+                            StringUtils.defaultString(record.getContentPath()),
+                            StringUtils.defaultString(record.getContentType()),
+                            ObjectUtils.toString(record.getAttributeMap()),
+                            StringUtils.defaultString(record.getErrorMessage()));
+                }
+            } catch (IOException e) {
+                e.printStackTrace(out);
+            }
+
+            out.println(
+                    "===============================================================================================================");
+            out.flush();
+
+            return sw.toString();
+        } finally {
+            IOUtils.closeQuietly(csvPrinter);
+            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(sw);
+        }
+    }
+
     /**
      * {@inheritDoc}
      * <P>
@@ -191,69 +262,7 @@ abstract public class AbstractContentMigrationTask implements ContentMigrationTa
      */
     @Override
     public void logSummary() {
-        StringWriter sw = new StringWriter(1024);
-        PrintWriter out = new PrintWriter(sw);
-
-        int totalCount = 0;
-        int processedCount = 0;
-        int successCount = 0;
-
-        for (ContentMigrationRecord record : getContentMigrationRecords()) {
-            ++totalCount;
-
-            if (record.isProcessed()) {
-                ++processedCount;
-
-                if (record.isSucceeded()) {
-                    ++successCount;
-                }
-            }
-        }
-
-        out.println(
-                "===============================================================================================================");
-        out.println("Execution Summary:");
-        out.println(
-                "---------------------------------------------------------------------------------------------------------------");
-        out.printf("Total: %d, Processed: %d, Suceeded: %d, Failed: %d, Duration: %dms", totalCount, processedCount,
-                successCount, processedCount - successCount, getStoppedTimeMillis() - getStartedTimeMillis());
-        out.println();
-        out.println(
-                "---------------------------------------------------------------------------------------------------------------");
-        out.println("Details (in CSV format):");
-        out.println(
-                "---------------------------------------------------------------------------------------------------------------");
-
-        CSVPrinter csvPrinter = null;
-
-        try {
-            csvPrinter = CSVFormat.DEFAULT
-                    .withHeader("SEQ", "PROCESSED", "SUCCEEDED", "ID", "PATH", "TYPE", "ATTRIBUTES", "ERROR")
-                    .print(out);
-
-            int seq = 0;
-
-            for (ContentMigrationRecord record : getContentMigrationRecords()) {
-                csvPrinter.printRecord(++seq, record.isProcessed(), record.isSucceeded(),
-                        StringUtils.defaultString(record.getContentId()),
-                        StringUtils.defaultString(record.getContentPath()),
-                        StringUtils.defaultString(record.getContentType()),
-                        ObjectUtils.toString(record.getAttributeMap()),
-                        StringUtils.defaultString(record.getErrorMessage()));
-            }
-        } catch (IOException e) {
-            e.printStackTrace(out);
-        }
-
-        out.println(
-                "===============================================================================================================");
-        out.flush();
-
-        getLogger().info("\n\n{}\n", sw.toString());
-
-        IOUtils.closeQuietly(csvPrinter);
-        IOUtils.closeQuietly(out);
-        IOUtils.closeQuietly(sw);
+        getLogger().info("\n\n{}\n", getSummary());
     }
 
     /**

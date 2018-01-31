@@ -19,9 +19,11 @@ public class ExportParams {
 
     private static final int DEFAULT_BATCH_SIZE = 200;
     private static final long DEFAULT_THRESHOLD = 10L;
+    private static final long DEFAULT_DATA_URL_SIZE_THRESHOLD = 256 * 1024;
 
     private Integer batchSize;
     private Long threshold;
+    private Long dataUrlSizeThreshold;
     private QueriesAndPaths binaries;
     private QueriesAndPaths documents;
 
@@ -45,6 +47,17 @@ public class ExportParams {
 
     public void setThreshold(Long threshold) {
         this.threshold = threshold;
+    }
+
+    public Long getDataUrlSizeThreshold() {
+        if (dataUrlSizeThreshold == null) {
+            return DEFAULT_DATA_URL_SIZE_THRESHOLD;
+        }
+        return dataUrlSizeThreshold;
+    }
+
+    public void setDataUrlSizeThreshold(Long dataUrlSizeThreshold) {
+        this.dataUrlSizeThreshold = dataUrlSizeThreshold;
     }
 
     public QueriesAndPaths getBinaries() {

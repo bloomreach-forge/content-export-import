@@ -30,7 +30,34 @@ public class ZipCompressUtils {
     private ZipCompressUtils() {
     }
 
-    public static void compressFolderToZip(File baseFolder, String prefix, ZipArchiveOutputStream zipOutput) throws IOException {
+    public static void addEntryToZip(String entryName, String content, String charsetName,
+            ZipArchiveOutputStream zipOutput) throws IOException {
+        byte[] bytes;
+
+        if (StringUtils.isBlank(charsetName)) {
+            bytes = content.getBytes();
+        } else {
+            bytes = content.getBytes(charsetName);
+        }
+
+        addEntryToZip(entryName, bytes, 0, bytes.length, zipOutput);
+    }
+
+    public static void addEntryToZip(String entryName, byte[] bytes, int offset, int length,
+            ZipArchiveOutputStream zipOutput) throws IOException {
+        ZipArchiveEntry entry = new ZipArchiveEntry(entryName);
+        entry.setSize(length);
+
+        try {
+            zipOutput.putArchiveEntry(entry);
+            zipOutput.write(bytes, offset, length);
+        } finally {
+            zipOutput.closeArchiveEntry();
+        }
+    }
+
+    public static void addFileEntriesInFolderToZip(File baseFolder, String prefix, ZipArchiveOutputStream zipOutput)
+            throws IOException {
         for (File file : baseFolder.listFiles()) {
             String entryName = (StringUtils.isEmpty(prefix)) ? file.getName() : (prefix + "/" + file.getName());
 
@@ -48,7 +75,7 @@ public class ZipCompressUtils {
                     zipOutput.closeArchiveEntry();
                 }
             } else {
-                compressFolderToZip(file, entryName, zipOutput);
+                addFileEntriesInFolderToZip(file, entryName, zipOutput);
             }
         }
     }

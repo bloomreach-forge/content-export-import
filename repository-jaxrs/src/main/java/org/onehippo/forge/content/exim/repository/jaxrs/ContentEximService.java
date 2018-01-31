@@ -74,7 +74,15 @@ public class ContentEximService {
 
     private static final Credentials SYSTEM_CREDENTIALS = new SimpleCredentials("system", new char[] {});
 
-    private static final String ZIP_TEMP_BASE_FOLDER_PREFIX = "_content_exim_";
+    private static final String ZIP_TEMP_BASE_FOLDER_PREFIX = "_exim_";
+
+    private static final String EXIM_SUMMARY_BINARIES_LOG_REL_PATH = "EXIM-INF/summary-binaries.log";
+
+    private static final String EXIM_SUMMARY_DOCUMENTS_LOG_REL_PATH = "EXIM-INF/summary-documents.log";
+
+    private static final String BINARY_ATTACHMENT_REL_PATH = "EXIM-INF/data/attachments";
+
+    private static final String STOP_REQUEST_FILE_REL_PATH = "EXIM-INF/_stop_";
 
     private ObjectMapper objectMapper;
 
@@ -112,18 +120,42 @@ public class ContentEximService {
             Result result = ContentItemSetCollector.collectItemsFromExportParams(session, params);
             session.refresh(false);
 
-            DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
             baseFolder = Files.createTempDirectory(ZIP_TEMP_BASE_FOLDER_PREFIX).toFile();
             FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());
+            FileObject attachmentsFolderObject = baseFolderObject.resolveFile(BINARY_ATTACHMENT_REL_PATH);
+
+            DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
+
+            final DefaultBinaryExportTask binaryExportTask = new DefaultBinaryExportTask(documentManager);
+            binaryExportTask.setLogger(log);
+            binaryExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
+            binaryExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
+
+            final WorkflowDocumentVariantExportTask documentExportTask = new WorkflowDocumentVariantExportTask(documentManager);
+            documentExportTask.setLogger(log);
+            documentExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
+            documentExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
 
             int batchCount = 0;
-            batchCount = exportBinaries(params, documentManager, result, batchCount, baseFolderObject);
-            batchCount = exportDocuments(params, documentManager, result, batchCount, baseFolderObject);
+
+            try {
+                binaryExportTask.start();
+                batchCount = exportBinaries(params, binaryExportTask, result, batchCount, baseFolderObject);
+            } finally {
+                binaryExportTask.stop();
+            }
+
+            try {
+                documentExportTask.start();
+                batchCount = exportDocuments(params, documentExportTask, result, batchCount, baseFolderObject);
+            } finally {
+                documentExportTask.stop();
+            }
 
             session.logout();
             session = null;
 
-            String fileName = "content-exim-export-" + DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd-HHmmss")
+            String fileName = "exim-export-" + DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd-HHmmss")
                     + ".zip";
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
@@ -132,13 +164,15 @@ public class ContentEximService {
             return new StreamingOutput() {
                 @Override
                 public void write(OutputStream output) throws IOException, WebApplicationException {
-                    ZipArchiveOutputStream zaos = null;
+                    ZipArchiveOutputStream zipOutput = null;
                     try {
-                        zaos = new ZipArchiveOutputStream(output);
-                        ZipCompressUtils.compressFolderToZip(zipBaseFolder, "", zaos);
+                        zipOutput = new ZipArchiveOutputStream(output);
+                        ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_BINARIES_LOG_REL_PATH, binaryExportTask.getSummary(), "UTF-8", zipOutput);
+                        ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_DOCUMENTS_LOG_REL_PATH, documentExportTask.getSummary(), "UTF-8", zipOutput);
+                        ZipCompressUtils.addFileEntriesInFolderToZip(zipBaseFolder, "", zipOutput);
                     } finally {
-                        zaos.finish();
-                        IOUtils.closeQuietly(zaos);
+                        zipOutput.finish();
+                        IOUtils.closeQuietly(zipOutput);
                         FileUtils.deleteDirectory(zipBaseFolder);
                     }
                 }
@@ -185,16 +219,14 @@ public class ContentEximService {
         return getDaemonSession().impersonate(SYSTEM_CREDENTIALS);
     }
 
-    private int exportBinaries(ExportParams params, DocumentManager documentManager, Result result, int batchCount,
+    private int exportBinaries(ExportParams params, DefaultBinaryExportTask exportTask, Result result, int batchCount,
             FileObject baseFolder) throws Exception {
-        DefaultBinaryExportTask exportTask = new DefaultBinaryExportTask(documentManager);
-
-        exportTask.setLogger(log);
-        exportTask.setBinaryValueFileFolder(baseFolder);
-        exportTask.setDataUrlSizeThreashold(512 * 1024); // 512KB as threshold
-        exportTask.start();
-
         for (ResultItem item : result.getItems()) {
+            if (isStopRequested(baseFolder)) {
+                log.warn("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                break;
+            }
+
             ContentMigrationRecord record = null;
 
             try {
@@ -204,11 +236,11 @@ public class ContentEximService {
                     continue;
                 }
 
-                if (!documentManager.getSession().nodeExists(handlePath)) {
+                if (!exportTask.getDocumentManager().getSession().nodeExists(handlePath)) {
                     continue;
                 }
 
-                Node handle = documentManager.getSession().getNode(handlePath);
+                Node handle = exportTask.getDocumentManager().getSession().getNode(handlePath);
                 Node variant = HippoNodeUtils.getFirstVariantNode(handle);
 
                 if (variant == null) {
@@ -224,7 +256,7 @@ public class ContentEximService {
 
                 record.setProcessed(true);
                 ContentNode contentNode = exportTask.exportBinarySetToContentNode(variant);
-                ContentNodeUtils.replaceDocbasesByPaths(documentManager.getSession(), contentNode,
+                ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
                         ContentNodeUtils.MIRROR_DOCBASES_XPATH);
                 record.setAttribute("file", file.getName().getPath());
 
@@ -242,7 +274,7 @@ public class ContentEximService {
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
-                    documentManager.getSession().refresh(false);
+                    exportTask.getDocumentManager().getSession().refresh(false);
                     if (params.getThreshold() > 0) {
                         Thread.sleep(params.getThreshold());
                     }
@@ -250,36 +282,26 @@ public class ContentEximService {
             }
         }
 
-        exportTask.stop();
-        exportTask.logSummary();
-
         return batchCount;
     }
 
-    private int exportDocuments(ExportParams params, DocumentManager documentManager, Result result, int batchCount,
+    private int exportDocuments(ExportParams params, WorkflowDocumentVariantExportTask exportTask, Result result, int batchCount,
             FileObject baseFolder) throws Exception {
-        WorkflowDocumentVariantExportTask exportTask = new WorkflowDocumentVariantExportTask(documentManager);
-
-        exportTask.setLogger(log);
-        exportTask.setBinaryValueFileFolder(baseFolder);
-        exportTask.setDataUrlSizeThreashold(512 * 1024); // 512KB as threshold
-        exportTask.start();
-
         for (ResultItem item : result.getItems()) {
             ContentMigrationRecord record = null;
 
             try {
                 String handlePath = item.getPath();
 
-                if (!HippoNodeUtils.isBinaryPath(handlePath)) {
+                if (!HippoNodeUtils.isDocumentPath(handlePath)) {
                     continue;
                 }
 
-                if (!documentManager.getSession().nodeExists(handlePath)) {
+                if (!exportTask.getDocumentManager().getSession().nodeExists(handlePath)) {
                     continue;
                 }
 
-                Node handle = documentManager.getSession().getNode(handlePath);
+                Node handle = exportTask.getDocumentManager().getSession().getNode(handlePath);
                 Map<String, Node> variantsMap = HippoNodeUtils.getDocumentVariantsMap(handle);
                 Node variant = variantsMap.get(HippoStdNodeType.PUBLISHED);
                 if (variant == null) {
@@ -301,7 +323,7 @@ public class ContentEximService {
 
                 record.setProcessed(true);
                 ContentNode contentNode = exportTask.exportVariantToContentNode(document);
-                ContentNodeUtils.replaceDocbasesByPaths(documentManager.getSession(), contentNode,
+                ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
                         ContentNodeUtils.MIRROR_DOCBASES_XPATH);
 
                 record.setAttribute("file", file.getName().getPath());
@@ -320,7 +342,7 @@ public class ContentEximService {
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
-                    documentManager.getSession().refresh(false);
+                    exportTask.getDocumentManager().getSession().refresh(false);
                     if (params.getThreshold() > 0) {
                         Thread.sleep(params.getThreshold());
                     }
@@ -328,10 +350,16 @@ public class ContentEximService {
             }
         }
 
-        exportTask.stop();
-        exportTask.logSummary();
-
         return batchCount;
     }
 
+    private boolean isStopRequested(FileObject baseFolder) {
+        try {
+            FileObject stopSignalFile = baseFolder.resolveFile(STOP_REQUEST_FILE_REL_PATH);
+            return stopSignalFile.exists();
+        } catch (Exception e) {
+            log.error("Failed to check stop request file.", e);
+        }
+        return false;
+    }
 }
