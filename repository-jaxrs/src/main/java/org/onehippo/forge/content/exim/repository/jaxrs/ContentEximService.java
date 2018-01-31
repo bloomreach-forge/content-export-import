@@ -309,6 +309,11 @@ public class ContentEximService {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
 
         for (ResultItem item : result.getItems()) {
+            if (isStopRequested(baseFolder)) {
+                log.warn("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                break;
+            }
+
             ContentMigrationRecord record = null;
 
             try {
