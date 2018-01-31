@@ -114,16 +114,18 @@ public class ContentEximService {
     @POST
     public StreamingOutput exportContentToZip(String exportParamsJson, @Context HttpServletResponse response) {
         File baseFolder = null;
-
         Session session = null;
 
         try {
+            baseFolder = Files.createTempDirectory(ZIP_TEMP_BASE_FOLDER_PREFIX).toFile();
+            log.info("ContentEximService#exportContentToZip begins at {} with params: {}", baseFolder,
+                    exportParamsJson);
+
             session = createSession();
             ExportParams params = objectMapper.readValue(exportParamsJson, ExportParams.class);
             Result result = ContentItemSetCollector.collectItemsFromExportParams(session, params);
             session.refresh(false);
 
-            baseFolder = Files.createTempDirectory(ZIP_TEMP_BASE_FOLDER_PREFIX).toFile();
             FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());
             FileObject attachmentsFolderObject = baseFolderObject.resolveFile(BINARY_ATTACHMENT_REL_PATH);
 
@@ -210,6 +212,7 @@ public class ContentEximService {
                 }
             };
         } finally {
+            log.info("ContentEximService#exportContentToZip ends.");
             if (session != null) {
                 session.logout();
             }
@@ -241,7 +244,7 @@ public class ContentEximService {
 
         for (ResultItem item : result.getItems()) {
             if (isStopRequested(baseFolder)) {
-                log.warn("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
                 break;
             }
 
@@ -310,7 +313,7 @@ public class ContentEximService {
 
         for (ResultItem item : result.getItems()) {
             if (isStopRequested(baseFolder)) {
-                log.warn("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
                 break;
             }
 
