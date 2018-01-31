@@ -131,7 +131,8 @@ public class ContentEximService {
             binaryExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
             binaryExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
 
-            final WorkflowDocumentVariantExportTask documentExportTask = new WorkflowDocumentVariantExportTask(documentManager);
+            final WorkflowDocumentVariantExportTask documentExportTask = new WorkflowDocumentVariantExportTask(
+                    documentManager);
             documentExportTask.setLogger(log);
             documentExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
             documentExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
@@ -167,8 +168,10 @@ public class ContentEximService {
                     ZipArchiveOutputStream zipOutput = null;
                     try {
                         zipOutput = new ZipArchiveOutputStream(output);
-                        ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_BINARIES_LOG_REL_PATH, binaryExportTask.getSummary(), "UTF-8", zipOutput);
-                        ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_DOCUMENTS_LOG_REL_PATH, documentExportTask.getSummary(), "UTF-8", zipOutput);
+                        ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_BINARIES_LOG_REL_PATH,
+                                binaryExportTask.getSummary(), "UTF-8", zipOutput);
+                        ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_DOCUMENTS_LOG_REL_PATH,
+                                documentExportTask.getSummary(), "UTF-8", zipOutput);
                         ZipCompressUtils.addFileEntriesInFolderToZip(zipBaseFolder, "", zipOutput);
                     } finally {
                         zipOutput.finish();
@@ -221,6 +224,8 @@ public class ContentEximService {
 
     private int exportBinaries(ExportParams params, DefaultBinaryExportTask exportTask, Result result, int batchCount,
             FileObject baseFolder) throws Exception {
+        final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
+
         for (ResultItem item : result.getItems()) {
             if (isStopRequested(baseFolder)) {
                 log.warn("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
@@ -250,17 +255,18 @@ public class ContentEximService {
                 String variantPath = variant.getPath();
                 record = exportTask.beginRecord(variant.getIdentifier(), variantPath);
 
+                ContentNode contentNode = exportTask.exportBinarySetToContentNode(variant);
+                record.setProcessed(true);
+                ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
+                        ContentNodeUtils.MIRROR_DOCBASES_XPATH);
+                ContentNodeUtils.replaceUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix, "");
+
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
                 FileObject file = baseFolder.resolveFile(relPath + ".json");
-
-                record.setProcessed(true);
-                ContentNode contentNode = exportTask.exportBinarySetToContentNode(variant);
-                ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
-                        ContentNodeUtils.MIRROR_DOCBASES_XPATH);
                 record.setAttribute("file", file.getName().getPath());
-
                 exportTask.writeContentNodeToJsonFile(contentNode, file);
+
                 log.debug("Exported document from {} to {}.", handlePath, file.getName().getPath());
                 record.setSucceeded(true);
             } catch (Exception e) {
@@ -285,8 +291,10 @@ public class ContentEximService {
         return batchCount;
     }
 
-    private int exportDocuments(ExportParams params, WorkflowDocumentVariantExportTask exportTask, Result result, int batchCount,
-            FileObject baseFolder) throws Exception {
+    private int exportDocuments(ExportParams params, WorkflowDocumentVariantExportTask exportTask, Result result,
+            int batchCount, FileObject baseFolder) throws Exception {
+        final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
+
         for (ResultItem item : result.getItems()) {
             ContentMigrationRecord record = null;
 
@@ -315,17 +323,16 @@ public class ContentEximService {
                 String variantPath = variant.getPath();
                 record = exportTask.beginRecord(variant.getIdentifier(), variantPath);
 
+                Document document = new Document(variant.getIdentifier());
+                ContentNode contentNode = exportTask.exportVariantToContentNode(document);
+                record.setProcessed(true);
+                ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
+                        ContentNodeUtils.MIRROR_DOCBASES_XPATH);
+                ContentNodeUtils.replaceUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix, "");
+
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
                 FileObject file = baseFolder.resolveFile(relPath + ".json");
-
-                Document document = new Document(variant.getIdentifier());
-
-                record.setProcessed(true);
-                ContentNode contentNode = exportTask.exportVariantToContentNode(document);
-                ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
-                        ContentNodeUtils.MIRROR_DOCBASES_XPATH);
-
                 record.setAttribute("file", file.getName().getPath());
 
                 exportTask.writeContentNodeToJsonFile(contentNode, file);

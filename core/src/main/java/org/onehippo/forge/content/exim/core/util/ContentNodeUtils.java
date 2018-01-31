@@ -130,4 +130,27 @@ public class ContentNodeUtils {
         }
     }
 
+    /**
+     * Find a given {@code urlPrefix} in the URL value of <code>jcr:data</code> property, and replace it with the
+     * given {@code replace} if the value starts with the {@code urlPrefix}.
+     * @param baseContentNode base content node
+     * @param urlPrefix url prefix
+     * @param replace replace string
+     */
+    public static void replaceUrlPrefixInJcrDataValues(ContentNode baseContentNode, String urlPrefix, String replace) {
+        final int urlPrefixLen = urlPrefix.length();
+        List<ContentNode> childNodes = baseContentNode.queryNodesByXPath("//nodes[properties[@itemName='jcr:data']]");
+
+        for (ContentNode childNode : childNodes) {
+            String value = childNode.getProperty("jcr:data").getValue();
+
+            if (StringUtils.startsWith(value, urlPrefix)) {
+                if (StringUtils.isEmpty(replace)) {
+                    childNode.setProperty("jcr:data", value.substring(urlPrefixLen));
+                } else {
+                    childNode.setProperty("jcr:data", replace + value.substring(urlPrefixLen));
+                }
+            }
+        }
+    }
 }
