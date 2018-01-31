@@ -15,8 +15,8 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs.util;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.jcr.Node;
@@ -61,7 +61,7 @@ public class ContentItemSetCollector {
         return result;
     }
 
-    private static void fillResultItemsForNodePaths(Session session, List<String> nodePaths,
+    public static void fillResultItemsForNodePaths(Session session, Collection<String> nodePaths,
             boolean binary, Set<String> pathsCache, Result resultOut) throws RepositoryException {
         for (String path : nodePaths) {
             if ((binary && !HippoNodeUtils.isBinaryPath(path)) || (!binary && !HippoNodeUtils.isDocumentPath(path))) {
@@ -96,7 +96,7 @@ public class ContentItemSetCollector {
         }
     }
 
-    private static void fillResultItemsFromQueries(Session session, List<String> queries,
+    public static void fillResultItemsFromQueries(Session session, Collection<String> queries,
             boolean binary, Set<String> pathsCache, Result resultOut) throws RepositoryException {
         for (String query : queries) {
             if (StringUtils.isBlank(query)) {

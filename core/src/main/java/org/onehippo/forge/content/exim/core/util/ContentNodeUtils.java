@@ -15,6 +15,7 @@
  */
 package org.onehippo.forge.content.exim.core.util;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,8 +72,26 @@ public class ContentNodeUtils {
      * @throws RepositoryException if fails to find a JCR node associated by the UUID value
      */
     public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode, final String jxpath) throws RepositoryException {
+        replaceDocbasesByPaths(session, baseContentNode, jxpath, null);
+    }
+
+    /**
+     * Selects all the {@link ContentNode} objects under {@code baseContentNode}
+     * by the given <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression, {@code jxpath}
+     * and replace the <code>hippo:docbase</code> property value by the path of the JCR node found by the existing UUID string value,
+     * and add those paths to {@code paths} collection.
+     * {@code session} is used when finding a JCR node associated by the UUID value at the existing {@code hippo:docbase} property.
+     * @param session JCR session
+     * @param baseContentNode base {@link ContentNode} instance
+     * @param jxpath <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression
+     * @param paths replaced paths collection
+     * @throws RepositoryException if fails to find a JCR node associated by the UUID value
+     */
+    public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode,
+            final String jxpath, final Collection<String> paths) throws RepositoryException {
         List<ContentNode> mirrors = baseContentNode.queryNodesByXPath(jxpath);
         Node linkedNode;
+        String linkedNodePath;
 
         for (ContentNode mirror : mirrors) {
             String docbase = mirror.getProperty("hippo:docbase").getValue();
@@ -80,7 +99,11 @@ public class ContentNodeUtils {
             if (StringUtils.isNotBlank(docbase) && !StringUtils.equals(ROOT_NODE_UUID, docbase)) {
                 try {
                     linkedNode = session.getNodeByIdentifier(docbase);
-                    mirror.setProperty("hippo:docbase", linkedNode.getPath());
+                    linkedNodePath = linkedNode.getPath();
+                    mirror.setProperty("hippo:docbase", linkedNodePath);
+                    if (paths != null) {
+                        paths.add(linkedNodePath);
+                    }
                 } catch (ItemNotFoundException ignore) {
                 }
             }

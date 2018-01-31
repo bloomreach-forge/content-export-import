@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
@@ -126,31 +129,41 @@ public class ContentEximService {
 
             DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
 
-            final DefaultBinaryExportTask binaryExportTask = new DefaultBinaryExportTask(documentManager);
-            binaryExportTask.setLogger(log);
-            binaryExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
-            binaryExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
-
             final WorkflowDocumentVariantExportTask documentExportTask = new WorkflowDocumentVariantExportTask(
                     documentManager);
             documentExportTask.setLogger(log);
             documentExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
             documentExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
 
+            final DefaultBinaryExportTask binaryExportTask = new DefaultBinaryExportTask(documentManager);
+            binaryExportTask.setLogger(log);
+            binaryExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
+            binaryExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
+
             int batchCount = 0;
+
+            Set<String> referredNodePaths = new LinkedHashSet<>();
+
+            try {
+                documentExportTask.start();
+                batchCount = exportDocuments(params, documentExportTask, result, batchCount, baseFolderObject,
+                        referredNodePaths);
+            } finally {
+                documentExportTask.stop();
+            }
+
+            if (!referredNodePaths.isEmpty()) {
+                Set<String> pathsCache = new HashSet<>();
+                ContentItemSetCollector.fillResultItemsForNodePaths(session, referredNodePaths, true, pathsCache,
+                        result);
+                session.refresh(false);
+            }
 
             try {
                 binaryExportTask.start();
                 batchCount = exportBinaries(params, binaryExportTask, result, batchCount, baseFolderObject);
             } finally {
                 binaryExportTask.stop();
-            }
-
-            try {
-                documentExportTask.start();
-                batchCount = exportDocuments(params, documentExportTask, result, batchCount, baseFolderObject);
-            } finally {
-                documentExportTask.stop();
             }
 
             session.logout();
@@ -292,7 +305,7 @@ public class ContentEximService {
     }
 
     private int exportDocuments(ExportParams params, WorkflowDocumentVariantExportTask exportTask, Result result,
-            int batchCount, FileObject baseFolder) throws Exception {
+            int batchCount, FileObject baseFolder, Set<String> referredBinaryPaths) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
 
         for (ResultItem item : result.getItems()) {
@@ -327,7 +340,7 @@ public class ContentEximService {
                 ContentNode contentNode = exportTask.exportVariantToContentNode(document);
                 record.setProcessed(true);
                 ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
-                        ContentNodeUtils.MIRROR_DOCBASES_XPATH);
+                        ContentNodeUtils.MIRROR_DOCBASES_XPATH, referredBinaryPaths);
                 ContentNodeUtils.replaceUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix, "");
 
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
