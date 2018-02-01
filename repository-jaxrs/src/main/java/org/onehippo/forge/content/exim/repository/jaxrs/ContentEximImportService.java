@@ -36,7 +36,6 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.hippoecm.repository.HippoStdNodeType;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -212,9 +211,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                 folderPath = importTask.createOrUpdateBinaryFolder(folderPath, folderPrimaryType, folderTypes,
                         galleryTypes);
 
-                if (applyTagContentProperties(contentNode, params.getBinaryTags())) {
-                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
-                }
+                applyTagContentProperties(contentNode, params.getBinaryTags());
 
                 String updatedPath = importTask.createOrUpdateBinaryFromContentNode(contentNode, primaryTypeName,
                         folderPath, name);
@@ -289,9 +286,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                         : null;
                 String localizedName = contentNode.getProperty("jcr:localizedName").getValue();
 
-                if (applyTagContentProperties(contentNode, params.getDocumentTags())) {
-                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
-                }
+                applyTagContentProperties(contentNode, params.getDocumentTags());
 
                 String updatedPath = importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,
                         primaryTypeName, path, locale, localizedName);

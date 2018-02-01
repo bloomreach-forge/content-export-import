@@ -251,9 +251,7 @@ public class ContentEximExportService extends AbstractContentEximService {
 
                 ContentNodeUtils.removeUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix);
 
-                if (applyTagContentProperties(contentNode, params.getBinaryTags())) {
-                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
-                }
+                applyTagContentProperties(contentNode, params.getBinaryTags());
 
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
@@ -341,9 +339,7 @@ public class ContentEximExportService extends AbstractContentEximService {
 
                 ContentNodeUtils.removeUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix);
 
-                if (applyTagContentProperties(contentNode, params.getDocumentTags())) {
-                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
-                }
+                applyTagContentProperties(contentNode, params.getDocumentTags());
 
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
