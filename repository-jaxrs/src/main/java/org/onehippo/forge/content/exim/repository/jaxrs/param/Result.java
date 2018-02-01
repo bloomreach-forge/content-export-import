@@ -27,7 +27,6 @@ public class Result {
     private int succeededDocumentCount;
     private List<ResultItem> items = new LinkedList<>();
     private List<String> errors;
-    private String summary;
 
     public int getTotalBinaryCount() {
         return totalBinaryCount;
@@ -35,6 +34,10 @@ public class Result {
 
     public void setTotalBinaryCount(int totalBinaryCount) {
         this.totalBinaryCount = totalBinaryCount;
+    }
+
+    public int incrementTotalBinaryCount() {
+        return ++totalBinaryCount;
     }
 
     public int getTotalDocumentCount() {
@@ -45,6 +48,10 @@ public class Result {
         this.totalDocumentCount = totalDocumentCount;
     }
 
+    public int incrementTotalDocumentCount() {
+        return ++totalDocumentCount;
+    }
+
     public int getSucceededBinaryCount() {
         return succeededBinaryCount;
     }
@@ -53,12 +60,20 @@ public class Result {
         this.succeededBinaryCount = succeededBinaryCount;
     }
 
+    public int incrementSucceededBinaryCount() {
+        return ++succeededBinaryCount;
+    }
+
     public int getSucceededDocumentCount() {
         return succeededDocumentCount;
     }
 
     public void setSucceededDocumentCount(int succeededDocumentCount) {
         this.succeededDocumentCount = succeededDocumentCount;
+    }
+
+    public int incrementSucceededDocumentCount() {
+        return ++succeededDocumentCount;
     }
 
     public List<ResultItem> getItems() {
@@ -107,14 +122,6 @@ public class Result {
         }
 
         errors.add(error);
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
     }
 
 }

@@ -112,8 +112,6 @@ public class ContentEximImportService extends AbstractContentEximService {
                 documentImportTask.stop();
             }
 
-            result.setSummary(binaryImportTask.getSummary() + "\r\n\r\n" + documentImportTask.getSummary());
-
             return Response.ok().entity(toJsonString(result)).build();
         } catch (Exception e) {
             result.addError(e.toString());
@@ -190,6 +188,11 @@ public class ContentEximImportService extends AbstractContentEximService {
             } finally {
                 if (record != null) {
                     importTask.endRecord();
+                    result.addItem(recordToResultItem(record));
+                    result.incrementTotalBinaryCount();
+                    if (record.isSucceeded()) {
+                        result.incrementSucceededBinaryCount();
+                    }
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
@@ -199,7 +202,6 @@ public class ContentEximImportService extends AbstractContentEximService {
                         Thread.sleep(params.getThreshold());
                     }
                 }
-
             }
         }
 
@@ -253,6 +255,11 @@ public class ContentEximImportService extends AbstractContentEximService {
             } finally {
                 if (record != null) {
                     importTask.endRecord();
+                    result.addItem(recordToResultItem(record));
+                    result.incrementTotalDocumentCount();
+                    if (record.isSucceeded()) {
+                        result.incrementSucceededDocumentCount();
+                    }
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {

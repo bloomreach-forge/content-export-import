@@ -27,6 +27,8 @@ import javax.jcr.SimpleCredentials;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
+import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,5 +113,12 @@ public abstract class AbstractContentEximService {
         } finally {
             IOUtils.closeQuietly(input);
         }
+    }
+
+    protected ResultItem recordToResultItem(ContentMigrationRecord record) {
+        ResultItem item = new ResultItem(record.getContentPath(), record.getContentType());
+        item.setSucceeded(record.isSucceeded());
+        item.setErrorMessage(record.getErrorMessage());
+        return item;
     }
 }
