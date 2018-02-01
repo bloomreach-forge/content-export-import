@@ -26,6 +26,7 @@ public class ExecutionParams {
     private Long dataUrlSizeThreshold;
     private QueriesAndPaths binaries;
     private QueriesAndPaths documents;
+    private boolean publishOnImport;
 
     public Integer getBatchSize() {
         if (batchSize == null || batchSize <= 0) {
@@ -74,6 +75,14 @@ public class ExecutionParams {
 
     public void setDocuments(QueriesAndPaths documents) {
         this.documents = documents;
+    }
+
+    public boolean isPublishOnImport() {
+        return publishOnImport;
+    }
+
+    public void setPublishOnImport(boolean publishOnImport) {
+        this.publishOnImport = publishOnImport;
     }
 
 }

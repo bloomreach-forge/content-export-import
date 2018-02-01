@@ -31,6 +31,7 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.impl.DefaultBinaryImportTask;
@@ -255,6 +256,10 @@ public class ContentEximImportService extends AbstractContentEximService {
                 String updatedPath = importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,
                         primaryTypeName, path, locale, localizedName);
 
+                if (params.isPublishOnImport()) {
+                    importTask.getDocumentManager().publishDocument(updatedPath);
+                }
+
                 record.setSucceeded(true);
             } catch (Exception e) {
                 log.error("Failed to process record: {}", record, e);
@@ -303,6 +308,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                 String docbasePath = mirrorNode.getProperty("hippo:docbase").getString();
 
                 if (StringUtils.startsWith(docbasePath, "/") && session.nodeExists(docbasePath)) {
+                    JcrUtils.ensureIsCheckedOut(mirrorNode);
                     String docbase = session.getNode(docbasePath).getIdentifier();
                     mirrorNode.setProperty("hippo:docbase", docbase);
                 }
