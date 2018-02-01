@@ -18,6 +18,7 @@ package org.onehippo.forge.content.exim.repository.jaxrs;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.jcr.Credentials;
@@ -31,9 +32,14 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
+import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +61,9 @@ public abstract class AbstractContentEximService {
     protected static final Credentials SYSTEM_CREDENTIALS = new SimpleCredentials("system", new char[] {});
 
     /**
-     * Prefix of the temporary folder for zip creation.
+     * Prefix of the temporary folder or files. e.g, temporary folder in zip content creation.
      */
-    protected static final String ZIP_TEMP_BASE_PREFIX = "_exim_";
+    protected static final String TEMP_PREFIX = "_exim_";
 
     /**
      * Zip Entry name of the summary log for binaries.
@@ -205,7 +211,7 @@ public abstract class AbstractContentEximService {
         InputStream input = null;
 
         try {
-            input = attachment.getDataHandler().getInputStream();
+            input = attachment.getObject(InputStream.class);
             return IOUtils.toString(input, charsetName);
         } finally {
             IOUtils.closeQuietly(input);
@@ -233,12 +239,13 @@ public abstract class AbstractContentEximService {
      * @return a set containing all the nodes from the query result
      * @throws RepositoryException if repository exception occurs
      */
-    protected Set<String> getQueriedNodePaths(Session session, String statement, String language) throws RepositoryException {
+    protected Set<String> getQueriedNodePaths(Session session, String statement, String language)
+            throws RepositoryException {
         Set<String> nodePaths = new LinkedHashSet<>();
         Query query = session.getWorkspace().getQueryManager().createQuery(statement, language);
         QueryResult result = query.execute();
 
-        for (NodeIterator nodeIt = result.getNodes(); nodeIt.hasNext(); ) {
+        for (NodeIterator nodeIt = result.getNodes(); nodeIt.hasNext();) {
             Node node = nodeIt.nextNode();
 
             if (node != null) {
@@ -247,5 +254,56 @@ public abstract class AbstractContentEximService {
         }
 
         return nodePaths;
+    }
+
+    /**
+     * Override {@code params} by the give request parameter values.
+     * @param params {@link ExecutionParams} instance
+     * @param batchSizeParam batch size request parameter value
+     * @param thresholdParam threshold request parameter value
+     * @param publishOnImportParam publishOnImport request parameter value
+     */
+    protected void overrideExecutionParamsByParameters(ExecutionParams params, String batchSizeParam,
+            String thresholdParam, String publishOnImportParam, String dataUrlSizeThresholdParam) {
+        if (StringUtils.isNotBlank(batchSizeParam)) {
+            params.setBatchSize(NumberUtils.toInt(batchSizeParam, params.getBatchSize()));
+        }
+
+        if (StringUtils.isNotBlank(thresholdParam)) {
+            params.setThreshold(NumberUtils.toLong(thresholdParam, params.getThreshold()));
+        }
+
+        if (StringUtils.isNotBlank(publishOnImportParam)) {
+            params.setPublishOnImport(BooleanUtils.toBoolean(publishOnImportParam));
+        }
+
+        if (StringUtils.isNotBlank(dataUrlSizeThresholdParam)) {
+            params.setDataUrlSizeThreshold(
+                    NumberUtils.toLong(dataUrlSizeThresholdParam, params.getDataUrlSizeThreshold()));
+        }
+    }
+
+    /**
+     * Find the attachment in {@code attachments} list by the {@code contentId}.
+     * @param attachments attachment list
+     * @param contentId content Id
+     * @return the attachment in {@code attachments} list found by the {@code contentId}
+     */
+    protected Attachment getAttachmentByContentId(List<Attachment> attachments, String contentId) {
+        if (attachments == null || attachments.isEmpty()) {
+            return null;
+        }
+
+        for (Attachment attachment : attachments) {
+            if (StringUtils.equals(contentId, attachment.getContentId())) {
+                return attachment;
+            }
+            ContentDisposition contentDisposition = attachment.getContentDisposition();
+            if (contentDisposition != null && StringUtils.equals(contentId, contentDisposition.getParameter("name"))) {
+                return attachment;
+            }
+        }
+
+        return null;
     }
 }

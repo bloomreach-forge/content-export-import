@@ -21,16 +21,18 @@ import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -62,34 +64,47 @@ public class ContentEximImportService extends AbstractContentEximService {
     }
 
     @Path("/")
-    @Produces("application/json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     @POST
-    public Response importContentFromZip(MultipartBody body) throws JsonProcessingException {
+    public Response importContentFromZip(
+            @Multipart(value="batchSize", required=false) String batchSizeParam,
+            @Multipart(value="threshold", required=false) String thresholdParam,
+            @Multipart(value="publishOnImport", required=false) String publishOnImportParam,
+            @Multipart(value="dataUrlSizeThreshold", required=false) String dataUrlSizeThresholdParam,
+            @Multipart(value="paramsJson", required=false) String paramsJsonParam,
+            @Multipart(value="params", required=false) Attachment paramsAttachment,
+            @Multipart(value="package", required=true) Attachment packageAttachment) throws JsonProcessingException {
+
         Result result = new Result();
 
         File tempZipFile = null;
         Session session = null;
+        ExecutionParams params = new ExecutionParams();
 
         try {
-            ExecutionParams params = new ExecutionParams();
-            Attachment paramsAttachment = body.getAttachment("params");
+            tempZipFile = File.createTempFile(TEMP_PREFIX, ".zip");
+            log.info("ContentEximService#importContentFromZip begins with {}", tempZipFile.getPath());
 
-            if (paramsAttachment != null) {
-                final String json = attachmentToString(paramsAttachment, "UTF-8");
-                params = getObjectMapper().readValue(json, ExecutionParams.class);
-            }
-
-            Attachment zipAttachment = body.getAttachment("package");
-
-            if (zipAttachment == null) {
+            if (packageAttachment == null) {
                 result.addError("No zip attachment.");
                 return Response.serverError().entity(toJsonString(result)).build();
             }
 
-            tempZipFile = File.createTempFile(ZIP_TEMP_BASE_PREFIX, ".zip");
-            log.info("ContentEximService#importContentFromZip begins with {}", tempZipFile.getPath());
+            if (paramsAttachment != null) {
+                final String json = attachmentToString(paramsAttachment, "UTF-8");
+                if (StringUtils.isNotBlank(json)) {
+                    params = getObjectMapper().readValue(json, ExecutionParams.class);
+                }
+            } else {
+                if (StringUtils.isNotBlank(paramsJsonParam)) {
+                    params = getObjectMapper().readValue(paramsJsonParam, ExecutionParams.class);
+                }
+            }
+            overrideExecutionParamsByParameters(params, batchSizeParam, thresholdParam, publishOnImportParam,
+                    dataUrlSizeThresholdParam);
 
-            zipAttachment.transferTo(tempZipFile);
+            packageAttachment.transferTo(tempZipFile);
             FileObject baseFolder = VFS.getManager().resolveFile("zip:" + tempZipFile.toURI());
 
             session = createSession();
@@ -123,6 +138,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             return Response.ok().entity(toJsonString(result)).build();
         } catch (Exception e) {
+            log.error("Failed to import content.", e);
             result.addError(e.toString());
             return Response.serverError().entity(toJsonString(result)).build();
         } finally {

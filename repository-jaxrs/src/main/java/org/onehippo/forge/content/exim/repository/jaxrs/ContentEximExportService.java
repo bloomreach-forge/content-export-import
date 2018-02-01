@@ -26,13 +26,13 @@ import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -42,6 +42,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.hippoecm.repository.HippoStdNodeType;
 import org.hippoecm.repository.api.Document;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
@@ -74,20 +76,39 @@ public class ContentEximExportService extends AbstractContentEximService {
     }
 
     @Path("/")
-    @Consumes("application/json")
-    @Produces("application/octet-stream")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @POST
-    public StreamingOutput exportContentToZip(String executionParamsJson, @Context HttpServletResponse response) {
+    public Response exportContentToZip(
+            @Multipart(value="batchSize", required=false) String batchSizeParam,
+            @Multipart(value="threshold", required=false) String thresholdParam,
+            @Multipart(value="publishOnImport", required=false) String publishOnImportParam,
+            @Multipart(value="dataUrlSizeThreshold", required=false) String dataUrlSizeThresholdParam,
+            @Multipart(value="paramsJson", required=false) String paramsJsonParam,
+            @Multipart(value="params", required=false) Attachment paramsAttachment) {
+
         File baseFolder = null;
         Session session = null;
+        ExecutionParams params = new ExecutionParams();
 
         try {
-            baseFolder = Files.createTempDirectory(ZIP_TEMP_BASE_PREFIX).toFile();
-            log.info("ContentEximService#exportContentToZip begins at {} with params: {}", baseFolder,
-                    executionParamsJson);
+            baseFolder = Files.createTempDirectory(TEMP_PREFIX).toFile();
+            log.info("ContentEximService#exportContentToZip begins at {}.", baseFolder);
+
+            if (paramsAttachment != null) {
+                final String json = attachmentToString(paramsAttachment, "UTF-8");
+                if (StringUtils.isNotBlank(json)) {
+                    params = getObjectMapper().readValue(json, ExecutionParams.class);
+                }
+            } else {
+                if (StringUtils.isNotBlank(paramsJsonParam)) {
+                    params = getObjectMapper().readValue(paramsJsonParam, ExecutionParams.class);
+                }
+            }
+            overrideExecutionParamsByParameters(params, batchSizeParam, thresholdParam, publishOnImportParam,
+                    dataUrlSizeThresholdParam);
 
             session = createSession();
-            ExecutionParams params = getObjectMapper().readValue(executionParamsJson, ExecutionParams.class);
             Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
             session.refresh(false);
 
@@ -134,13 +155,9 @@ public class ContentEximExportService extends AbstractContentEximService {
             session.logout();
             session = null;
 
-            String fileName = "exim-export-" + DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd-HHmmss")
-                    + ".zip";
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-
             final File zipBaseFolder = baseFolder;
 
-            return new StreamingOutput() {
+            final StreamingOutput entity = new StreamingOutput() {
                 @Override
                 public void write(OutputStream output) throws IOException, WebApplicationException {
                     ZipArchiveOutputStream zipOutput = null;
@@ -158,7 +175,13 @@ public class ContentEximExportService extends AbstractContentEximService {
                     }
                 }
             };
+
+            String fileName = "exim-export-" + DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd-HHmmss")
+                    + ".zip";
+            return Response.ok().header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                    .entity(entity).build();
         } catch (Exception e) {
+            log.error("Failed to export content.", e);
             if (baseFolder != null) {
                 try {
                     FileUtils.deleteDirectory(baseFolder);
@@ -166,14 +189,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                     log.error("Failed to delete the temporary folder at {}", baseFolder.getPath(), e);
                 }
             }
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             final String message = new StringBuilder().append(e.getMessage()).append("\r\n").toString();
-            return new StreamingOutput() {
-                @Override
-                public void write(OutputStream output) throws IOException, WebApplicationException {
-                    output.write(message.getBytes());
-                }
-            };
+            return Response.serverError().entity(message).build();
         } finally {
             log.info("ContentEximService#exportContentToZip ends.");
             if (session != null) {
