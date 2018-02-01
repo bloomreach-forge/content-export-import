@@ -33,6 +33,7 @@ import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.impl.DefaultBinaryImportTask;
 import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentManagerImpl;
 import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentVariantImportTask;
+import org.onehippo.forge.content.exim.core.util.ContentNodeUtils;
 import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.onehippo.forge.content.exim.core.util.HippoBinaryNodeUtils;
 import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
@@ -151,6 +152,8 @@ public class ContentEximImportService extends AbstractContentEximService {
             ContentMigrationRecord record = null;
 
             try {
+                ContentNodeUtils.prependUrlPrefixInJcrDataValues(contentNode, BINARY_ATTACHMENT_REL_PATH, baseFolderUrlPrefix);
+
                 record = importTask.beginRecord("", path);
                 record.setAttribute("file", file.getName().getPath());
                 record.setProcessed(true);
@@ -190,6 +193,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
+                    importTask.getDocumentManager().getSession().save();
                     importTask.getDocumentManager().getSession().refresh(false);
                     if (params.getThreshold() > 0) {
                         Thread.sleep(params.getThreshold());
@@ -198,6 +202,9 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             }
         }
+
+        importTask.getDocumentManager().getSession().save();
+        importTask.getDocumentManager().getSession().refresh(false);
 
         return batchCount;
     }
@@ -225,11 +232,17 @@ public class ContentEximImportService extends AbstractContentEximService {
             ContentMigrationRecord record = null;
 
             try {
+                ContentNodeUtils.prependUrlPrefixInJcrDataValues(contentNode, BINARY_ATTACHMENT_REL_PATH, baseFolderUrlPrefix);
+
                 record = importTask.beginRecord("", path);
                 record.setAttribute("file", file.getName().getPath());
                 record.setProcessed(true);
 
-                // TODO
+                String locale = (contentNode.hasProperty("hippotranslation:locale")) ? contentNode.getProperty("hippotranslation:locale").getValue() : null;
+                String localizedName = contentNode.getProperty("jcr:localizedName").getValue();
+
+                String updatedPath = importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,
+                        primaryTypeName, path, locale, localizedName);
 
                 record.setSucceeded(true);
             } catch (Exception e) {
@@ -243,6 +256,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
+                    importTask.getDocumentManager().getSession().save();
                     importTask.getDocumentManager().getSession().refresh(false);
                     if (params.getThreshold() > 0) {
                         Thread.sleep(params.getThreshold());
@@ -251,6 +265,9 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             }
         }
+
+        importTask.getDocumentManager().getSession().save();
+        importTask.getDocumentManager().getSession().refresh(false);
 
         return batchCount;
     }

@@ -154,13 +154,12 @@ public class ContentNodeUtils {
     }
 
     /**
-     * Find a given {@code urlPrefix} in the URL value of <code>jcr:data</code> property, and replace it with the
-     * given {@code replace} if the value starts with the {@code urlPrefix}.
+     * Find a given {@code urlPrefix} in the URL value of <code>jcr:data</code> property, and remove the prefix
+     * if the value starts with the {@code urlPrefix}.
      * @param baseContentNode base content node
      * @param urlPrefix url prefix
-     * @param replace replace string
      */
-    public static void replaceUrlPrefixInJcrDataValues(ContentNode baseContentNode, String urlPrefix, String replace) {
+    public static void removeUrlPrefixInJcrDataValues(ContentNode baseContentNode, String urlPrefix) {
         final int urlPrefixLen = urlPrefix.length();
         List<ContentNode> childNodes = baseContentNode.queryNodesByXPath("//nodes[properties[@itemName='jcr:data']]");
 
@@ -168,11 +167,26 @@ public class ContentNodeUtils {
             String value = childNode.getProperty("jcr:data").getValue();
 
             if (StringUtils.startsWith(value, urlPrefix)) {
-                if (StringUtils.isEmpty(replace)) {
-                    childNode.setProperty("jcr:data", value.substring(urlPrefixLen));
-                } else {
-                    childNode.setProperty("jcr:data", replace + value.substring(urlPrefixLen));
-                }
+                childNode.setProperty("jcr:data", value.substring(urlPrefixLen));
+            }
+        }
+    }
+
+    /**
+     * Find a given {@code urlPrefix} in the URL value of <code>jcr:data</code> property, and prepend it with the
+     * given {@code urlPrefix} if the value starts with the {@code startsWith}.
+     * @param baseContentNode base content node
+     * @param startsWith start with string of the value
+     * @param urlPrefix url prefix
+     */
+    public static void prependUrlPrefixInJcrDataValues(ContentNode baseContentNode, String startsWith, String urlPrefix) {
+        List<ContentNode> childNodes = baseContentNode.queryNodesByXPath("//nodes[properties[@itemName='jcr:data']]");
+
+        for (ContentNode childNode : childNodes) {
+            String value = childNode.getProperty("jcr:data").getValue();
+
+            if (StringUtils.startsWith(value, startsWith)) {
+                childNode.setProperty("jcr:data", urlPrefix + value);
             }
         }
     }

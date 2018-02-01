@@ -219,7 +219,7 @@ public class ContentEximExportService extends AbstractContentEximService {
                 record.setProcessed(true);
                 ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
                         ContentNodeUtils.MIRROR_DOCBASES_XPATH);
-                ContentNodeUtils.replaceUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix, "");
+                ContentNodeUtils.removeUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix);
 
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
@@ -293,7 +293,7 @@ public class ContentEximExportService extends AbstractContentEximService {
                 record.setProcessed(true);
                 ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
                         ContentNodeUtils.MIRROR_DOCBASES_XPATH, referredBinaryPaths);
-                ContentNodeUtils.replaceUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix, "");
+                ContentNodeUtils.removeUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix);
 
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
