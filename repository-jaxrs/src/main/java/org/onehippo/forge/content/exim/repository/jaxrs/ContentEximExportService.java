@@ -35,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -79,13 +80,15 @@ public class ContentEximExportService extends AbstractContentEximService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @POST
-    public Response exportContentToZip(
-            @Multipart(value="batchSize", required=false) String batchSizeParam,
-            @Multipart(value="threshold", required=false) String thresholdParam,
-            @Multipart(value="publishOnImport", required=false) String publishOnImportParam,
-            @Multipart(value="dataUrlSizeThreshold", required=false) String dataUrlSizeThresholdParam,
-            @Multipart(value="paramsJson", required=false) String paramsJsonParam,
-            @Multipart(value="params", required=false) Attachment paramsAttachment) {
+    public Response exportContentToZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
+            @Multipart(value = "threshold", required = false) String thresholdParam,
+            @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
+            @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
+            @Multipart(value = "docbasePropNames", required = false) String docbasePropNamesParam,
+            @Multipart(value = "documentTags", required = false) String documentTagsParam,
+            @Multipart(value = "binaryTags", required = false) String binaryTagsParam,
+            @Multipart(value = "paramsJson", required = false) String paramsJsonParam,
+            @Multipart(value = "params", required = false) Attachment paramsAttachment) {
 
         File baseFolder = null;
         Session session = null;
@@ -106,7 +109,7 @@ public class ContentEximExportService extends AbstractContentEximService {
                 }
             }
             overrideExecutionParamsByParameters(params, batchSizeParam, thresholdParam, publishOnImportParam,
-                    dataUrlSizeThresholdParam);
+                    dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
 
             session = createSession();
             Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
@@ -199,8 +202,8 @@ public class ContentEximExportService extends AbstractContentEximService {
         }
     }
 
-    private int exportBinaries(ExecutionParams params, DefaultBinaryExportTask exportTask, Result result, int batchCount,
-            FileObject baseFolder) throws Exception {
+    private int exportBinaries(ExecutionParams params, DefaultBinaryExportTask exportTask, Result result,
+            int batchCount, FileObject baseFolder) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
 
         for (ResultItem item : result.getItems()) {
@@ -234,9 +237,23 @@ public class ContentEximExportService extends AbstractContentEximService {
 
                 ContentNode contentNode = exportTask.exportBinarySetToContentNode(variant);
                 record.setProcessed(true);
+
                 ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
                         ContentNodeUtils.MIRROR_DOCBASES_XPATH);
+
+                Set<String> docbasePropNames = params.getDocbasePropNames();
+                if (CollectionUtils.isNotEmpty(docbasePropNames)) {
+                    for (String docbasePropName : docbasePropNames) {
+                        ContentNodeUtils.replaceDocbasePropertiesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
+                                "properties[@itemName='" + docbasePropName + "']");
+                    }
+                }
+
                 ContentNodeUtils.removeUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix);
+
+                if (applyTagContentProperties(contentNode, params.getBinaryTags())) {
+                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
+                }
 
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
@@ -264,6 +281,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                 }
             }
         }
+
+        exportTask.getDocumentManager().getSession().refresh(false);
 
         return batchCount;
     }
@@ -308,9 +327,23 @@ public class ContentEximExportService extends AbstractContentEximService {
                 Document document = new Document(variant.getIdentifier());
                 ContentNode contentNode = exportTask.exportVariantToContentNode(document);
                 record.setProcessed(true);
+
                 ContentNodeUtils.replaceDocbasesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
                         ContentNodeUtils.MIRROR_DOCBASES_XPATH, referredBinaryPaths);
+
+                Set<String> docbasePropNames = params.getDocbasePropNames();
+                if (CollectionUtils.isNotEmpty(docbasePropNames)) {
+                    for (String docbasePropName : docbasePropNames) {
+                        ContentNodeUtils.replaceDocbasePropertiesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
+                                "properties[@itemName='" + docbasePropName + "']");
+                    }
+                }
+
                 ContentNodeUtils.removeUrlPrefixInJcrDataValues(contentNode, baseFolderUrlPrefix);
+
+                if (applyTagContentProperties(contentNode, params.getDocumentTags())) {
+                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
+                }
 
                 String relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(variantPath),
                         "/");
@@ -338,6 +371,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                 }
             }
         }
+
+        exportTask.getDocumentManager().getSession().refresh(false);
 
         return batchCount;
     }

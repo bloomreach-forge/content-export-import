@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.ws.rs.Consumes;
@@ -28,11 +29,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.hippoecm.repository.HippoStdNodeType;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -67,14 +71,17 @@ public class ContentEximImportService extends AbstractContentEximService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @POST
-    public Response importContentFromZip(
-            @Multipart(value="batchSize", required=false) String batchSizeParam,
-            @Multipart(value="threshold", required=false) String thresholdParam,
-            @Multipart(value="publishOnImport", required=false) String publishOnImportParam,
-            @Multipart(value="dataUrlSizeThreshold", required=false) String dataUrlSizeThresholdParam,
-            @Multipart(value="paramsJson", required=false) String paramsJsonParam,
-            @Multipart(value="params", required=false) Attachment paramsAttachment,
-            @Multipart(value="package", required=true) Attachment packageAttachment) throws JsonProcessingException {
+    public Response importContentFromZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
+            @Multipart(value = "threshold", required = false) String thresholdParam,
+            @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
+            @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
+            @Multipart(value = "docbasePropNames", required = false) String docbasePropNamesParam,
+            @Multipart(value = "documentTags", required = false) String documentTagsParam,
+            @Multipart(value = "binaryTags", required = false) String binaryTagsParam,
+            @Multipart(value = "paramsJson", required = false) String paramsJsonParam,
+            @Multipart(value = "params", required = false) Attachment paramsAttachment,
+            @Multipart(value = "package", required = true) Attachment packageAttachment)
+            throws JsonProcessingException {
 
         Result result = new Result();
 
@@ -102,7 +109,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                 }
             }
             overrideExecutionParamsByParameters(params, batchSizeParam, thresholdParam, publishOnImportParam,
-                    dataUrlSizeThresholdParam);
+                    dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
 
             transferAttachmentToFile(packageAttachment, tempZipFile);
 
@@ -135,7 +142,8 @@ public class ContentEximImportService extends AbstractContentEximService {
                 documentImportTask.stop();
             }
 
-            batchCount = cleaningMirrorDocbaseValues(session, params, result, batchCount);
+            batchCount = cleanMirrorDocbaseValues(session, params, result, batchCount);
+            batchCount = cleanAllDocbaseFieldValues(session, params, result, batchCount);
 
             return Response.ok().entity(toJsonString(result)).build();
         } catch (Exception e) {
@@ -187,18 +195,26 @@ public class ContentEximImportService extends AbstractContentEximService {
                 String folderPath = folderPathAndName[0];
                 String name = folderPathAndName[1];
 
-                String folderPrimaryType = DEFAULT_GALLERY_FOLDER_PRIMARY_TYPE;
-                String[] folderTypes = DEFAULT_GALLERY_FOLDER_FOLDER_TYPES;
-                String[] galleryTypes = DEFAULT_GALLERY_GALLERY_TYPES;
+                String folderPrimaryType;
+                String[] folderTypes;
+                String[] galleryTypes;
 
-                if (HippoNodeUtils.isAssetPath(path)) {
-                    folderPrimaryType = DEFAULT_ASSET_FOLDER_PRIMARY_TYPE;
-                    folderTypes = DEFAULT_ASSET_FOLDER_FOLDER_TYPES;
-                    galleryTypes = DEFAULT_ASSET_GALLERY_TYPES;
+                if (HippoNodeUtils.isGalleryPath(path)) {
+                    folderPrimaryType = params.getGalleryFolderPrimaryType();
+                    folderTypes = params.getGalleryFolderFolderTypes();
+                    galleryTypes = params.getGalleryFolderGalleryTypes();
+                } else {
+                    folderPrimaryType = params.getAssetFolderPrimaryType();
+                    folderTypes = params.getAssetFolderFolderTypes();
+                    galleryTypes = params.getAssetFolderGalleryTypes();
                 }
 
                 folderPath = importTask.createOrUpdateBinaryFolder(folderPath, folderPrimaryType, folderTypes,
                         galleryTypes);
+
+                if (applyTagContentProperties(contentNode, params.getBinaryTags())) {
+                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
+                }
 
                 String updatedPath = importTask.createOrUpdateBinaryFromContentNode(contentNode, primaryTypeName,
                         folderPath, name);
@@ -273,6 +289,10 @@ public class ContentEximImportService extends AbstractContentEximService {
                         : null;
                 String localizedName = contentNode.getProperty("jcr:localizedName").getValue();
 
+                if (applyTagContentProperties(contentNode, params.getDocumentTags())) {
+                    contentNode.addMixinType(HippoStdNodeType.NT_RELAXED);
+                }
+
                 String updatedPath = importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,
                         primaryTypeName, path, locale, localizedName);
 
@@ -312,7 +332,7 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int cleaningMirrorDocbaseValues(Session session, ExecutionParams params, Result result, int batchCount)
+    private int cleanMirrorDocbaseValues(Session session, ExecutionParams params, Result result, int batchCount)
             throws Exception {
         Set<String> mirrorNodePaths = getQueriedNodePaths(session,
                 "//element(*)[jcr:like(@hippo:docbase,'/content/%')]", Query.XPATH);
@@ -336,6 +356,93 @@ public class ContentEximImportService extends AbstractContentEximService {
                 String message = "Failed to clean mirror docbase value at " + mirrorNodePath + ". " + e;
                 result.addError(message);
                 log.error("Failed to clean mirror docbase value at {}.", mirrorNodePath, e);
+            } finally {
+                ++batchCount;
+                if (batchCount % params.getBatchSize() == 0) {
+                    session.save();
+                    session.refresh(false);
+                    if (params.getThreshold() > 0) {
+                        Thread.sleep(params.getThreshold());
+                    }
+                }
+            }
+        }
+
+        session.save();
+        session.refresh(false);
+
+        return batchCount;
+    }
+
+    private int cleanAllDocbaseFieldValues(Session session, ExecutionParams params, Result result, int batchCount)
+            throws Exception {
+        Set<String> docbasePropNames = params.getDocbasePropNames();
+
+        if (CollectionUtils.isEmpty(docbasePropNames)) {
+            return batchCount;
+        }
+
+        for (String docbasePropName : docbasePropNames) {
+            if (StringUtils.isNotBlank(docbasePropName)) {
+                batchCount = cleanSingleDocbaseFieldValues(session, params, StringUtils.trim(docbasePropName), result,
+                        batchCount);
+            }
+        }
+
+        return batchCount;
+    }
+
+    private int cleanSingleDocbaseFieldValues(Session session, ExecutionParams params, String docbasePropName,
+            Result result, int batchCount) throws Exception {
+        Set<String> nodePaths = getQueriedNodePaths(session,
+                "//element(*)[jcr:like(@" + docbasePropName + ",'/content/%')]", Query.XPATH);
+
+        session.refresh(false);
+
+        for (String nodePath : nodePaths) {
+            try {
+                if (!session.nodeExists(nodePath)) {
+                    continue;
+                }
+
+                Node node = session.getNode(nodePath);
+
+                if (!node.hasProperty(docbasePropName)) {
+                    continue;
+                }
+
+                Property docbaseProp = node.getProperty(docbasePropName);
+
+                if (docbaseProp.isMultiple()) {
+                    String[] docbasePaths = JcrUtils.getMultipleStringProperty(node, docbasePropName, null);
+                    if (ArrayUtils.isNotEmpty(docbasePaths)) {
+                        boolean updated = false;
+                        for (int i = 0; i < docbasePaths.length; i++) {
+                            String docbasePath = docbasePaths[i];
+                            if (StringUtils.startsWith(docbasePath, "/") && session.nodeExists(docbasePath)) {
+                                String docbase = session.getNode(docbasePath).getIdentifier();
+                                docbasePaths[i] = docbase;
+                                updated = true;
+                            }
+                        }
+                        if (updated) {
+                            JcrUtils.ensureIsCheckedOut(node);
+                            node.setProperty(docbasePropName, docbasePaths);
+                        }
+                    }
+                } else {
+                    String docbasePath = JcrUtils.getStringProperty(node, docbasePropName, null);
+                    if (StringUtils.startsWith(docbasePath, "/") && session.nodeExists(docbasePath)) {
+                        JcrUtils.ensureIsCheckedOut(node);
+                        String docbase = session.getNode(docbasePath).getIdentifier();
+                        node.setProperty(docbasePropName, docbase);
+                    }
+                }
+            } catch (Exception e) {
+                String message = "Failed to clean mirror docbase value at " + nodePath + "/@" + docbasePropName + ". "
+                        + e;
+                result.addError(message);
+                log.error("Failed to clean mirror docbase value at {}/@{}.", nodePath, docbasePropName, e);
             } finally {
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {

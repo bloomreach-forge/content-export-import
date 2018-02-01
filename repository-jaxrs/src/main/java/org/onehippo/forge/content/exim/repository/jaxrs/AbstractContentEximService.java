@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +46,7 @@ import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
+import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,36 +91,6 @@ public abstract class AbstractContentEximService {
      * If this file is found in the process, the export or import process will stop right away.
      */
     protected static final String STOP_REQUEST_FILE_REL_PATH = "EXIM-INF/_stop_";
-
-    /**
-     * Default gallery folder's primary node type name.
-     */
-    protected static final String DEFAULT_GALLERY_FOLDER_PRIMARY_TYPE = "hippogallery:stdImageGallery";
-
-    /**
-     * Default foldertypes property values of a gallery folder.
-     */
-    protected static final String[] DEFAULT_GALLERY_FOLDER_FOLDER_TYPES = { "new-image-folder" };
-
-    /**
-     * Default gallerytypes property values of a gallery folder.
-     */
-    protected static final String[] DEFAULT_GALLERY_GALLERY_TYPES = { "hippogallery:imageset" };
-
-    /**
-     * Default asset folder's primary node type name.
-     */
-    protected static final String DEFAULT_ASSET_FOLDER_PRIMARY_TYPE = "hippogallery:stdAssetGallery";
-
-    /**
-     * Default foldertypes property values of an asset folder.
-     */
-    protected static final String[] DEFAULT_ASSET_FOLDER_FOLDER_TYPES = { "new-file-folder" };
-
-    /**
-     * Default gallerytypes property values of an asset folder.
-     */
-    protected static final String[] DEFAULT_ASSET_GALLERY_TYPES = { "hippogallery:exampleAssetSet" };
 
     /**
      * Jackson ObjectMapper instance.
@@ -288,7 +261,8 @@ public abstract class AbstractContentEximService {
      * @param publishOnImportParam publishOnImport request parameter value
      */
     protected void overrideExecutionParamsByParameters(ExecutionParams params, String batchSizeParam,
-            String thresholdParam, String publishOnImportParam, String dataUrlSizeThresholdParam) {
+            String thresholdParam, String publishOnImportParam, String dataUrlSizeThresholdParam,
+            String docbasePropNamesParam, String documentTagsParam, String binaryTagsParam) {
         if (StringUtils.isNotBlank(batchSizeParam)) {
             params.setBatchSize(NumberUtils.toInt(batchSizeParam, params.getBatchSize()));
         }
@@ -304,6 +278,18 @@ public abstract class AbstractContentEximService {
         if (StringUtils.isNotBlank(dataUrlSizeThresholdParam)) {
             params.setDataUrlSizeThreshold(
                     NumberUtils.toLong(dataUrlSizeThresholdParam, params.getDataUrlSizeThreshold()));
+        }
+
+        if (StringUtils.isNotBlank(docbasePropNamesParam)) {
+            params.setDocbasePropNames(new LinkedHashSet<>(Arrays.asList(StringUtils.split(docbasePropNamesParam, ";"))));
+        }
+
+        if (StringUtils.isNotBlank(documentTagsParam)) {
+            params.setDocumentTags(new LinkedHashSet<>(Arrays.asList(StringUtils.split(documentTagsParam, ";"))));
+        }
+
+        if (StringUtils.isNotBlank(binaryTagsParam)) {
+            params.setBinaryTags(new LinkedHashSet<>(Arrays.asList(StringUtils.split(binaryTagsParam, ";"))));
         }
     }
 
@@ -329,5 +315,35 @@ public abstract class AbstractContentEximService {
         }
 
         return null;
+    }
+
+    /**
+     * Apply tag field on the content node with give {@code tagInfos} list, each item of which should look like
+     * "myhippoproject:tags=a,b,c".
+     * @param contentNode content node
+     * @param tagInfos tag info line like "myhippoproject:tags=a,b,c"
+     * @return true if any tag field is added
+     */
+    protected boolean applyTagContentProperties(ContentNode contentNode, Set<String> tagInfos) {
+        if (CollectionUtils.isEmpty(tagInfos)) {
+            return false;
+        }
+
+        boolean updated = false;
+
+        for (String tagInfo : tagInfos) {
+            String name = StringUtils.substringBefore(tagInfo, "=");
+            String values = StringUtils.substringAfter(tagInfo, "=");
+
+            if (StringUtils.isBlank(name) || StringUtils.isBlank(values)) {
+                log.warn("Invalid content tag info: {}", tagInfo);
+                continue;
+            }
+
+            contentNode.setProperty(name, StringUtils.split(values, ","));
+            updated = true;
+        }
+
+        return updated;
     }
 }
