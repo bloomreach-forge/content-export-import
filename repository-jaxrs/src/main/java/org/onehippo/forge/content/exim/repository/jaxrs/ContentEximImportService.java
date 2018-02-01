@@ -72,7 +72,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                 params = getObjectMapper().readValue(json, ExecutionParams.class);
             }
 
-            Attachment zipAttachment = body.getAttachment("zip");
+            Attachment zipAttachment = body.getAttachment("package");
 
             if (zipAttachment == null) {
                 result.addError("No zip attachment.");
