@@ -16,8 +16,11 @@
 package org.onehippo.forge.content.exim.repository.jaxrs;
 
 import java.io.File;
+import java.util.Set;
 
+import javax.jcr.Node;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -112,6 +115,8 @@ public class ContentEximImportService extends AbstractContentEximService {
                 documentImportTask.stop();
             }
 
+            batchCount = cleaningMirrorDocbaseValues(session, params, result, batchCount);
+
             return Response.ok().entity(toJsonString(result)).build();
         } catch (Exception e) {
             result.addError(e.toString());
@@ -129,7 +134,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
     private int importBinaries(ExecutionParams params, FileObject baseFolder, DefaultBinaryImportTask importTask,
             Result result, int batchCount) throws Exception {
-        final String baseFolderUrlPrefix = StringUtils.removeEnd(baseFolder.getURL().toString(), "/") + "/";
+        final String baseFolderUrlPrefix = baseFolder.getURL().toString();
         FileObject[] files = importTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
 
         for (FileObject file : files) {
@@ -150,7 +155,8 @@ public class ContentEximImportService extends AbstractContentEximService {
             ContentMigrationRecord record = null;
 
             try {
-                ContentNodeUtils.prependUrlPrefixInJcrDataValues(contentNode, BINARY_ATTACHMENT_REL_PATH, baseFolderUrlPrefix);
+                ContentNodeUtils.prependUrlPrefixInJcrDataValues(contentNode, BINARY_ATTACHMENT_REL_PATH,
+                        baseFolderUrlPrefix);
 
                 record = importTask.beginRecord("", path);
                 record.setAttribute("file", file.getName().getPath());
@@ -213,7 +219,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
     private int importDocuments(ExecutionParams params, FileObject baseFolder,
             WorkflowDocumentVariantImportTask importTask, Result result, int batchCount) throws Exception {
-        final String baseFolderUrlPrefix = StringUtils.removeEnd(baseFolder.getURL().toString(), "/") + "/";
+        final String baseFolderUrlPrefix = baseFolder.getURL().toString();
         FileObject[] files = importTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
 
         for (FileObject file : files) {
@@ -234,13 +240,16 @@ public class ContentEximImportService extends AbstractContentEximService {
             ContentMigrationRecord record = null;
 
             try {
-                ContentNodeUtils.prependUrlPrefixInJcrDataValues(contentNode, BINARY_ATTACHMENT_REL_PATH, baseFolderUrlPrefix);
+                ContentNodeUtils.prependUrlPrefixInJcrDataValues(contentNode, BINARY_ATTACHMENT_REL_PATH,
+                        baseFolderUrlPrefix);
 
                 record = importTask.beginRecord("", path);
                 record.setAttribute("file", file.getName().getPath());
                 record.setProcessed(true);
 
-                String locale = (contentNode.hasProperty("hippotranslation:locale")) ? contentNode.getProperty("hippotranslation:locale").getValue() : null;
+                String locale = (contentNode.hasProperty("hippotranslation:locale"))
+                        ? contentNode.getProperty("hippotranslation:locale").getValue()
+                        : null;
                 String localizedName = contentNode.getProperty("jcr:localizedName").getValue();
 
                 String updatedPath = importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,
@@ -269,7 +278,6 @@ public class ContentEximImportService extends AbstractContentEximService {
                         Thread.sleep(params.getThreshold());
                     }
                 }
-
             }
         }
 
@@ -279,4 +287,44 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
+    private int cleaningMirrorDocbaseValues(Session session, ExecutionParams params, Result result, int batchCount)
+            throws Exception {
+        Set<String> mirrorNodePaths = getQueriedNodePaths(session,
+                "//element(*)[jcr:like(@hippo:docbase,'/content/%')]", Query.XPATH);
+        session.refresh(false);
+
+        for (String mirrorNodePath : mirrorNodePaths) {
+            try {
+                if (!session.nodeExists(mirrorNodePath)) {
+                    continue;
+                }
+
+                Node mirrorNode = session.getNode(mirrorNodePath);
+                String docbasePath = mirrorNode.getProperty("hippo:docbase").getString();
+
+                if (StringUtils.startsWith(docbasePath, "/") && session.nodeExists(docbasePath)) {
+                    String docbase = session.getNode(docbasePath).getIdentifier();
+                    mirrorNode.setProperty("hippo:docbase", docbase);
+                }
+            } catch (Exception e) {
+                String message = "Failed to clean mirror docbase value at " + mirrorNodePath + ". " + e;
+                result.addError(message);
+                log.error("Failed to clean mirror docbase value at {}.", mirrorNodePath, e);
+            } finally {
+                ++batchCount;
+                if (batchCount % params.getBatchSize() == 0) {
+                    session.save();
+                    session.refresh(false);
+                    if (params.getThreshold() > 0) {
+                        Thread.sleep(params.getThreshold());
+                    }
+                }
+            }
+        }
+
+        session.save();
+        session.refresh(false);
+
+        return batchCount;
+    }
 }

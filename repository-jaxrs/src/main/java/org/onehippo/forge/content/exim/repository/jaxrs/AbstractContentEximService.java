@@ -17,12 +17,18 @@ package org.onehippo.forge.content.exim.repository.jaxrs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -120,5 +126,21 @@ public abstract class AbstractContentEximService {
         item.setSucceeded(record.isSucceeded());
         item.setErrorMessage(record.getErrorMessage());
         return item;
+    }
+
+    protected Set<String> getQueriedNodePaths(Session session, String statement, String language) throws RepositoryException {
+        Set<String> nodePaths = new LinkedHashSet<>();
+        Query query = session.getWorkspace().getQueryManager().createQuery(statement, language);
+        QueryResult result = query.execute();
+
+        for (NodeIterator nodeIt = result.getNodes(); nodeIt.hasNext(); ) {
+            Node node = nodeIt.nextNode();
+
+            if (node != null) {
+                nodePaths.add(node.getPath());
+            }
+        }
+
+        return nodePaths;
     }
 }
