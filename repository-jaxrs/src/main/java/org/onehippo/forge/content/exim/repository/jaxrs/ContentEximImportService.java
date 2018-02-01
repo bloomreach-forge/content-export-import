@@ -292,6 +292,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                         primaryTypeName, path, locale, localizedName);
 
                 if (params.isPublishOnImport()) {
+                    importTask.getDocumentManager().depublishDocument(updatedPath);
                     importTask.getDocumentManager().publishDocument(updatedPath);
                 }
 
