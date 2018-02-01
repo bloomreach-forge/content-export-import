@@ -281,7 +281,7 @@ public abstract class AbstractContentEximService {
         }
 
         if (StringUtils.isNotBlank(docbasePropNamesParam)) {
-            params.setDocbasePropNames(new LinkedHashSet<>(Arrays.asList(StringUtils.split(docbasePropNamesParam, ";"))));
+            params.setDocbasePropNames(new LinkedHashSet<>(Arrays.asList(StringUtils.split(docbasePropNamesParam, ","))));
         }
 
         if (StringUtils.isNotBlank(documentTagsParam)) {
