@@ -28,6 +28,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.onehippo.forge.content.pojo.model.ContentProperty;
+import org.onehippo.forge.content.pojo.model.ContentPropertyType;
 
 /**
  * Utilities to handle {@link ContentNode} objects.
@@ -186,7 +187,7 @@ public class ContentNodeUtils {
             String value = childNode.getProperty("jcr:data").getValue();
 
             if (StringUtils.startsWith(value, startsWith)) {
-                childNode.setProperty("jcr:data", urlPrefix + value);
+                childNode.setProperty("jcr:data", ContentPropertyType.BINARY, urlPrefix + value);
             }
         }
     }
