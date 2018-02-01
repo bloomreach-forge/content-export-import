@@ -15,6 +15,9 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs.param;
 
+/**
+ * Result item representation.
+ */
 public class ResultItem {
 
     private String path;

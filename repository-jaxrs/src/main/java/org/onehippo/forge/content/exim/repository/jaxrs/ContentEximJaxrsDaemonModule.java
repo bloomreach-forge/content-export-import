@@ -19,15 +19,20 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.repository.jaxrs.RepositoryJaxrsEndpoint;
 import org.onehippo.repository.jaxrs.RepositoryJaxrsService;
 import org.onehippo.repository.modules.AbstractReconfigurableDaemonModule;
 
+/**
+ * DaemonModule implementation to register Content EXIM export and import JAX-RS services.
+ */
 public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonModule {
 
     private static final String DEFAULT_END_POINT = "/exim";
 
     private String modulePath;
+    private String endpoint;
 
     private ContentEximExportService contentEximExportService;
     private ContentEximImportService contentEximImportService;
@@ -35,6 +40,7 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
     @Override
     protected void doConfigure(final Node moduleConfig) throws RepositoryException {
         modulePath = moduleConfig.getParent().getPath();
+        endpoint = JcrUtils.getStringProperty(moduleConfig, "endpoint", DEFAULT_END_POINT);
     }
 
     @Override
@@ -46,7 +52,7 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
         contentEximImportService.setDaemonSession(session);
 
         RepositoryJaxrsService.addEndpoint(
-                new RepositoryJaxrsEndpoint(DEFAULT_END_POINT)
+                new RepositoryJaxrsEndpoint(endpoint)
                 .singleton(contentEximExportService)
                 .singleton(contentEximImportService)
                 .authorized(modulePath, RepositoryJaxrsService.HIPPO_REST_PERMISSION));
@@ -54,7 +60,7 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
 
     @Override
     protected void doShutdown() {
-        RepositoryJaxrsService.removeEndpoint(DEFAULT_END_POINT);
+        RepositoryJaxrsService.removeEndpoint(endpoint);
     }
 
 }

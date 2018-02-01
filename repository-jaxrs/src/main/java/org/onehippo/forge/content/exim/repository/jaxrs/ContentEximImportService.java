@@ -49,6 +49,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/**
+ * Content-EXIM Import JAX-RS Service.
+ */
 @Path("/import")
 public class ContentEximImportService extends AbstractContentEximService {
 

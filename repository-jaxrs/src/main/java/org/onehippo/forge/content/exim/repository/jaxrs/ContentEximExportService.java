@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -56,12 +55,15 @@ import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
-import org.onehippo.forge.content.exim.repository.jaxrs.util.ContentItemSetCollector;
+import org.onehippo.forge.content.exim.repository.jaxrs.util.ResultItemSetCollector;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ZipCompressUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Content-EXIM Export JAX-RS Service.
+ */
 @Path("/export")
 public class ContentEximExportService extends AbstractContentEximService {
 
@@ -86,7 +88,7 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             session = createSession();
             ExecutionParams params = getObjectMapper().readValue(executionParamsJson, ExecutionParams.class);
-            Result result = ContentItemSetCollector.collectItemsFromExecutionParams(session, params);
+            Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
             session.refresh(false);
 
             FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());
@@ -118,9 +120,7 @@ public class ContentEximExportService extends AbstractContentEximService {
             }
 
             if (!referredNodePaths.isEmpty()) {
-                Set<String> pathsCache = new HashSet<>();
-                ContentItemSetCollector.fillResultItemsForNodePaths(session, referredNodePaths, true, pathsCache,
-                        result);
+                ResultItemSetCollector.fillResultItemsForNodePaths(session, referredNodePaths, true, null, result);
                 session.refresh(false);
             }
 

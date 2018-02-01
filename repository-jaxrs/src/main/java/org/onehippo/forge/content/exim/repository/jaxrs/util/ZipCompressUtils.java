@@ -25,11 +25,23 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * ZIP Compressing Utilities.
+ */
 public class ZipCompressUtils {
 
     private ZipCompressUtils() {
     }
 
+    /**
+     * Add a ZIP entry to {@code zipOutput} with the given {@code entryName} and string {@code content} in
+     * {@code charsetName} encoding.
+     * @param entryName ZIP entry name
+     * @param content string content of the ZIP entry.
+     * @param charsetName charset name in encoding
+     * @param zipOutput ZipArchiveOutputStream instance
+     * @throws IOException if IO exception occurs
+     */
     public static void addEntryToZip(String entryName, String content, String charsetName,
             ZipArchiveOutputStream zipOutput) throws IOException {
         byte[] bytes;
@@ -43,6 +55,16 @@ public class ZipCompressUtils {
         addEntryToZip(entryName, bytes, 0, bytes.length, zipOutput);
     }
 
+    /**
+     * Add a ZIP entry to {@code zipOutput} with the given {@code entryName} and {@code bytes} starting from
+     * {@code offset} in {@code length}.
+     * @param entryName ZIP entry name
+     * @param bytes the byte array to fill in for the ZIP entry
+     * @param offset the starting offset index to read from the byte array
+     * @param length the length to read from the byte array
+     * @param zipOutput ZipArchiveOutputStream instance
+     * @throws IOException if IO exception occurs
+     */
     public static void addEntryToZip(String entryName, byte[] bytes, int offset, int length,
             ZipArchiveOutputStream zipOutput) throws IOException {
         ZipArchiveEntry entry = new ZipArchiveEntry(entryName);
@@ -56,6 +78,14 @@ public class ZipCompressUtils {
         }
     }
 
+    /**
+     * Add ZIP entries to {@code zipOutput} by selecting all the descendant files under the {@code baseFolder},
+     * starting with the ZIP entry name {@code prefix}.
+     * @param baseFolder base folder to find child files underneath
+     * @param prefix the prefix of ZIP entry name
+     * @param zipOutput ZipArchiveOutputStream instance
+     * @throws IOException if IO exception occurs
+     */
     public static void addFileEntriesInFolderToZip(File baseFolder, String prefix, ZipArchiveOutputStream zipOutput)
             throws IOException {
         for (File file : baseFolder.listFiles()) {

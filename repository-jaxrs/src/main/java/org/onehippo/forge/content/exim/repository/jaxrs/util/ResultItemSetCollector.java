@@ -16,6 +16,7 @@
 package org.onehippo.forge.content.exim.repository.jaxrs.util;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -33,11 +34,22 @@ import org.onehippo.forge.content.exim.repository.jaxrs.param.QueriesAndPaths;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
 
-public class ContentItemSetCollector {
+/**
+ * Utility to collect {@link ResultItem}s based on various conditions.
+ */
+public class ResultItemSetCollector {
 
-    private ContentItemSetCollector() {
+    private ResultItemSetCollector() {
     }
 
+    /**
+     * Collect {@link ResultItem}s from the given {@link params} by picking nodes from the given paths or querying
+     * nodes from the given queries.
+     * @param session JCR session
+     * @param params ExecutionParams instance
+     * @return collected {@link ResultItem}s
+     * @throws RepositoryException if repository exception occurs
+     */
     public static Result collectItemsFromExecutionParams(final Session session, final ExecutionParams params)
             throws RepositoryException {
         Result result = new Result();
@@ -61,8 +73,22 @@ public class ContentItemSetCollector {
         return result;
     }
 
+    /**
+     * Collect nodes from {@link nodePaths} with validations and fill {@link ResultItem} instances in {@code resultOut}.
+     * @param session JCR session
+     * @param nodePaths document or binary node paths to validate
+     * @param binary flag whether the node paths are for binary content or not
+     * @param pathsCache node path cache set, which can be useful if you want to avoid putting the same items multiple times.
+     *                   This can be null.
+     * @param resultOut {@link Result} instance
+     * @throws RepositoryException if repository exception occurs
+     */
     public static void fillResultItemsForNodePaths(Session session, Collection<String> nodePaths,
             boolean binary, Set<String> pathsCache, Result resultOut) throws RepositoryException {
+        if (pathsCache == null) {
+            pathsCache = new HashSet<>();
+        }
+
         for (String path : nodePaths) {
             if ((binary && !HippoNodeUtils.isBinaryPath(path)) || (!binary && !HippoNodeUtils.isDocumentPath(path))) {
                 continue;
@@ -96,6 +122,17 @@ public class ContentItemSetCollector {
         }
     }
 
+    /**
+     * Collect nodes by executing the {@code queries} with validations and fill {@link ResultItem} instances in
+     * {@code resultOut}.
+     * @param session JCR session
+     * @param queries JCR query statements for documents or binaries
+     * @param binary flag whether the node paths are for binary content or not
+     * @param pathsCache node path cache set, which can be useful if you want to avoid putting the same items multiple times.
+     *                   This can be null.
+     * @param resultOut {@link Result} instance
+     * @throws RepositoryException if repository exception occurs
+     */
     public static void fillResultItemsFromQueries(Session session, Collection<String> queries,
             boolean binary, Set<String> pathsCache, Result resultOut) throws RepositoryException {
         for (String query : queries) {
@@ -147,6 +184,5 @@ public class ContentItemSetCollector {
                 resultOut.addItem(item);
             }
         }
-
     }
 }

@@ -19,6 +19,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Result representation.
+ */
 public class Result {
 
     private int totalBinaryCount;

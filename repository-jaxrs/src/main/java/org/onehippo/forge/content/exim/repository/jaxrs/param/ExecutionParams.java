@@ -15,10 +15,24 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs.param;
 
+/**
+ * Content Export or Import Execution Parameters.
+ */
 public class ExecutionParams {
 
+    /**
+     * Default batch size.
+     */
     private static final int DEFAULT_BATCH_SIZE = 200;
+
+    /**
+     * Default threshold wait time milliseconds on each batch execution cycle.
+     */
     private static final long DEFAULT_THRESHOLD = 10L;
+
+    /**
+     * Default binary data byte maximum size in DATA URLs.
+     */
     private static final long DEFAULT_DATA_URL_SIZE_THRESHOLD = 256 * 1024;
 
     private Integer batchSize;

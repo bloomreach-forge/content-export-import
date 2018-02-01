@@ -18,6 +18,9 @@ package org.onehippo.forge.content.exim.repository.jaxrs.param;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Queries and Paths.
+ */
 public class QueriesAndPaths {
 
     private List<String> queries;
