@@ -1,0 +1,7 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:modules/content-exim:
+      jcr:primaryType: hipposys:module
+      hipposys:className: org.onehippo.forge.content.exim.repository.jaxrs.ContentEximJaxrsDaemonModule
+      /hippo:moduleconfig:
+        jcr:primaryType: hipposys:moduleconfig

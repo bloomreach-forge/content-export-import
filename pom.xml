@@ -34,6 +34,7 @@
     <forge.gallery-magick.version>2.0.0</forge.gallery-magick.version>
     <jackson2.version>2.8.8</jackson2.version>
 
+    <servlet-api.version>3.0.1</servlet-api.version>
     <javax.jcr.version>2.0</javax.jcr.version>
     <hippo.repository.version>5.1.0</hippo.repository.version>
     <hippo.services.version>4.1.0</hippo.services.version>
@@ -42,6 +43,8 @@
     <commons-vfs2.version>2.1</commons-vfs2.version>
     <commons-io.version>2.5</commons-io.version>
     <commons-csv.version>1.5</commons-csv.version>
+    <commons-compress.version>1.15</commons-compress.version>
+
     <tika-core.version>1.7</tika-core.version>
     <tika-parsers.version>1.7</tika-parsers.version>
 
@@ -140,6 +143,13 @@
     <dependencies>
 
       <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>${servlet-api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
         <groupId>javax.jcr</groupId>
         <artifactId>jcr</artifactId>
         <version>${javax.jcr.version}</version>
@@ -158,6 +168,12 @@
         <artifactId>hippo-repository-builtin</artifactId>
         <version>${hippo.repository.version}</version>
         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.onehippo.cms7</groupId>
+        <artifactId>hippo-repository-jaxrs</artifactId>
+        <version>${hippo.repository.version}</version>
       </dependency>
 
       <dependency>
@@ -328,6 +344,12 @@
         <version>${commons-csv.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons-compress.version}</version>
+      </dependency>
+
       <!-- TEST DEPENDENCIES -->
 
       <dependency>
@@ -390,6 +412,7 @@
   <modules>
     <module>core</module>
     <module>updater-examples</module>
+    <module>repository-jaxrs</module>
   </modules>
 
   <reporting>
