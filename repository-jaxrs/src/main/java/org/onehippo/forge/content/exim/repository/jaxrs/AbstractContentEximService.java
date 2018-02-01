@@ -15,8 +15,11 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -214,6 +217,27 @@ public abstract class AbstractContentEximService {
             input = attachment.getObject(InputStream.class);
             return IOUtils.toString(input, charsetName);
         } finally {
+            IOUtils.closeQuietly(input);
+        }
+    }
+
+    /**
+     * Transfer attachment content into the given {@code file}.
+     * @param attachment attachment
+     * @param file destination file
+     * @return
+     * @throws IOException
+     */
+    protected void transferAttachmentToFile(Attachment attachment, File file) throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
+
+        try {
+            input = attachment.getObject(InputStream.class);
+            output = new FileOutputStream(file);
+            IOUtils.copyLarge(input, output);
+        } finally {
+            IOUtils.closeQuietly(output);
             IOUtils.closeQuietly(input);
         }
     }

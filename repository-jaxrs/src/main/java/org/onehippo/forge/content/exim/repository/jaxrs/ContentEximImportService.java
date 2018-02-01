@@ -104,7 +104,8 @@ public class ContentEximImportService extends AbstractContentEximService {
             overrideExecutionParamsByParameters(params, batchSizeParam, thresholdParam, publishOnImportParam,
                     dataUrlSizeThresholdParam);
 
-            packageAttachment.transferTo(tempZipFile);
+            transferAttachmentToFile(packageAttachment, tempZipFile);
+
             FileObject baseFolder = VFS.getManager().resolveFile("zip:" + tempZipFile.toURI());
 
             session = createSession();
