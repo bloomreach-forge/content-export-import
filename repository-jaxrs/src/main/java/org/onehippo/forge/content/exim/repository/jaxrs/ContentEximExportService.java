@@ -25,12 +25,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jcr.Credentials;
-import javax.jcr.LoginException;
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -38,7 +34,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -58,7 +53,7 @@ import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentVariantExportTa
 import org.onehippo.forge.content.exim.core.util.ContentNodeUtils;
 import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
-import org.onehippo.forge.content.exim.repository.jaxrs.param.ExportParams;
+import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ContentItemSetCollector;
@@ -67,63 +62,31 @@ import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+@Path("/export")
+public class ContentEximExportService extends AbstractContentEximService {
 
-@Path("/")
-public class ContentEximService {
+    private static Logger log = LoggerFactory.getLogger(ContentEximExportService.class);
 
-    private static Logger log = LoggerFactory.getLogger(ContentEximService.class);
-
-    private static final Credentials SYSTEM_CREDENTIALS = new SimpleCredentials("system", new char[] {});
-
-    private static final String ZIP_TEMP_BASE_FOLDER_PREFIX = "_exim_";
-
-    private static final String EXIM_SUMMARY_BINARIES_LOG_REL_PATH = "EXIM-INF/summary-binaries.log";
-
-    private static final String EXIM_SUMMARY_DOCUMENTS_LOG_REL_PATH = "EXIM-INF/summary-documents.log";
-
-    private static final String BINARY_ATTACHMENT_REL_PATH = "EXIM-INF/data/attachments";
-
-    private static final String STOP_REQUEST_FILE_REL_PATH = "EXIM-INF/_stop_";
-
-    private ObjectMapper objectMapper;
-
-    private Session daemonSession;
-
-    public ContentEximService() {
-        objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+    public ContentEximExportService() {
+        super();
     }
 
-    public Session getDaemonSession() {
-        return daemonSession;
-    }
-
-    public void setDaemonSession(Session daemonSession) {
-        this.daemonSession = daemonSession;
-    }
-
-    @Path("/export")
+    @Path("/")
     @Consumes("application/json")
     @Produces("application/octet-stream")
     @POST
-    public StreamingOutput exportContentToZip(String exportParamsJson, @Context HttpServletResponse response) {
+    public StreamingOutput exportContentToZip(String executionParamsJson, @Context HttpServletResponse response) {
         File baseFolder = null;
         Session session = null;
 
         try {
-            baseFolder = Files.createTempDirectory(ZIP_TEMP_BASE_FOLDER_PREFIX).toFile();
+            baseFolder = Files.createTempDirectory(ZIP_TEMP_BASE_PREFIX).toFile();
             log.info("ContentEximService#exportContentToZip begins at {} with params: {}", baseFolder,
-                    exportParamsJson);
+                    executionParamsJson);
 
             session = createSession();
-            ExportParams params = objectMapper.readValue(exportParamsJson, ExportParams.class);
-            Result result = ContentItemSetCollector.collectItemsFromExportParams(session, params);
+            ExecutionParams params = getObjectMapper().readValue(executionParamsJson, ExecutionParams.class);
+            Result result = ContentItemSetCollector.collectItemsFromExecutionParams(session, params);
             session.refresh(false);
 
             FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());
@@ -219,26 +182,7 @@ public class ContentEximService {
         }
     }
 
-    @Path("/import")
-    @Consumes("application/octet-stream")
-    @Produces("application/json")
-    @POST
-    public Response importContentFromZip() {
-        try {
-            Result result = new Result();
-            result.addItem(new ResultItem("/a/b/c", "nt1:type1"));
-            return Response.ok(objectMapper.writeValueAsString(result)).build();
-        } catch (Exception e) {
-            final String message = new StringBuilder().append(e.getMessage()).toString();
-            return Response.serverError().entity(message).build();
-        }
-    }
-
-    protected Session createSession() throws LoginException, RepositoryException {
-        return getDaemonSession().impersonate(SYSTEM_CREDENTIALS);
-    }
-
-    private int exportBinaries(ExportParams params, DefaultBinaryExportTask exportTask, Result result, int batchCount,
+    private int exportBinaries(ExecutionParams params, DefaultBinaryExportTask exportTask, Result result, int batchCount,
             FileObject baseFolder) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
 
@@ -307,7 +251,7 @@ public class ContentEximService {
         return batchCount;
     }
 
-    private int exportDocuments(ExportParams params, WorkflowDocumentVariantExportTask exportTask, Result result,
+    private int exportDocuments(ExecutionParams params, WorkflowDocumentVariantExportTask exportTask, Result result,
             int batchCount, FileObject baseFolder, Set<String> referredBinaryPaths) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
 
@@ -379,15 +323,5 @@ public class ContentEximService {
         }
 
         return batchCount;
-    }
-
-    private boolean isStopRequested(FileObject baseFolder) {
-        try {
-            FileObject stopSignalFile = baseFolder.resolveFile(STOP_REQUEST_FILE_REL_PATH);
-            return stopSignalFile.exists();
-        } catch (Exception e) {
-            log.error("Failed to check stop request file.", e);
-        }
-        return false;
     }
 }

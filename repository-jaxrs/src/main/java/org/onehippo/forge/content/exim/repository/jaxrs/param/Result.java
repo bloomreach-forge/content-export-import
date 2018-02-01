@@ -26,6 +26,8 @@ public class Result {
     private int succeededBinaryCount;
     private int succeededDocumentCount;
     private List<ResultItem> items = new LinkedList<>();
+    private List<String> errors;
+    private String summary;
 
     public int getTotalBinaryCount() {
         return totalBinaryCount;
@@ -82,4 +84,37 @@ public class Result {
 
         items.add(item);
     }
+
+    public List<String> getErrors() {
+        if (errors == null) {
+            return Collections.emptyList();
+        }
+
+        return Collections.unmodifiableList(errors);
+    }
+
+    public void setErrors(List<String> errors) {
+        if (errors == null) {
+            this.errors = null;
+        } else {
+            this.errors = new LinkedList<>(errors);
+        }
+    }
+
+    public void addError(String error) {
+        if (errors == null) {
+            errors = new LinkedList<>();
+        }
+
+        errors.add(error);
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
 }

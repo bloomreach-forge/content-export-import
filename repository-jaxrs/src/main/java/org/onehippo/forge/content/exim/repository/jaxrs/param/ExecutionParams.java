@@ -15,7 +15,7 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs.param;
 
-public class ExportParams {
+public class ExecutionParams {
 
     private static final int DEFAULT_BATCH_SIZE = 200;
     private static final long DEFAULT_THRESHOLD = 10L;

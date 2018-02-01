@@ -19,39 +19,42 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.repository.jaxrs.RepositoryJaxrsEndpoint;
 import org.onehippo.repository.jaxrs.RepositoryJaxrsService;
 import org.onehippo.repository.modules.AbstractReconfigurableDaemonModule;
 
 public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonModule {
 
-    private static final String DEFAULT_END_POINT = "/content-exim";
+    private static final String DEFAULT_END_POINT = "/exim";
 
-    private ContentEximService contentEximService;
     private String modulePath;
-    private String endpoint;
+
+    private ContentEximExportService contentEximExportService;
+    private ContentEximImportService contentEximImportService;
 
     @Override
     protected void doConfigure(final Node moduleConfig) throws RepositoryException {
         modulePath = moduleConfig.getParent().getPath();
-        endpoint = JcrUtils.getStringProperty(moduleConfig, "endpoint", DEFAULT_END_POINT);
     }
 
     @Override
     protected void doInitialize(Session session) throws RepositoryException {
-        contentEximService = new ContentEximService();
-        contentEximService.setDaemonSession(session);
+        contentEximExportService = new ContentEximExportService();
+        contentEximImportService = new ContentEximImportService();
+
+        contentEximExportService.setDaemonSession(session);
+        contentEximImportService.setDaemonSession(session);
 
         RepositoryJaxrsService.addEndpoint(
-                new RepositoryJaxrsEndpoint(endpoint)
-                .singleton(contentEximService)
+                new RepositoryJaxrsEndpoint(DEFAULT_END_POINT)
+                .singleton(contentEximExportService)
+                .singleton(contentEximImportService)
                 .authorized(modulePath, RepositoryJaxrsService.HIPPO_REST_PERMISSION));
     }
 
     @Override
     protected void doShutdown() {
-        RepositoryJaxrsService.removeEndpoint(endpoint);
+        RepositoryJaxrsService.removeEndpoint(DEFAULT_END_POINT);
     }
 
 }

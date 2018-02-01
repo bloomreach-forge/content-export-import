@@ -5,4 +5,3 @@ definitions:
       hipposys:className: org.onehippo.forge.content.exim.repository.jaxrs.ContentEximJaxrsDaemonModule
       /hippo:moduleconfig:
         jcr:primaryType: hipposys:moduleconfig
-        endpoint: '/content-exim'

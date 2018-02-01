@@ -28,7 +28,7 @@ import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.StringUtils;
 import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
-import org.onehippo.forge.content.exim.repository.jaxrs.param.ExportParams;
+import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.QueriesAndPaths;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
@@ -38,7 +38,7 @@ public class ContentItemSetCollector {
     private ContentItemSetCollector() {
     }
 
-    public static Result collectItemsFromExportParams(final Session session, final ExportParams params)
+    public static Result collectItemsFromExecutionParams(final Session session, final ExecutionParams params)
             throws RepositoryException {
         Result result = new Result();
 
