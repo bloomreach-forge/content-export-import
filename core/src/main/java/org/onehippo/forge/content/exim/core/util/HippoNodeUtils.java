@@ -53,6 +53,21 @@ public class HippoNodeUtils {
     private static Logger log = LoggerFactory.getLogger(HippoNodeUtils.class);
 
     /**
+     * Hippo document path prefix.
+     */
+    private static final String DOCUMENT_PATH_PREFIX = "/content/documents/";
+
+    /**
+     * Hippo gallery path prefix.
+     */
+    private static final String GALLERY_PATH_PREFIX = "/content/gallery/";
+
+    /**
+     * Hippo asset path prefix.
+     */
+    private static final String ASSET_PATH_PREFIX = "/content/assets/";
+
+    /**
      * Hippo Repository specific predefined folder node type name
      */
     private static final String DEFAULT_HIPPO_FOLDER_NODE_TYPE = "hippostd:folder";
@@ -156,6 +171,28 @@ public class HippoNodeUtils {
                 Thread.currentThread().setContextClassLoader(currentClassloader);
             }
         }
+    }
+
+    /**
+     * Find and return the first found variant node under the handle node.
+     * @param handle handle node
+     * @return the first found variant node under the handle node
+     * @throws RepositoryException if repository exception occurs
+     */
+    public static Node getFirstVariantNode(final Node handle) throws RepositoryException {
+        if (handle == null) {
+            return null;
+        }
+
+        for (NodeIterator nodeIt = handle.getNodes(handle.getName()); nodeIt.hasNext();) {
+            Node variantNode = nodeIt.nextNode();
+
+            if (variantNode != null) {
+                return variantNode;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -295,6 +332,42 @@ public class HippoNodeUtils {
         }
 
         return null;
+    }
+
+    /**
+     * Return true if the {@code path} reflects a document path in Hippo.
+     * @param path document path
+     * @return true if the {@code path} reflects a document path in Hippo
+     */
+    public static boolean isDocumentPath(final String path) {
+        return StringUtils.startsWith(path, DOCUMENT_PATH_PREFIX);
+    }
+
+    /**
+     * Return true if the {@code path} reflects a gallery path in Hippo.
+     * @param path gallery path
+     * @return true if the {@code path} reflects a gallery path in Hippo
+     */
+    public static boolean isGalleryPath(final String path) {
+        return StringUtils.startsWith(path, GALLERY_PATH_PREFIX);
+    }
+
+    /**
+     * Return true if the {@code path} reflects a asset path in Hippo.
+     * @param path asset path
+     * @return true if the {@code path} reflects a asset path in Hippo
+     */
+    public static boolean isAssetPath(final String path) {
+        return StringUtils.startsWith(path, ASSET_PATH_PREFIX);
+    }
+
+    /**
+     * Return true if the {@code path} reflects a gallery or asset path in Hippo.
+     * @param path gallery or asset path
+     * @return true if the {@code path} reflects a gallery or asset path in Hippo
+     */
+    public static boolean isBinaryPath(final String path) {
+        return isGalleryPath(path) || isAssetPath(path);
     }
 
     /**

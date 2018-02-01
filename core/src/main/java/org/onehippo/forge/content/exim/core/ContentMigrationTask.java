@@ -84,6 +84,11 @@ public interface ContentMigrationTask {
     public Collection<ContentMigrationRecord> getContentMigrationRecords();
 
     /**
+     * Return the execution summary.
+     */
+    public String getSummary();
+
+    /**
      * Logs the execution summary by using the logger.
      */
     public void logSummary();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)
+  Copyright 2018 Hippo B.V. (http://www.onehippo.com)
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,11 +23,17 @@
     <version>2.1.1</version>
   </parent>
 
-  <name>Hippo Content Export / Import Core</name>
-  <description>Hippo Content Export / Import Core</description>
-  <artifactId>content-exim-core</artifactId>
+  <name>Hippo Content Export / Import Repository JAX-RS Services</name>
+  <description>Hippo Content Export / Import Repository JAX-RS Services</description>
+  <artifactId>content-exim-repository-jaxrs</artifactId>
 
   <dependencies>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>javax.jcr</groupId>
@@ -54,18 +60,14 @@
     </dependency>
 
     <dependency>
-      <groupId>org.onehippo.forge.hippo-pojo-bind</groupId>
-      <artifactId>hippo-pojo-bind-jcr</artifactId>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-repository-jaxrs</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.onehippo.forge.gallery-magick</groupId>
-      <artifactId>gallery-magick-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
+      <groupId>org.onehippo.forge.content-exim</groupId>
+      <artifactId>content-exim-core</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -108,7 +110,7 @@
 
     <dependency>
       <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
+      <artifactId>commons-compress</artifactId>
     </dependency>
 
     <!-- TEST DEPENDENCIES -->
