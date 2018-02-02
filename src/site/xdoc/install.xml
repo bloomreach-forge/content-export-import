@@ -63,6 +63,16 @@
           <version>${forge.content-exim.version}</version>
         </dependency>
 
+        <!--
+          The following is optional: Include this when you want to use the built-in REST Services.
+          And, this built-in REST Service module can be activated only in the authoring module application. e.g, /cms.
+        -->
+        <dependency>
+          <groupId>org.onehippo.forge.content-exim</groupId>
+          <artifactId>content-exim-repository-jaxrs</artifactId>
+          <version>${forge.content-exim.version}</version>
+        </dependency>
+
         <!-- The following is optional: Include this only when you want to bootstrap example groovy updater scripts. -->
         <dependency>
           <groupId>org.onehippo.forge.content-exim</groupId>
@@ -91,6 +101,15 @@
       <dependency>
         <groupId>org.onehippo.forge.content-exim</groupId>
         <artifactId>content-exim-core</artifactId>
+      </dependency>
+
+      <!--
+        The following is optional: Include this when you want to use the built-in REST Services.
+        And, this built-in REST Service module can be activated only in the authoring module application. e.g, /cms.
+      -->
+      <dependency>
+        <groupId>org.onehippo.forge.content-exim</groupId>
+        <artifactId>content-exim-repository-jaxrs</artifactId>
       </dependency>
 
       <!-- The following is optional: Include this in CMS application module only when you want to bootstrap example groovy updater scripts. -->

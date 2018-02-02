@@ -81,7 +81,7 @@ public class ContentEximExportService extends AbstractContentEximService {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @POST
     public Response exportContentToZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
-            @Multipart(value = "threshold", required = false) String thresholdParam,
+            @Multipart(value = "throttle", required = false) String throttleParam,
             @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
             @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
             @Multipart(value = "docbasePropNames", required = false) String docbasePropNamesParam,
@@ -108,7 +108,7 @@ public class ContentEximExportService extends AbstractContentEximService {
                     params = getObjectMapper().readValue(paramsJsonParam, ExecutionParams.class);
                 }
             }
-            overrideExecutionParamsByParameters(params, batchSizeParam, thresholdParam, publishOnImportParam,
+            overrideExecutionParamsByParameters(params, batchSizeParam, throttleParam, publishOnImportParam,
                     dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
 
             session = createSession();
@@ -273,8 +273,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
                     exportTask.getDocumentManager().getSession().refresh(false);
-                    if (params.getThreshold() > 0) {
-                        Thread.sleep(params.getThreshold());
+                    if (params.getThrottle() > 0) {
+                        Thread.sleep(params.getThrottle());
                     }
                 }
             }
@@ -361,8 +361,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
                     exportTask.getDocumentManager().getSession().refresh(false);
-                    if (params.getThreshold() > 0) {
-                        Thread.sleep(params.getThreshold());
+                    if (params.getThrottle() > 0) {
+                        Thread.sleep(params.getThrottle());
                     }
                 }
             }

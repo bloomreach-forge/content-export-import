@@ -101,7 +101,8 @@
 
       // 6. (Optional) You can publish the document right away. Otherwise, it will remain as unpublished by default.
       //    By default, the created or updated document is left as preview status.
-      //    Optionally, if you want, you can publish the document right away here by uncommenting the following line.
+      //    Optionally, if you want, you can publish the document again right away here by uncommenting the following lines.
+      //documentManager.depublishDocument(updatedDocumentLocation)
       //documentManager.publishDocument(updatedDocumentLocation)
 
       // 8. Report that a unit of import process was done, so groovy updater engine can maintain its batch execution status properly.

@@ -257,18 +257,18 @@ public abstract class AbstractContentEximService {
      * Override {@code params} by the give request parameter values.
      * @param params {@link ExecutionParams} instance
      * @param batchSizeParam batch size request parameter value
-     * @param thresholdParam threshold request parameter value
+     * @param throttleParam throttle request parameter value
      * @param publishOnImportParam publishOnImport request parameter value
      */
     protected void overrideExecutionParamsByParameters(ExecutionParams params, String batchSizeParam,
-            String thresholdParam, String publishOnImportParam, String dataUrlSizeThresholdParam,
+            String throttleParam, String publishOnImportParam, String dataUrlSizeThresholdParam,
             String docbasePropNamesParam, String documentTagsParam, String binaryTagsParam) {
         if (StringUtils.isNotBlank(batchSizeParam)) {
             params.setBatchSize(NumberUtils.toInt(batchSizeParam, params.getBatchSize()));
         }
 
-        if (StringUtils.isNotBlank(thresholdParam)) {
-            params.setThreshold(NumberUtils.toLong(thresholdParam, params.getThreshold()));
+        if (StringUtils.isNotBlank(throttleParam)) {
+            params.setThrottle(NumberUtils.toLong(throttleParam, params.getThrottle()));
         }
 
         if (StringUtils.isNotBlank(publishOnImportParam)) {

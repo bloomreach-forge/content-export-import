@@ -35,6 +35,7 @@
     <menu name="Home">
       <item name="Introduction" href="index.html" />
       <item name="Installation" href="install.html" />
+      <item name="Built-in REST Services" href="builtin-rest-services.html" />
       <item name="Tutorials" href="tutorials.html">
         <item name="Exporting Binaries" href="tutorials-export-bins.html" />
         <item name="Exporting Documents" href="tutorials-export-docs.html" />

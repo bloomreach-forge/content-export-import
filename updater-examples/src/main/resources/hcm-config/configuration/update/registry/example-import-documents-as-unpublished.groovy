@@ -97,7 +97,8 @@ class ImportingDocumentVariantInFileUpdateVisitor extends BaseNodeUpdateVisitor 
             importTask.createOrUpdateDocumentFromVariantContentNode(contentNode, primaryTypeName, documentLocation, locale, localizedName)
 
         // By default, the created or updated document is left as preview status.
-        // Optionally, if you want, you can publish the document right away here by uncommenting the following line.
+        // Optionally, if you want, you can publish the document again right away here by uncommenting the following lines.
+        //documentManager.depublishDocument(updatedDocumentLocation)
         //documentManager.publishDocument(updatedDocumentLocation)
 
         visitorContext.reportUpdated(documentLocation)
