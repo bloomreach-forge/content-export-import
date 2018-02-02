@@ -570,7 +570,7 @@ $ curl -i \
           <source><![CDATA[
 $ curl -i \
     -F "publishOnImport=true" \
-    -F "documentTags=contenteximdemo:tags=exim,v1.1"
+    -F "documentTags=contenteximdemo:tags=exim,v1.1" \
     -F "package=@exim.zip" \
     -u admin:admin \
     http://localhost:8080/cms/ws/exim/import
