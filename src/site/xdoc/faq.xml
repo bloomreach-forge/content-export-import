@@ -3,7 +3,7 @@
   "-//Apache Software Foundation//DTD XDOC 1.0//EN"
   "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2015 Hippo
+    Copyright 2015-2018 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -24,6 +24,19 @@
   <body>
 
     <section name="FAQ">
+
+      <subsection name="Q: How to get more logs from Content-EXIM modules?">
+        <p>
+          In general, it should be good enough to set the log level to <code>INFO</code> for
+          <code>org.onehippo.forge.content.exim</code> logger category like the following example:
+        </p>
+
+        <div class="brush: xml">
+          <source><![CDATA[
+              <Logger name="org.onehippo.forge.content.exim" level="info" />
+          ]]></source>
+        </div>
+      </subsection>
 
       <subsection name="Q: Why released only for Hippo CMS 10.2+?">
         <p>
