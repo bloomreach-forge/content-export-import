@@ -3,7 +3,7 @@
   "-//Apache Software Foundation//DTD XDOC 1.0//EN"
   "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2015 Hippo
+    Copyright 2018 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -19,68 +19,569 @@
 -->
 <document>
   <properties>
-    <title>Tutorials</title>
+    <title>Built-in REST Services</title>
   </properties>
   <body>
 
-    <section name="Tutorials on Exporting/Importing Content">
+    <section name="Built-in REST Services">
 
-      <p>
-        The following tutorials explain the concepts and examples with groovy code
-        which is actually excerpts from the demo groovy updater scripts in the <a href="index.html#Demo_Application">demo project</a>.
-      </p>
+      <div class="alert alert-info">
+        This feature has been available since v2.1.2. See <a href="release-notes.html">Release Notes</a>.
+      </div>
 
-      <ul>
-        <li>
-          <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a>
-        </li>
-        <li>
-          <a href="tutorials-export-docs.html">Tutorial: Exporting Document Content</a>
-        </li>
-        <li>
-          <a href="tutorials-import-bins.html">Tutorial: Importing Binary Content</a>
-        </li>
-        <li>
-          <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a>
-        </li>
-        <li>
-          <a href="tutorials-import-docs.html">Tutorial: Importing Document Content</a>
-        </li>
-        <li>
-          <a href="tutorials-clean-mirror-docbase.html">Tutorial: Cleaning Hippo Mirror Docbase Values</a>
-        </li>
-        <li>
-          <a href="tutorials-clean-string-docbase.html">Tutorial: Clean Hippo String Docbase Property Values</a>
-        </li>
-      </ul>
+      <subsection name="Introduction">
 
-    </section>
-
-    <section name="Extra Examples">
-
-      <subsection name="Converting CSV to ContentNodes">
         <p>
-          In practice, you sometimes might want to convert data in other format (not in JSON or not exactly in the same JSON format)
-          to <code>ContentNode</code> to import data.
-          In that case, please see the following page in the
-          <a href="https://onehippo-forge.github.io/jcr-pojo-binding/">Hippo JCR POJO Binding</a> project as an example:
+          The Built-in REST Services provides a generic content exporting and importing functionality
+          with flexible options based on the accumulated experiences and best practices.
+        </p>
+
+        <p>
+          Both URI endpoints are provided (assuming the base path of the
+          <a href="https://www.onehippo.org/library/concepts/hippo-services/repository-jaxrs-service.html" taret="_blank">Repository JAX-RS Service</a>
+          in CMS web application is <code>/cms/ws</code>):
         </p>
         <ul>
-          <li><a href="https://onehippo-forge.github.io/jcr-pojo-binding/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
+          <li>POST <code>/cms/ws/exim/export</code></li>
+          <li>POST <code>/cms/ws/exim/import</code></li>
         </ul>
+
+        <p>
+          Both endpoints consumes <code>multipart/form-data</code> requests.
+        </p>
+        <p>
+          The endpoint for content exporting (<code>/cms/ws/exim/export</code>) produces a <code>application/octet-stream</code>
+          response containing a content package ZIP file.
+        </p>
+        <p>
+          The endpoint for content importing reads a ZIP file contained in the <code>multipart/form-data</code> request body,
+          process the content package ZIP file and produces a <code>application/json</code> output for the result.
+        </p>
+        <p>
+          Find more information below.
+        </p>
+
       </subsection>
 
-      <subsection name="Creating Thumbnails from Image Files">
+      <subsection name="Configuration">
+
         <p>
-          In practice, you sometimes have to create thumbnail images to import gallery image sets.
-          <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a> is an example for this use case.
-          The script uses <a href="https://onehippo-forge.github.io/gallery-magick/">Gallery Magick Image Processing</a> library to generate thumbnail files.
-          <strong>Gallery Magick Image Processing</strong> project provides utilities and command classes
-          to manipulate image files.
+          After you install the Built-in REST Services module following the <a href="install.html">Installation</a> page,
+          you need to <a href="https://www.onehippo.org/library/concepts/hippo-services/repository-jaxrs-service.html" target="_blank">Configure REST endpoint authorization</a> for the services.
         </p>
         <p>
-          See <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a> for detail.
+          The authorization for the Built-in REST Services is set to the <code>hippo:rest</code> permission.
+          Therefore, you need to configure a domain rule for the <code>context-exim</code> addon module with the permission
+          (i.e. <code>hipposys:role: restuser</code>) for specific group(s) or user(s) like the following example:
         </p>
+        <div class="brush: plain">
+          <source><![CDATA[
+    /hippo:configuration/hippo:domains/content-exim:
+      jcr:primaryType: hipposys:domain
+      /rest:
+        jcr:primaryType: hipposys:authrole
+        hipposys:groups: [admin]
+        hipposys:role: restuser
+      /module-domain:
+        jcr:primaryType: hipposys:domainrule
+        /module:
+          jcr:primaryType: hipposys:facetrule
+          hipposys:equals: true
+          hipposys:facet: jcr:path
+          hipposys:filter: false
+          hipposys:type: Reference
+          hipposys:value: /hippo:configuration/hippo:modules/content-exim
+          ]]></source>
+        </div>
+        <p>
+          You can simply copy the above configuration to your environment through CMS Console in most cases
+          where you simply allow this Built-in REST Services only to 'admin' group users.
+        </p>
+
+      </subsection>
+
+      <subsection name="ExecutionParams JSON Schema">
+
+        <p>
+          In both content exporting and importing endpoints, a JSON file or content may be used as input parameter,
+          and it may contain all the available parameters to instruct how to execute the process in more detail.
+        </p>
+        <p>
+          The parameter is abstracted in <code>ExecutionParams</code> object described below in JSON Schema format.
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  "$schema": "http://www.onehippo.org/onehippo-forge/content-exim/schema#",
+
+  "definitions": {
+    "ExecutionParams": {
+      "type": "object",
+      "properties": {
+        "batchSize": {
+          "description": "The batch size in content export or import process, equivalent to the batch size parameter in the Groovy Updater.",
+          "type": "integer"
+        },
+        "throttle": {
+          "description": "The throttle in content export or import process, equivalent to the throttle parameter in the Groovy Updater.",
+          "type": "integer"
+        },
+        "publishOnImport": {
+          "description": "Flag whether or not publish the document after importing. false by default.",
+          "type": "boolean"
+        },
+        "dataUrlSizeThreshold": {
+          "description": "The maximum byte size threshold to use either data: URL or file: URL for binary resource data.",
+          "type": "integer"
+        },
+        "binaries": {
+          "description": "Binary content JCR queries or node paths to export or import.",
+          "type": "#/definitions/QueriesAndPaths"
+        },
+        "documents": {
+          "description": "Document content JCR queries or node paths to export or import.",
+          "type": "#/definitions/QueriesAndPaths"
+        },
+        "docbasePropNames": {
+          "description": "Property names to convert docbase string property (not standard hippo:docbase) values to node paths or UUIDs.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "documentTags": {
+          "description": "Extra document tagging properites (name and value(s), separated by '=' and comma for values) to add in either exporting or importing process. e.g, myhippoproject:tags=a,b,c",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "binaryTags": {
+          "description": "Extra document tagging properites (name and value(s), separated by '=' and comma for values) to add in either exporting or importing process. e.g, myhippoproject:tags=a,b,c",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "galleryFolderPrimaryType": {
+          "description": "Gallery folder primary node type. 'hippogallery:stdImageGallery' by default.",
+          "type": "integer"
+        },
+        "galleryFolderFolderTypes": {
+          "description": "Gallery folder's 'folder-types' property. ['new-image-folder'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "galleryFolderGalleryTypes": {
+          "description": "Gallery folder's 'gallery-types' property. ['hippogallery:imageset'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assetFolderPrimaryType": {
+          "description": "Asset folder primary node type. 'hippogallery:stdAssetGallery' by default.",
+          "type": "integer"
+        },
+        "assetFolderFolderTypes": {
+          "description": "Asset folder's 'folder-types' property. ['new-file-folder'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assetFolderGalleryTypes": {
+          "description": "Asset folder's 'gallery-types' property. ['hippogallery:exampleAssetSet'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [ ]
+    },
+    "QueriesAndPaths": {
+      "type": "object",
+      "properties": {
+        "queries": {
+          "description": "JCR Query statements in either XPATH or SQL to execute queries in content exporting process.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "paths": {
+          "description": "JCR Node paths used in content exporting process. It is valid only when a path represents either a handle or a variant node.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [ ]
+    }
+}
+          ]]></source>
+        </div>
+
+        <p>
+          In content importing process, you don't have to provide an <code>ExecutionParams</code> object
+          (in either <code>paramsJson</code> form parameter or <code>params</code> file attachment)
+          because it takes resonable default values and process the <code>package</code> ZIP file attachment.
+        </p>
+
+        <p>
+          However, in content exporting process, you should provide information about what (which binary or document content) to export
+          at least. Therefore, one minimal <code>ExecutionParams</code> example for <code>/cms/ws/export</code> endpoint
+          would look like this:
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//element(*,hippo:document)'
+    ]
+  }
+}          ]]></source>
+        </div>
+
+        <p>
+          With the <code>ExecutionParams</code> input, the content export process will try to query the documents
+          based on the given JCR queries and packages everything, including binary content referred by the documents as well,
+          to a ZIP file which is sent over in HTTP response body to the client in the end.
+        </p>
+
+        <p>
+          You can also specify binary content queries separately as well:
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  binaries: {
+    queries: [
+      '/jcr:root/content//element(*,hippo:document)[@jcr:primaryType=\'hippogallery:imageset\' or @jcr:primaryType=\'hippogallery:exampleAssetSet\']'
+    ]
+  },
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//element(*,hippo:document)'
+    ]
+  }
+}          ]]></source>
+        </div>
+
+        <p>
+          You can specify multiple query statements for both binaries and documents.
+          Also, you can specify <code>paths</code> JSON array in <code>binaries</code> or <code>documents</code>
+          property to list binary or document node paths more specifically instead of using JCR queries.
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//myhippoproject/news//element(*,hippo:document)',
+      '/jcr:root/content/documents//myhippoproject/events//element(*,hippo:document)'
+    ],
+    paths: [
+      '/content/documents//myhippoproject/content/about',
+      '/content/documents//myhippoproject/content/contact',
+    ]
+  }
+}          ]]></source>
+        </div>
+
+        <div class="alert alert-info">
+          The items in <code>paths</code> are valid only when each points to a handle node or variant node of
+          a document of a binary. Otherwise (e.g, a folder), it will be just ignored.
+          If you want to use a folder, then use <code>queries</code> in JCR query statement format instead.
+          <br/>
+          If both <code>queries</code> and <code>paths</code> are set, the built-in REST Services will merge
+          all the nodes into a set, not to have duplicate content nodes to process internally.
+        </div>
+
+        <p>
+          You can also specify other optional parameters such as <code>batchSize</code>, <code>threshold</code>,
+          <code>dataUrlSizeThreshold</code>, etc.
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  batchSize: 200,
+  threshold: 10,
+  dataUrlSizeThreshold: 262144,
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//element(*,hippo:document)'
+    ]
+  }
+}          ]]></source>
+        </div>
+
+      </subsection>
+
+      <subsection name="Content Exporting REST Service">
+
+        <p>
+          The signature of the content importing JAX-RS Service looks like the following:
+        </p>
+
+        <div class="brush: java">
+          <source><![CDATA[
+    @Path("/exim/export")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @POST
+    public Response exportContentToZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
+            @Multipart(value = "throttle", required = false) String throttleParam,
+            @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
+            @Multipart(value = "docbasePropNames", required = false) String docbasePropNamesParam,
+            @Multipart(value = "documentTags", required = false) String documentTagsParam,
+            @Multipart(value = "binaryTags", required = false) String binaryTagsParam,
+            @Multipart(value = "paramsJson", required = false) String paramsJsonParam,
+            @Multipart(value = "params", required = false) Attachment paramsAttachment) {
+        // SNIP
+    }
+          ]]></source>
+        </div>
+
+        <p>
+          This service tries to parse an <code>ExecutionParams</code> from <code>params</code> file attachment if provided.
+          If <code>params</code> file attachment is not found,
+          then it tries to parse one from <code>paramsJson</code> form parameter instead.
+          If neither is found, then it will produce an empty ZIP file with error messages.
+        </p>
+
+        <p>
+          Other optional form parameters such as <code>batchSize</code>, <code>throttle</code>, <code>dataUrlSizeThreshold</code>, etc.
+          can be used to <strong>override</strong> the parsed <code>ExecutionParams</code> object afterward if provided.
+        </p>
+
+      </subsection>
+
+      <subsection name="Content Importing REST Service">
+
+        <p>
+          The signature of the content importing JAX-RS Service looks like the following:
+        </p>
+
+        <div class="brush: java">
+          <source><![CDATA[
+    @Path("/exim/import")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @POST
+    public Response importContentFromZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
+            @Multipart(value = "throttle", required = false) String throttleParam,
+            @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
+            @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
+            @Multipart(value = "docbasePropNames", required = false) String docbasePropNamesParam,
+            @Multipart(value = "documentTags", required = false) String documentTagsParam,
+            @Multipart(value = "binaryTags", required = false) String binaryTagsParam,
+            @Multipart(value = "paramsJson", required = false) String paramsJsonParam,
+            @Multipart(value = "params", required = false) Attachment paramsAttachment,
+            @Multipart(value = "package", required = true) Attachment packageAttachment)
+        // SNIP
+    }
+          ]]></source>
+        </div>
+
+        <p>
+          This service requires <code>package</code> file attachment which is used as the source to import content from.
+          The attachment must be a ZIP file in the same format used in content exporting process.
+        </p>
+
+        <p>
+          This service tries to parse an <code>ExecutionParams</code> from <code>params</code> file attachment if provided.
+          If <code>params</code> file attachment is not found,
+          then it tries to parse one from <code>paramsJson</code> form parameter instead.
+          If neither is found, then it will use the default parameters instead.
+        </p>
+
+        <p>
+          Other optional form parameters such as <code>batchSize</code>, <code>throttle</code>, <code>publishOnImport</code>, etc.
+          can be used to <strong>override</strong> the parsed <code>ExecutionParams</code> object afterward if provided.
+        </p>
+
+      </subsection>
+
+      <subsection name="Command Line Examples to Export Content to a Package ZIP">
+
+        <p>
+          In this section, we will see how to export binaries and documents
+          from the <a href="index.html#Demo_Application">Demo Application</a>.
+        </p>
+
+        <p>
+          After running the <a href="index.html#Demo_Application">Demo Application</a>,
+          let's export binaries and documents with the following <code>ExecutionParams</code> JSON file.
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ cat export-params.json
+{
+  binaries: {
+    queries: [
+      '/jcr:root/content//element(*,hippo:document)[@jcr:primaryType=\'hippogallery:imageset\' or @jcr:primaryType=\'hippogallery:exampleAssetSet\']'
+    ]
+  },
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//element(*,hippo:document)'
+    ]
+  }
+}
+          ]]></source>
+        </div>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "params=@export-params.json" \
+    -u admin:admin \
+    -o exim.zip \
+    http://localhost:8080/cms/ws/exim/export
+
+...
+          ]]></source>
+        </div>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ unzip -l exim.zip
+
+Archive:  exim.zip
+warning [exim.zip]:  216 extra bytes at beginning or within zipfile
+  (attempting to process anyway)
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+     6326  02-01-2018 20:36   EXIM-INF/summary-binaries.log
+     8792  02-01-2018 20:36   EXIM-INF/summary-documents.log
+   244798  02-01-2018 20:36   content/gallery/contenteximdemo/banners/banner-2.jpg/banner-2.jpg.json
+   222906  02-01-2018 20:36   content/gallery/contenteximdemo/banners/banner-1.jpg/banner-1.jpg.json
+    21357  02-01-2018 20:36   content/gallery/contenteximdemo/samples/coffee-206142_150.jpg/coffee-206142_150.jpg.json
+...
+     4615  02-01-2018 20:36   content/documents/contenteximdemo/news/2017/07/the-medusa-news/the-medusa-news.json
+     4609  02-01-2018 20:36   content/documents/contenteximdemo/news/2017/07/2013-harvest/2013-harvest.json
+     4634  02-01-2018 20:36   content/documents/contenteximdemo/news/2017/07/the-gastropoda-news/the-gastropoda-news.json
+...
+---------                     -------
+  1045398                     34 files
+          ]]></source>
+        </div>
+
+        <p>
+          You can also pass <code>paramsJson</code> form parameter instead of <code>params</code> file attachment:
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "paramsJson={ documents: { queries: [ '/jcr:root/content/documents//element(*,hippo:document)' ] } }" \
+    -u admin:admin \
+    -o exim.zip \
+    http://localhost:8080/cms/ws/exim/export
+
+...
+          ]]></source>
+        </div>
+
+        <p>
+          You got a content package ZIP file (e.g, <code>exim.zip</code>) based on the <code>ExecutionParams</code>!
+        </p>
+
+      </subsection>
+
+      <subsection name="Command Line Examples to Import Content from a Package ZIP">
+
+        <p>
+          In this section, we will see how to import binaries and documents
+          from the given <code>package</code> ZIP file
+          back to the <a href="index.html#Demo_Application">Demo Application</a>.
+        </p>
+
+        <p>
+          After running the <a href="index.html#Demo_Application">Demo Application</a>,
+          let's import binaries and documents like the following.
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ cat import-params.json
+{
+  publishOnImport: false
+}
+          ]]></source>
+        </div>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "params=@import-params.json" \
+    -F "package=@exim.zip" \
+    -u admin:admin \
+    http://localhost:8080/cms/ws/exim/import
+
+HTTP/1.1 200 
+Content-Type: application/json
+Content-Length: 4919
+
+{"totalBinaryCount":8,"totalDocumentCount":24,"succeededBinaryCount":8,"succeededDocumentCount":24,
+"items":[{"path":"/content/gallery/contenteximdemo/banners/banner-2.jpg","primaryType":"hippogallery:imageset",
+"succeeded":true,"errorMessage":null},{"path":"/content/gallery/contenteximdemo/banners/banner-1.jpg",
+"primaryType":"hippogallery:imageset","succeeded":true, ...
+...,
+{"path":"/content/documents/contenteximdemo/events/2017/07/breakfast","primaryType":"contenteximdemo:eventsdocument",
+"succeeded":true,"errorMessage":null}],"errors":[]}
+          ]]></source>
+        </div>
+
+        <p>
+          You can also override properties in <code>ExecutionParams</code> by adding optional form parameters like the following:
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "publishOnImport=true" \
+    -F "params=@import-params.json" \
+    -F "package=@exim.zip" \
+    -u admin:admin \
+    http://localhost:8080/cms/ws/exim/import
+          ]]></source>
+        </div>
+
+        <p>
+          Actually, as you can omit <code>ExecutionParams</code> in content import proccess
+          to keep the default parameters, you can simply execute
+          the importing process without the <code>params</code> attachment, like the following example:
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "publishOnImport=true" \
+    -F "documentTags=contenteximdemo:tags=exim,v1.1"
+    -F "package=@exim.zip" \
+    -u admin:admin \
+    http://localhost:8080/cms/ws/exim/import
+          ]]></source>
+        </div>
+
+        <p>
+          You've just imported the binaries and documents in the content package ZIP file the system!
+          Now, you can check if those are good through CMS system as well!
+        </p>
+
       </subsection>
 
     </section>

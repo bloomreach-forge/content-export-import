@@ -1,5 +1,5 @@
 <?xml version="1.0"?><!--
-    Copyright 2015 Hippo Licensed under the Apache License, Version 2.0
+    Copyright 2015-2018 Hippo Licensed under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
     the License. You may obtain a copy of the License at
 
@@ -45,6 +45,13 @@
       </table>
     </section>
     <section name="Release Notes of 2.1.x">
+      <subsection name="2.1.2">
+        <ul>
+          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-135'>HIPFORGE-135</a>] -         [Content-EXIM] Migrate the existing demo Groovy scripts to Repository JAX-RS Services
+            <br/>See <a href="builtin-rest-services.html">Built-in REST Services</a> page for more detail.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="2.1.0">
         <ul>
           <li>
