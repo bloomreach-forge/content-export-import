@@ -71,7 +71,7 @@ public class ContentEximImportService extends AbstractContentEximService {
     @Produces(MediaType.APPLICATION_JSON)
     @POST
     public Response importContentFromZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
-            @Multipart(value = "threshold", required = false) String thresholdParam,
+            @Multipart(value = "throttle", required = false) String throttleParam,
             @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
             @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
             @Multipart(value = "docbasePropNames", required = false) String docbasePropNamesParam,
@@ -107,7 +107,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                     params = getObjectMapper().readValue(paramsJsonParam, ExecutionParams.class);
                 }
             }
-            overrideExecutionParamsByParameters(params, batchSizeParam, thresholdParam, publishOnImportParam,
+            overrideExecutionParamsByParameters(params, batchSizeParam, throttleParam, publishOnImportParam,
                     dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
 
             transferAttachmentToFile(packageAttachment, tempZipFile);
@@ -238,8 +238,8 @@ public class ContentEximImportService extends AbstractContentEximService {
                 if (batchCount % params.getBatchSize() == 0) {
                     importTask.getDocumentManager().getSession().save();
                     importTask.getDocumentManager().getSession().refresh(false);
-                    if (params.getThreshold() > 0) {
-                        Thread.sleep(params.getThreshold());
+                    if (params.getThrottle() > 0) {
+                        Thread.sleep(params.getThrottle());
                     }
                 }
             }
@@ -315,8 +315,8 @@ public class ContentEximImportService extends AbstractContentEximService {
                 if (batchCount % params.getBatchSize() == 0) {
                     importTask.getDocumentManager().getSession().save();
                     importTask.getDocumentManager().getSession().refresh(false);
-                    if (params.getThreshold() > 0) {
-                        Thread.sleep(params.getThreshold());
+                    if (params.getThrottle() > 0) {
+                        Thread.sleep(params.getThrottle());
                     }
                 }
             }
@@ -357,8 +357,8 @@ public class ContentEximImportService extends AbstractContentEximService {
                 if (batchCount % params.getBatchSize() == 0) {
                     session.save();
                     session.refresh(false);
-                    if (params.getThreshold() > 0) {
-                        Thread.sleep(params.getThreshold());
+                    if (params.getThrottle() > 0) {
+                        Thread.sleep(params.getThrottle());
                     }
                 }
             }
@@ -444,8 +444,8 @@ public class ContentEximImportService extends AbstractContentEximService {
                 if (batchCount % params.getBatchSize() == 0) {
                     session.save();
                     session.refresh(false);
-                    if (params.getThreshold() > 0) {
-                        Thread.sleep(params.getThreshold());
+                    if (params.getThrottle() > 0) {
+                        Thread.sleep(params.getThrottle());
                     }
                 }
             }

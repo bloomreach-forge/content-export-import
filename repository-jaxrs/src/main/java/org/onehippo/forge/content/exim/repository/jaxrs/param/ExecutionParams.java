@@ -31,9 +31,9 @@ public class ExecutionParams {
     private static final int DEFAULT_BATCH_SIZE = 200;
 
     /**
-     * Default threshold wait time milliseconds on each batch execution cycle.
+     * Default throttle time milliseconds on each batch execution cycle.
      */
-    private static final long DEFAULT_THRESHOLD = 10L;
+    private static final long DEFAULT_THROTTLE = 10L;
 
     /**
      * Default binary data byte maximum size in DATA URLs.
@@ -71,7 +71,7 @@ public class ExecutionParams {
     private static final String[] DEFAULT_ASSET_FOLDER_GALLERY_TYPES = { "hippogallery:exampleAssetSet" };
 
     private Integer batchSize;
-    private Long threshold;
+    private Long throttle;
     private boolean publishOnImport;
     private Long dataUrlSizeThreshold;
     private QueriesAndPaths binaries;
@@ -99,15 +99,15 @@ public class ExecutionParams {
         this.batchSize = batchSize;
     }
 
-    public Long getThreshold() {
-        if (threshold == null) {
-            return DEFAULT_THRESHOLD;
+    public Long getThrottle() {
+        if (throttle == null) {
+            return DEFAULT_THROTTLE;
         }
-        return threshold;
+        return throttle;
     }
 
-    public void setThreshold(Long threshold) {
-        this.threshold = threshold;
+    public void setThrottle(Long throttle) {
+        this.throttle = throttle;
     }
 
     public boolean isPublishOnImport() {

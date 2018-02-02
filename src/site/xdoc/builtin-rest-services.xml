@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC
+  "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+  "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<!--
+    Copyright 2015 Hippo
+
+    Licensed under the Apache License, Version 2.0 (the  "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document>
+  <properties>
+    <title>Tutorials</title>
+  </properties>
+  <body>
+
+    <section name="Tutorials on Exporting/Importing Content">
+
+      <p>
+        The following tutorials explain the concepts and examples with groovy code
+        which is actually excerpts from the demo groovy updater scripts in the <a href="index.html#Demo_Application">demo project</a>.
+      </p>
+
+      <ul>
+        <li>
+          <a href="tutorials-export-bins.html">Tutorial: Exporting Binary Content</a>
+        </li>
+        <li>
+          <a href="tutorials-export-docs.html">Tutorial: Exporting Document Content</a>
+        </li>
+        <li>
+          <a href="tutorials-import-bins.html">Tutorial: Importing Binary Content</a>
+        </li>
+        <li>
+          <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a>
+        </li>
+        <li>
+          <a href="tutorials-import-docs.html">Tutorial: Importing Document Content</a>
+        </li>
+        <li>
+          <a href="tutorials-clean-mirror-docbase.html">Tutorial: Cleaning Hippo Mirror Docbase Values</a>
+        </li>
+        <li>
+          <a href="tutorials-clean-string-docbase.html">Tutorial: Clean Hippo String Docbase Property Values</a>
+        </li>
+      </ul>
+
+    </section>
+
+    <section name="Extra Examples">
+
+      <subsection name="Converting CSV to ContentNodes">
+        <p>
+          In practice, you sometimes might want to convert data in other format (not in JSON or not exactly in the same JSON format)
+          to <code>ContentNode</code> to import data.
+          In that case, please see the following page in the
+          <a href="https://onehippo-forge.github.io/jcr-pojo-binding/">Hippo JCR POJO Binding</a> project as an example:
+        </p>
+        <ul>
+          <li><a href="https://onehippo-forge.github.io/jcr-pojo-binding/examples-csv2contentnodes.html">Reading CSV and Converting to Content Nodes</a></li>
+        </ul>
+      </subsection>
+
+      <subsection name="Creating Thumbnails from Image Files">
+        <p>
+          In practice, you sometimes have to create thumbnail images to import gallery image sets.
+          <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a> is an example for this use case.
+          The script uses <a href="https://onehippo-forge.github.io/gallery-magick/">Gallery Magick Image Processing</a> library to generate thumbnail files.
+          <strong>Gallery Magick Image Processing</strong> project provides utilities and command classes
+          to manipulate image files.
+        </p>
+        <p>
+          See <a href="tutorials-import-image-files.html">Tutorial: Importing Image Set From Files</a> for detail.
+        </p>
+      </subsection>
+
+    </section>
+
+  </body>
+</document>
