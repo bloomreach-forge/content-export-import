@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Arrays;
@@ -45,10 +46,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
+import org.onehippo.cms7.utilities.logging.PrintStreamLogger;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
+import org.onehippo.forge.content.exim.core.util.TeeLoggerWrapper;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
@@ -78,6 +82,11 @@ public abstract class AbstractContentEximService {
      * Prefix of the temporary folder or files. e.g, temporary folder in zip content creation.
      */
     protected static final String TEMP_PREFIX = "_exim_";
+
+    /**
+     * The whole execution log file entry name.
+     */
+    protected static final String EXIM_EXECUTION_LOG_REL_PATH = "EXIM-INF/execution.log";
 
     /**
      * Zip Entry name of the summary log for binaries.
@@ -420,5 +429,32 @@ public abstract class AbstractContentEximService {
             sbCommand.append('?').append(queryString);
         }
         process.setCommandInfo(sbCommand.toString());
+    }
+
+    /**
+     * Create a tee-ing logger.
+     * @param mainLogger main logger
+     * @param secondOutput output for the second logger
+     * @return a tee-ing logger
+     */
+    protected Logger createTeeLogger(final Logger mainLogger, final PrintStream secondOutput) {
+        final Logger second = new TimestampPrintStreamLogger("exim", PrintStreamLogger.INFO_LEVEL, secondOutput);
+        return new TeeLoggerWrapper(mainLogger, second);
+    }
+
+    private static class TimestampPrintStreamLogger extends PrintStreamLogger {
+
+        private static final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss,SSS");
+
+        public TimestampPrintStreamLogger(final String name, final int level, final PrintStream... out)
+                throws IllegalArgumentException {
+            super(name, level, out);
+        }
+
+        @Override
+        protected String getMessageString(final String level, final String message) {
+            final String ts = dateFormat.format(System.currentTimeMillis());
+            return level + " " + ts + " " + message;
+        }
     }
 }

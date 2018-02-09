@@ -15,6 +15,8 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
@@ -27,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.tika.io.IOUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
 import org.slf4j.Logger;
@@ -86,7 +89,6 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
 
             if (process != null) {
                 printProcessStatus(out, process);
-
                 final ExecutionParams params = process.getExecutionParams();
 
                 if (params != null) {
@@ -102,6 +104,28 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
         }
 
         printProcessStatusReportFooter(out);
+
+        return sw.toString();
+    }
+
+    @Path("/{id}/logs")
+    @Produces(MediaType.TEXT_PLAIN)
+    @GET
+    public String getLogsOfProcess(@PathParam("id") long processId) {
+        StringWriter sw = new StringWriter(1024);
+        PrintWriter out = new PrintWriter(sw);
+
+        if (getProcessMonitor() != null) {
+            ProcessStatus process = getProcessMonitor().getProcess(processId);
+
+            if (process != null) {
+                File logFile = process.getLogFile();
+
+                if (logFile != null && logFile.isFile()) {
+                    printLogFile(out, logFile);
+                }
+            }
+        }
 
         return sw.toString();
     }
@@ -130,5 +154,27 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
         } catch (Exception e) {
             log.error("Failed to write execution params.", e);
         }
+    }
+
+    private void printLogFile(PrintWriter out, File logFile) {
+        out.print("\r\n");
+        out.print("\r\n");
+        out.printf("%11s\r\n", "LOGS");
+        out.print("\r\n");
+
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader(logFile);
+            IOUtils.copy(fr, out);
+        } catch (Exception e) {
+            log.error("Failed to read log file.", e);
+        } finally {
+            IOUtils.closeQuietly(fr);
+        }
+
+        out.print("\r\n");
+        out.print("\r\n");
+        out.print("\r\n");
     }
 }

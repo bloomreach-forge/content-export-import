@@ -52,6 +52,18 @@ public class ZipCompressUtils {
             bytes = content.getBytes(charsetName);
         }
 
+        addEntryToZip(entryName, bytes, zipOutput);
+    }
+
+    /**
+     * Add a ZIP entry to {@code zipOutput} with the given {@code entryName} and {@code bytes}.
+     * @param entryName ZIP entry name
+     * @param bytes the byte array to fill in for the ZIP entry
+     * @param zipOutput ZipArchiveOutputStream instance
+     * @throws IOException if IO exception occurs
+     */
+    public static void addEntryToZip(String entryName, byte[] bytes,
+            ZipArchiveOutputStream zipOutput) throws IOException {
         addEntryToZip(entryName, bytes, 0, bytes.length, zipOutput);
     }
 
