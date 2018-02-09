@@ -34,6 +34,9 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
     private String modulePath;
     private String endpoint;
 
+    private ProcessMonitor processMonitor;
+
+    private ContentEximProcessStatusService contentEximProcessStatusService;
     private ContentEximExportService contentEximExportService;
     private ContentEximImportService contentEximImportService;
 
@@ -45,14 +48,23 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
 
     @Override
     protected void doInitialize(Session session) throws RepositoryException {
+        processMonitor = new ProcessMonitor();
+
+        contentEximProcessStatusService = new ContentEximProcessStatusService();
         contentEximExportService = new ContentEximExportService();
         contentEximImportService = new ContentEximImportService();
 
+        contentEximProcessStatusService.setProcessMonitor(processMonitor);
+        contentEximExportService.setProcessMonitor(processMonitor);
+        contentEximImportService.setProcessMonitor(processMonitor);
+
+        contentEximProcessStatusService.setDaemonSession(session);
         contentEximExportService.setDaemonSession(session);
         contentEximImportService.setDaemonSession(session);
 
         RepositoryJaxrsService.addEndpoint(
                 new RepositoryJaxrsEndpoint(endpoint)
+                .singleton(contentEximProcessStatusService)
                 .singleton(contentEximExportService)
                 .singleton(contentEximImportService)
                 .authorized(modulePath, RepositoryJaxrsService.HIPPO_REST_PERMISSION));

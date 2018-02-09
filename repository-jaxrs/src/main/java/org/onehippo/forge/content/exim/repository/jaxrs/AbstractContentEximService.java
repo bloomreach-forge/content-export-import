@@ -20,7 +20,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,8 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -46,6 +51,8 @@ import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
+import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
+import org.onehippo.forge.content.exim.repository.jaxrs.util.ServletRequestUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +99,8 @@ public abstract class AbstractContentEximService {
      */
     protected static final String STOP_REQUEST_FILE_REL_PATH = "EXIM-INF/_stop_";
 
+    private ProcessMonitor processMonitor;
+
     /**
      * Jackson ObjectMapper instance.
      */
@@ -112,6 +121,14 @@ public abstract class AbstractContentEximService {
         objectMapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+    }
+
+    protected void setProcessMonitor(ProcessMonitor processMonitor) {
+        this.processMonitor = processMonitor;
+    }
+
+    protected ProcessMonitor getProcessMonitor() {
+        return processMonitor;
     }
 
     /**
@@ -281,7 +298,8 @@ public abstract class AbstractContentEximService {
         }
 
         if (StringUtils.isNotBlank(docbasePropNamesParam)) {
-            params.setDocbasePropNames(new LinkedHashSet<>(Arrays.asList(StringUtils.split(docbasePropNamesParam, ","))));
+            params.setDocbasePropNames(
+                    new LinkedHashSet<>(Arrays.asList(StringUtils.split(docbasePropNamesParam, ","))));
         }
 
         if (StringUtils.isNotBlank(documentTagsParam)) {
@@ -345,5 +363,60 @@ public abstract class AbstractContentEximService {
         }
 
         return updated;
+    }
+
+    /**
+     * Find user principal's name from {@code securityContext} or {@code request}.
+     * @param securityContext security context
+     * @param request servlet request
+     * @return user principal's name from {@code securityContext} or {@code request}
+     * @throws UnsupportedEncodingException 
+     */
+    protected String getUserPrincipalName(SecurityContext securityContext, HttpServletRequest request) {
+        if (securityContext != null) {
+            Principal userPrincipal = securityContext.getUserPrincipal();
+            if (userPrincipal != null) {
+                return userPrincipal.getName();
+            }
+        }
+
+        if (request != null) {
+            Principal userPrincipal = request.getUserPrincipal();
+            if (userPrincipal != null) {
+                return userPrincipal.getName();
+            }
+
+            final String authHeader = request.getHeader("Authorization");
+
+            if (StringUtils.isNotBlank(authHeader)) {
+                if (StringUtils.startsWithIgnoreCase(authHeader, "Basic ")) {
+                    final String encoded = authHeader.substring(6).trim();
+                    final String decoded = new String(Base64.getDecoder().decode(encoded));
+                    return StringUtils.substringBefore(decoded, ":");
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Fill basic info from {@code securityContext} and {@code request} in {@code process}.
+     * @param process process
+     * @param securityContext security context
+     * @param request servlet request
+     */
+    protected void fillProcessStatusByRequestInfo(ProcessStatus process, SecurityContext securityContext,
+            HttpServletRequest request) {
+        process.setUsername(getUserPrincipalName(securityContext, request));
+        process.setClientInfo(ServletRequestUtils.getFarthestRemoteAddr(request));
+
+        StringBuilder sbCommand = new StringBuilder(256).append(request.getMethod()).append(' ')
+                .append(request.getRequestURI());
+        String queryString = request.getQueryString();
+        if (StringUtils.isNotBlank(queryString)) {
+            sbCommand.append('?').append(queryString);
+        }
+        process.setCommandInfo(sbCommand.toString());
     }
 }

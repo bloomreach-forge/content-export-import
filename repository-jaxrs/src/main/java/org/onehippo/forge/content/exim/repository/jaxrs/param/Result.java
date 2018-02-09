@@ -27,7 +27,9 @@ public class Result {
     private int totalBinaryCount;
     private int totalDocumentCount;
     private int succeededBinaryCount;
+    private int failedBinaryCount;
     private int succeededDocumentCount;
+    private int failedDocumentCount;
     private List<ResultItem> items = new LinkedList<>();
     private List<String> errors;
 
@@ -67,6 +69,18 @@ public class Result {
         return ++succeededBinaryCount;
     }
 
+    public int getFailedBinaryCount() {
+        return failedBinaryCount;
+    }
+
+    public void setFailedBinaryCount(int failedBinaryCount) {
+        this.failedBinaryCount = failedBinaryCount;
+    }
+
+    public int incrementFailedBinaryCount() {
+        return ++failedBinaryCount;
+    }
+
     public int getSucceededDocumentCount() {
         return succeededDocumentCount;
     }
@@ -77,6 +91,18 @@ public class Result {
 
     public int incrementSucceededDocumentCount() {
         return ++succeededDocumentCount;
+    }
+
+    public int getFailedDocumentCount() {
+        return failedDocumentCount;
+    }
+
+    public void setFailedDocumentCount(int failedDocumentCount) {
+        this.failedDocumentCount = failedDocumentCount;
+    }
+
+    public int incrementFailedDocumentCount() {
+        return ++failedDocumentCount;
     }
 
     public List<ResultItem> getItems() {
@@ -127,4 +153,8 @@ public class Result {
         errors.add(error);
     }
 
+    public double getProgress() {
+        return ((double) (succeededBinaryCount + failedBinaryCount + succeededDocumentCount + failedDocumentCount))
+                / ((double) (totalBinaryCount + totalDocumentCount));
+    }
 }
