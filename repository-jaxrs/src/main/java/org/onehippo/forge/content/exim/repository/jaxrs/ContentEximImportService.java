@@ -22,12 +22,15 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -48,6 +51,7 @@ import org.onehippo.forge.content.exim.core.util.HippoBinaryNodeUtils;
 import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
+import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +74,8 @@ public class ContentEximImportService extends AbstractContentEximService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @POST
-    public Response importContentFromZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
+    public Response importContentFromZip(@Context SecurityContext securityContext, @Context HttpServletRequest request,
+            @Multipart(value = "batchSize", required = false) String batchSizeParam,
             @Multipart(value = "throttle", required = false) String throttleParam,
             @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
             @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
@@ -87,8 +92,14 @@ public class ContentEximImportService extends AbstractContentEximService {
         File tempZipFile = null;
         Session session = null;
         ExecutionParams params = new ExecutionParams();
+        ProcessStatus processStatus = null;
 
         try {
+            if (getProcessMonitor() != null) {
+                processStatus = getProcessMonitor().startProcess();
+                fillProcessStatusByRequestInfo(processStatus, securityContext, request);
+            }
+
             tempZipFile = File.createTempFile(TEMP_PREFIX, ".zip");
             log.info("ContentEximService#importContentFromZip begins with {}", tempZipFile.getPath());
 
@@ -110,6 +121,10 @@ public class ContentEximImportService extends AbstractContentEximService {
             overrideExecutionParamsByParameters(params, batchSizeParam, throttleParam, publishOnImportParam,
                     dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
 
+            if (processStatus != null) {
+                processStatus.setExecutionParams(params);
+            }
+
             transferAttachmentToFile(packageAttachment, tempZipFile);
 
             FileObject baseFolder = VFS.getManager().resolveFile("zip:" + tempZipFile.toURI());
@@ -125,24 +140,31 @@ public class ContentEximImportService extends AbstractContentEximService {
                     documentManager);
             documentImportTask.setLogger(log);
 
+            FileObject[] jsonFiles = binaryImportTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
+
             int batchCount = 0;
 
             try {
                 binaryImportTask.start();
-                batchCount = importBinaries(params, baseFolder, binaryImportTask, result, batchCount);
+                batchCount = importBinaries(processStatus, jsonFiles, params, baseFolder, binaryImportTask, result,
+                        batchCount);
             } finally {
                 binaryImportTask.stop();
             }
 
             try {
                 documentImportTask.start();
-                batchCount = importDocuments(params, baseFolder, documentImportTask, result, batchCount);
+                batchCount = importDocuments(processStatus, jsonFiles, params, baseFolder, documentImportTask, result, batchCount);
             } finally {
                 documentImportTask.stop();
             }
 
-            batchCount = cleanMirrorDocbaseValues(session, params, result, batchCount);
-            batchCount = cleanAllDocbaseFieldValues(session, params, result, batchCount);
+            batchCount = cleanMirrorDocbaseValues(processStatus, session, params, result, batchCount);
+            batchCount = cleanAllDocbaseFieldValues(processStatus, session, params, result, batchCount);
+
+            if (processStatus != null) {
+                processStatus.setProgress(1.0); 
+            }
 
             return Response.ok().entity(toJsonString(result)).build();
         } catch (Exception e) {
@@ -151,6 +173,9 @@ public class ContentEximImportService extends AbstractContentEximService {
             return Response.serverError().entity(toJsonString(result)).build();
         } finally {
             log.info("ContentEximService#importContentFromZip ends.");
+            if (getProcessMonitor() != null) {
+                getProcessMonitor().stopProcess(processStatus);
+            }
             if (tempZipFile != null) {
                 tempZipFile.delete();
             }
@@ -160,12 +185,11 @@ public class ContentEximImportService extends AbstractContentEximService {
         }
     }
 
-    private int importBinaries(ExecutionParams params, FileObject baseFolder, DefaultBinaryImportTask importTask,
-            Result result, int batchCount) throws Exception {
+    private int importBinaries(ProcessStatus processStatus, FileObject[] jsonFiles, ExecutionParams params,
+            FileObject baseFolder, DefaultBinaryImportTask importTask, Result result, int batchCount) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString();
-        FileObject[] files = importTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
 
-        for (FileObject file : files) {
+        for (FileObject file : jsonFiles) {
             if (isStopRequested(baseFolder)) {
                 log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
                 break;
@@ -232,6 +256,12 @@ public class ContentEximImportService extends AbstractContentEximService {
                     result.incrementTotalBinaryCount();
                     if (record.isSucceeded()) {
                         result.incrementSucceededBinaryCount();
+                    } else {
+                        result.incrementFailedBinaryCount();
+                    }
+                    if (processStatus != null) {
+                        // the remaining 5% for cleaning paths to convert those to uuids.
+                        processStatus.setProgress(0.95 * ((double) batchCount) / ((double) jsonFiles.length)); 
                     }
                 }
                 ++batchCount;
@@ -251,12 +281,12 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int importDocuments(ExecutionParams params, FileObject baseFolder,
-            WorkflowDocumentVariantImportTask importTask, Result result, int batchCount) throws Exception {
+    private int importDocuments(ProcessStatus processStatus, FileObject[] jsonFiles, ExecutionParams params,
+            FileObject baseFolder, WorkflowDocumentVariantImportTask importTask, Result result, int batchCount)
+            throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString();
-        FileObject[] files = importTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
 
-        for (FileObject file : files) {
+        for (FileObject file : jsonFiles) {
             if (isStopRequested(baseFolder)) {
                 log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
                 break;
@@ -309,6 +339,12 @@ public class ContentEximImportService extends AbstractContentEximService {
                     result.incrementTotalDocumentCount();
                     if (record.isSucceeded()) {
                         result.incrementSucceededDocumentCount();
+                    } else {
+                        result.incrementFailedDocumentCount();
+                    }
+                    if (processStatus != null) {
+                        // the remaining 5% for cleaning paths to convert those to uuids.
+                        processStatus.setProgress(0.95 * ((double) batchCount) / ((double) jsonFiles.length)); 
                     }
                 }
                 ++batchCount;
@@ -328,8 +364,8 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int cleanMirrorDocbaseValues(Session session, ExecutionParams params, Result result, int batchCount)
-            throws Exception {
+    private int cleanMirrorDocbaseValues(ProcessStatus processStatus, Session session, ExecutionParams params,
+            Result result, int batchCount) throws Exception {
         Set<String> mirrorNodePaths = getQueriedNodePaths(session,
                 "//element(*)[jcr:like(@hippo:docbase,'/content/%')]", Query.XPATH);
         session.refresh(false);
@@ -370,8 +406,8 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int cleanAllDocbaseFieldValues(Session session, ExecutionParams params, Result result, int batchCount)
-            throws Exception {
+    private int cleanAllDocbaseFieldValues(ProcessStatus processStatus, Session session, ExecutionParams params,
+            Result result, int batchCount) throws Exception {
         Set<String> docbasePropNames = params.getDocbasePropNames();
 
         if (CollectionUtils.isEmpty(docbasePropNames)) {
@@ -380,16 +416,16 @@ public class ContentEximImportService extends AbstractContentEximService {
 
         for (String docbasePropName : docbasePropNames) {
             if (StringUtils.isNotBlank(docbasePropName)) {
-                batchCount = cleanSingleDocbaseFieldValues(session, params, StringUtils.trim(docbasePropName), result,
-                        batchCount);
+                batchCount = cleanSingleDocbaseFieldValues(processStatus, session, params,
+                        StringUtils.trim(docbasePropName), result, batchCount);
             }
         }
 
         return batchCount;
     }
 
-    private int cleanSingleDocbaseFieldValues(Session session, ExecutionParams params, String docbasePropName,
-            Result result, int batchCount) throws Exception {
+    private int cleanSingleDocbaseFieldValues(ProcessStatus processStatus, Session session, ExecutionParams params,
+            String docbasePropName, Result result, int batchCount) throws Exception {
         Set<String> nodePaths = getQueriedNodePaths(session,
                 "//element(*)[jcr:like(@" + docbasePropName + ",'/content/%')]", Query.XPATH);
 
