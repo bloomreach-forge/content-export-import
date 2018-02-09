@@ -122,6 +122,10 @@ public class ContentEximExportService extends AbstractContentEximService {
             overrideExecutionParamsByParameters(params, batchSizeParam, throttleParam, publishOnImportParam,
                     dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
 
+            if (processStatus != null) {
+                processStatus.setExecutionParams(params);
+            }
+
             session = createSession();
             Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
             session.refresh(false);

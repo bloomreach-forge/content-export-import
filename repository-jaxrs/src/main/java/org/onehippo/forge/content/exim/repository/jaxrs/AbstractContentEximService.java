@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * AbstractContentEximService.
@@ -121,6 +122,7 @@ public abstract class AbstractContentEximService {
         objectMapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     protected void setProcessMonitor(ProcessMonitor processMonitor) {

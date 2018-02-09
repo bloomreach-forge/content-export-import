@@ -15,6 +15,8 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs.status;
 
+import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
+
 public class ProcessStatus {
 
     private final long id;
@@ -23,6 +25,7 @@ public class ProcessStatus {
     private String clientInfo;
     private String commandInfo;
     private double progress;
+    private ExecutionParams executionParams;
 
     public ProcessStatus(final long id, final long startTimeMillis) {
         this.id = id;
@@ -67,6 +70,14 @@ public class ProcessStatus {
 
     public void setProgress(double progress) {
         this.progress = progress;
+    }
+
+    public ExecutionParams getExecutionParams() {
+        return executionParams;
+    }
+
+    public void setExecutionParams(ExecutionParams executionParams) {
+        this.executionParams = executionParams;
     }
 
 }

@@ -21,18 +21,26 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.FastDateFormat;
+import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Content-EXIM Export JAX-RS Service.
+ * Content-EXIM PS JAX-RS Service.
  */
 @Path("/ps")
 public class ContentEximProcessStatusService extends AbstractContentEximService {
+
+    private static Logger log = LoggerFactory.getLogger(ContentEximProcessStatusService.class);
+
+    private FastDateFormat timeFormat = FastDateFormat.getInstance("HH:mm:ss");
 
     public ContentEximProcessStatusService() {
         super();
@@ -41,14 +49,13 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
     @GET
-    public String getProcessStatusResult() {
+    public String getAllProcessInfos() {
         StringWriter sw = new StringWriter(1024);
         PrintWriter out = new PrintWriter(sw);
-        out.printf("%8s %5s %15s %8s %8s %5s %s\r\n", "UID", "PID", "TTY", "STIME", "TIME", "%PRGR", "CMD");
+        printProcessStatusReportHeader(out);
 
         if (getProcessMonitor() != null) {
             List<ProcessStatus> processes = getProcessMonitor().getProcesses();
-            FastDateFormat timeFormat = FastDateFormat.getInstance("HH:mm:ss");
 
             for (ProcessStatus process : processes) {
                 final long startTime = process.getStartTimeMillis();
@@ -63,5 +70,64 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
         out.print("\r\n");
 
         return sw.toString();
+    }
+
+    @Path("/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
+    @GET
+    public String getProcessInfo(@PathParam("id") long processId) {
+        StringWriter sw = new StringWriter(1024);
+        PrintWriter out = new PrintWriter(sw);
+
+        printProcessStatusReportHeader(out);
+
+        if (getProcessMonitor() != null) {
+            ProcessStatus process = getProcessMonitor().getProcess(processId);
+
+            if (process != null) {
+                printProcessStatus(out, process);
+
+                final ExecutionParams params = process.getExecutionParams();
+
+                if (params != null) {
+                    out.print("\r\n");
+                    out.print("\r\n");
+                    out.printf("%11s\r\n", "PARAMS");
+                    out.print("\r\n");
+                    printExecutionParams(out, params);
+                    out.print("\r\n");
+                }
+            }
+        }
+
+        printProcessStatusReportFooter(out);
+
+        return sw.toString();
+    }
+
+    private void printProcessStatusReportHeader(PrintWriter out) {
+        out.printf("%8s %5s %15s %8s %8s %5s %s\r\n", "UID", "PID", "TTY", "STIME", "TIME", "%PRGR", "CMD");
+    }
+
+    private void printProcessStatusReportFooter(PrintWriter out) {
+        out.print("\r\n");
+    }
+
+    private void printProcessStatus(PrintWriter out, ProcessStatus process) {
+        final long startTime = process.getStartTimeMillis();
+        final long duration = System.currentTimeMillis() - startTime;
+
+        out.printf("%8s %5d %15s %8s %8s %1.2f  %s\r\n", process.getUsername(), process.getId(),
+                process.getClientInfo(), timeFormat.format(startTime),
+                DurationFormatUtils.formatDuration(duration, "HH:mm:ss"), process.getProgress(),
+                process.getCommandInfo());
+    }
+
+    private void printExecutionParams(PrintWriter out, ExecutionParams params) {
+        try {
+            getObjectMapper().writeValue(out, params);
+        } catch (Exception e) {
+            log.error("Failed to write execution params.", e);
+        }
     }
 }

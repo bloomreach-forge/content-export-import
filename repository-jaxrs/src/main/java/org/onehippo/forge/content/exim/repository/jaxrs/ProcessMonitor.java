@@ -46,6 +46,16 @@ class ProcessMonitor {
         return Collections.unmodifiableList(list);
     }
 
+    synchronized ProcessStatus getProcess(long id) {
+        for (ProcessStatus process : processes) {
+            if (id == process.getId()) {
+                return process;
+            }
+        }
+
+        return null;
+    }
+
     synchronized void clear() {
         processes.clear();
         processCounter.set(0L);
