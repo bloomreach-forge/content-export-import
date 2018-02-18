@@ -1,3 +1,6 @@
 org.onehippo.forge.content.exim.core
 org.onehippo.forge.content.exim.core.impl
 org.onehippo.forge.content.exim.core.util
+org.onehippo.forge.content.exim.repository.jaxrs
+org.onehippo.forge.content.exim.repository.jaxrs.param
+org.onehippo.forge.content.exim.repository.jaxrs.util
