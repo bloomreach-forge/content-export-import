@@ -28,8 +28,8 @@ public class TeeLoggerWrapper extends LoggerWrapper {
 
     /**
      * Wrapping the {@code logger} while tee-ing to the {@code second} logger.
-     * @param logger
-     * @param second
+     * @param logger primary logger
+     * @param second secondary logger
      */
     public TeeLoggerWrapper(Logger logger, Logger second) {
         super(logger, TeeLoggerWrapper.class.getName());

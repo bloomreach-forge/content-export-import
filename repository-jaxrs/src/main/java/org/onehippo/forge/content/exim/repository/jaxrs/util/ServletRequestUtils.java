@@ -49,8 +49,8 @@ public class ServletRequestUtils {
      * then the proxy addresses are contained in the returned array.
      * The lowest indexed element is the farthest downstream client and
      * each successive proxy addresses are the next elements.
-     * @param request
-     * @return
+     * @param request servlet request
+     * @return the remote host addresses related to this request
      */
     public static String[] getRemoteAddrs(HttpServletRequest request) {
         String[] headerNames = getForwardedForHeaderNames(request);
@@ -74,8 +74,8 @@ public class ServletRequestUtils {
 
     /**
      * Returns the remote client address.
-     * @param request
-     * @return
+     * @param request servlet request
+     * @return the remote client address
      */
     public static String getFarthestRemoteAddr(HttpServletRequest request) {
         return getRemoteAddrs(request)[0];
