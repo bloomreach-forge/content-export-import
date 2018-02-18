@@ -43,7 +43,7 @@ public class ResultItemSetCollector {
     }
 
     /**
-     * Collect {@link ResultItem}s from the given {@link params} by picking nodes from the given paths or querying
+     * Collect {@link ResultItem}s from the given {@code params} by picking nodes from the given paths or querying
      * nodes from the given queries.
      * @param session JCR session
      * @param params ExecutionParams instance
@@ -74,7 +74,7 @@ public class ResultItemSetCollector {
     }
 
     /**
-     * Collect nodes from {@link nodePaths} with validations and fill {@link ResultItem} instances in {@code resultOut}.
+     * Collect nodes from {@code nodePaths} with validations and fill {@link ResultItem} instances in {@code resultOut}.
      * @param session JCR session
      * @param nodePaths document or binary node paths to validate
      * @param binary flag whether the node paths are for binary content or not

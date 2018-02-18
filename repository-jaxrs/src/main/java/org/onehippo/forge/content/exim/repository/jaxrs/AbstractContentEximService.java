@@ -116,7 +116,7 @@ public abstract class AbstractContentEximService {
 
     /**
      * Return the default Jackson ObjectMapper instance.
-     * @return
+     * @return ObjectMapper instance
      */
     protected ObjectMapper getObjectMapper() {
         return objectMapper;
@@ -198,8 +198,7 @@ public abstract class AbstractContentEximService {
      * Transfer attachment content into the given {@code file}.
      * @param attachment attachment
      * @param file destination file
-     * @return
-     * @throws IOException
+     * @throws IOException if IO exception occurs
      */
     protected void transferAttachmentToFile(Attachment attachment, File file) throws IOException {
         InputStream input = null;
@@ -259,6 +258,10 @@ public abstract class AbstractContentEximService {
      * @param batchSizeParam batch size request parameter value
      * @param throttleParam throttle request parameter value
      * @param publishOnImportParam publishOnImport request parameter value
+     * @param dataUrlSizeThresholdParam dataUrlSizeThreshold request parameter value
+     * @param docbasePropNamesParam docbasePropNames request parameter value
+     * @param documentTagsParam documentTags request parameter value
+     * @param binaryTagsParam binaryTags request parameter value
      */
     protected void overrideExecutionParamsByParameters(ExecutionParams params, String batchSizeParam,
             String throttleParam, String publishOnImportParam, String dataUrlSizeThresholdParam,
@@ -346,4 +349,5 @@ public abstract class AbstractContentEximService {
 
         return updated;
     }
+
 }

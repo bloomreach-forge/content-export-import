@@ -85,6 +85,7 @@ public interface ContentMigrationTask {
 
     /**
      * Return the execution summary.
+     * @return the execution summary
      */
     public String getSummary();
 
