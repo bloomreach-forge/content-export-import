@@ -70,7 +70,7 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
             }
         }
 
-        out.print("\r\n");
+        printProcessStatusReportFooter(out);
 
         return sw.toString();
     }
@@ -123,6 +123,7 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
 
                 if (logFile != null && logFile.isFile()) {
                     printLogFile(out, logFile);
+                    out.print("\r\n");
                 }
             }
         }
@@ -157,11 +158,6 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
     }
 
     private void printLogFile(PrintWriter out, File logFile) {
-        out.print("\r\n");
-        out.print("\r\n");
-        out.printf("%11s\r\n", "LOGS");
-        out.print("\r\n");
-
         FileReader fr = null;
 
         try {
@@ -172,9 +168,5 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
         } finally {
             IOUtils.closeQuietly(fr);
         }
-
-        out.print("\r\n");
-        out.print("\r\n");
-        out.print("\r\n");
     }
 }

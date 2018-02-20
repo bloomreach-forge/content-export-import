@@ -19,7 +19,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.jcr.Node;
@@ -44,6 +45,7 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.tika.io.IOUtils;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
@@ -78,7 +80,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
     @Path("/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces("multipart/mixed")
     @POST
     public Response importContentFromZip(@Context SecurityContext securityContext, @Context HttpServletRequest request,
             @Multipart(value = "batchSize", required = false) String batchSizeParam,
@@ -92,6 +94,8 @@ public class ContentEximImportService extends AbstractContentEximService {
             @Multipart(value = "params", required = false) Attachment paramsAttachment,
             @Multipart(value = "package", required = true) Attachment packageAttachment)
             throws JsonProcessingException {
+
+        List<Attachment> attachments = new ArrayList<>();
 
         Logger procLogger = log;
 
@@ -184,19 +188,10 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             procLogger.info("ContentEximService#importContentFromZip ends.");
 
-            StringWriter sw = new StringWriter(4096);
+            attachments.add(
+                    new Attachment("logs", MediaType.TEXT_PLAIN, FileUtils.readFileToString(tempLogFile, "UTF-8")));
+            attachments.add(new Attachment("summary", MediaType.APPLICATION_JSON, toJsonString(result)));
 
-            sw.write("\r\n");
-            sw.write("LOGS\r\n");
-            sw.write("\r\n");
-            sw.write(FileUtils.readFileToString(tempLogFile, "UTF-8"));
-            sw.write("\r\n\r\n");
-            sw.write("SUMMARY\r\n");
-            sw.write("\r\n");
-            sw.write(toJsonString(result));
-            sw.write("\r\n\r\n");
-
-            return Response.ok().entity(sw.toString()).build();
         } catch (Exception e) {
             procLogger.error("Failed to import content.", e);
             result.addError(e.toString());
@@ -240,6 +235,8 @@ public class ContentEximImportService extends AbstractContentEximService {
                 }
             }
         }
+
+        return Response.ok(new MultipartBody(attachments, true)).build();
     }
 
     private int importBinaries(Logger procLogger, ProcessStatus processStatus, FileObject[] jsonFiles,

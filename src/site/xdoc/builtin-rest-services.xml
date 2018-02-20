@@ -377,7 +377,7 @@
           <source><![CDATA[
     @Path("/exim/import")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("multipart/mixed")
     @POST
     public Response importContentFromZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
             @Multipart(value = "throttle", required = false) String throttleParam,
@@ -409,6 +409,10 @@
         <p>
           Other optional form parameters such as <code>batchSize</code>, <code>throttle</code>, <code>publishOnImport</code>, etc.
           can be used to <strong>override</strong> the parsed <code>ExecutionParams</code> object afterward if provided.
+        </p>
+
+        <p>
+          The response output contains both the execution log file data and summary JSON data if successful.
         </p>
 
       </subsection>
@@ -532,16 +536,53 @@ $ curl -i \
     http://localhost:8080/cms/ws/exim/import
 
 HTTP/1.1 200 
-Content-Type: application/json
-Content-Length: 4919
+Date: Tue, 20 Feb 2018 22:04:37 GMT
+Content-Type: multipart/mixed; boundary="uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4"
+Transfer-Encoding: chunked
 
-{"totalBinaryCount":8,"totalDocumentCount":24,"succeededBinaryCount":8,"succeededDocumentCount":24,
-"items":[{"path":"/content/gallery/contenteximdemo/banners/banner-2.jpg","primaryType":"hippogallery:imageset",
-"succeeded":true,"errorMessage":null},{"path":"/content/gallery/contenteximdemo/banners/banner-1.jpg",
-"primaryType":"hippogallery:imageset","succeeded":true, ...
-...,
-{"path":"/content/documents/contenteximdemo/events/2017/07/breakfast","primaryType":"contenteximdemo:eventsdocument",
-"succeeded":true,"errorMessage":null}],"errors":[]}
+
+--uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4
+Content-Type: text/plain
+Content-Transfer-Encoding: binary
+Content-ID: <logs>
+
+INFO 2018-02-20 17:04:30,877 ContentEximService#importContentFromZip begins with /usr/local/tomcat/_exim_5892554060758255713.zip
+INFO 2018-02-20 17:04:37,634 ContentEximService#importContentFromZip ends.
+
+--uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4
+Content-Type: application/json
+Content-Transfer-Encoding: binary
+Content-ID: <summary>
+
+{
+  "totalBinaryCount" : 8,
+  "totalDocumentCount" : 24,
+  "succeededBinaryCount" : 8,
+  "failedBinaryCount" : 0,
+  "succeededDocumentCount" : 24,
+  "failedDocumentCount" : 0,
+  "items" : [ {
+    "path" : "/content/gallery/contenteximdemo/banners/banner-2.jpg",
+    "primaryType" : "hippogallery:imageset",
+    "succeeded" : true,
+    "errorMessage" : null
+  }, {
+    "path" : "/content/gallery/contenteximdemo/banners/banner-1.jpg",
+    "primaryType" : "hippogallery:imageset",
+    "succeeded" : true,
+    "errorMessage" : null
+  },
+  // ...
+  {
+    "path" : "/content/documents/contenteximdemo/events/2017/07/breakfast",
+    "primaryType" : "contenteximdemo:eventsdocument",
+    "succeeded" : true,
+    "errorMessage" : null
+  } ],
+  "errors" : [ ],
+  "progress" : 1.0
+}
+--uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4--
           ]]></source>
         </div>
 
