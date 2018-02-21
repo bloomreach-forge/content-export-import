@@ -20,7 +20,7 @@ The output is in the ```target/site/``` directory by default. You can open ```ta
 
 # Documentation (GitHub Pages)
 
-Documentation is available at [onehippo-forge.github.io/external-document-picker](https://onehippo-forge.github.io/external-document-picker).
+Documentation is available at [https://onehippo-forge.github.io/content-export-import/](https://onehippo-forge.github.io/content-export-import/).
 
 You can generate the GitHub pages only from ```master``` branch by this command:
 
