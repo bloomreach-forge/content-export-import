@@ -25,6 +25,8 @@ public class QueriesAndPaths {
 
     private List<String> queries;
     private List<String> paths;
+    private List<String> includes;
+    private List<String> excludes;
 
     public List<String> getQueries() {
         if (queries == null) {
@@ -48,6 +50,30 @@ public class QueriesAndPaths {
 
     public void setPaths(List<String> paths) {
         this.paths = paths;
+    }
+
+    public List<String> getIncludes() {
+        if (includes == null) {
+            return Collections.emptyList();
+        }
+
+        return Collections.unmodifiableList(includes);
+    }
+
+    public void setIncludes(List<String> includes) {
+        this.includes = includes;
+    }
+
+    public List<String> getExcludes() {
+        if (excludes == null) {
+            return Collections.emptyList();
+        }
+
+        return Collections.unmodifiableList(excludes);
+    }
+
+    public void setExcludes(List<String> excludes) {
+        this.excludes = excludes;
     }
 
 }

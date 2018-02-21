@@ -65,6 +65,7 @@ import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
+import org.onehippo.forge.content.exim.repository.jaxrs.util.AntPathMatcher;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ResultItemSetCollector;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ZipCompressUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
@@ -267,6 +268,7 @@ public class ContentEximExportService extends AbstractContentEximService {
     private int exportBinaries(Logger procLogger, ProcessStatus processStatus, ExecutionParams params,
             DefaultBinaryExportTask exportTask, Result result, int batchCount, FileObject baseFolder) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (ResultItem item : result.getItems()) {
             if (isStopRequested(baseFolder)) {
@@ -279,6 +281,10 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             try {
                 String handlePath = item.getPath();
+
+                if (!isBinaryPathIncluded(pathMatcher, params, handlePath)) {
+                    continue;
+                }
 
                 if (!HippoNodeUtils.isBinaryPath(handlePath)) {
                     continue;
@@ -361,6 +367,7 @@ public class ContentEximExportService extends AbstractContentEximService {
             WorkflowDocumentVariantExportTask exportTask, Result result, int batchCount, FileObject baseFolder,
             Set<String> referredBinaryPaths) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (ResultItem item : result.getItems()) {
             if (isStopRequested(baseFolder)) {
@@ -373,6 +380,10 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             try {
                 String handlePath = item.getPath();
+
+                if (!isDocumentPathIncluded(pathMatcher, params, handlePath)) {
+                    continue;
+                }
 
                 if (!HippoNodeUtils.isDocumentPath(handlePath)) {
                     continue;

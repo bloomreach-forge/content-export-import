@@ -219,6 +219,20 @@
           "items": {
             "type": "string"
           }
+        },
+        "includes": {
+          "description": "ANT Path Style patterns to include. e.g, '/content/a/b/*', '/content/a/b/**/c', etc.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludes": {
+          "description": "Ant Path Style patterns to exclude, taking precedence over includes. e.g, '/content/a/b/*', '/content/a/b/**/c', etc.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [ ]

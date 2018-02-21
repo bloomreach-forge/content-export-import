@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,8 +54,10 @@ import org.onehippo.cms7.utilities.logging.PrintStreamLogger;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.util.TeeLoggerWrapper;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
+import org.onehippo.forge.content.exim.repository.jaxrs.param.QueriesAndPaths;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
+import org.onehippo.forge.content.exim.repository.jaxrs.util.AntPathMatcher;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ServletRequestUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
@@ -441,6 +444,64 @@ public abstract class AbstractContentEximService {
     protected Logger createTeeLogger(final Logger mainLogger, final PrintStream secondOutput) {
         final Logger second = new TimestampPrintStreamLogger("exim", PrintStreamLogger.INFO_LEVEL, secondOutput);
         return new TeeLoggerWrapper(mainLogger, second);
+    }
+
+    /**
+     * Return true if the given {@code path} is included in the {@code param}'s binary path includes parameter.
+     * @param pathMatcher AntPathMatcher instance
+     * @param params Execution params
+     * @param path binary path
+     * @return true if the given {@code path} is included in the {@code param}'s binary path includes parameter
+     */
+    protected boolean isBinaryPathIncluded(final AntPathMatcher pathMatcher, final ExecutionParams params,
+            final String path) {
+        QueriesAndPaths queriesAndPaths = params.getBinaries();
+
+        if (queriesAndPaths == null) {
+            return true;
+        }
+
+        return isPathIncluded(pathMatcher, queriesAndPaths.getExcludes(), queriesAndPaths.getIncludes(), path);
+    }
+
+    /**
+     * Return true if the given {@code path} is included in the {@code param}'s document path includes parameter.
+     * @param pathMatcher AntPathMatcher instance
+     * @param params Execution params
+     * @param path document path
+     * @return true if the given {@code path} is included in the {@code param}'s document path includes parameter
+     */
+    protected boolean isDocumentPathIncluded(final AntPathMatcher pathMatcher, final ExecutionParams params,
+            final String path) {
+        QueriesAndPaths queriesAndPaths = params.getDocuments();
+
+        if (queriesAndPaths == null) {
+            return true;
+        }
+
+        return isPathIncluded(pathMatcher, queriesAndPaths.getExcludes(), queriesAndPaths.getIncludes(), path);
+    }
+
+    private boolean isPathIncluded(final AntPathMatcher pathMatcher, final Collection<String> excludes,
+            final Collection<String> includes, final String path) {
+        if (CollectionUtils.isNotEmpty(excludes)) {
+            for (String exclude : excludes) {
+                if (pathMatcher.match(exclude, path)) {
+                    return false;
+                }
+            }
+        }
+
+        if (CollectionUtils.isNotEmpty(includes)) {
+            for (String include : includes) {
+                if (pathMatcher.match(include, path)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private static class TimestampPrintStreamLogger extends PrintStreamLogger {

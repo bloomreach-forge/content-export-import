@@ -60,6 +60,7 @@ import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
+import org.onehippo.forge.content.exim.repository.jaxrs.util.AntPathMatcher;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,6 +244,7 @@ public class ContentEximImportService extends AbstractContentEximService {
             ExecutionParams params, FileObject baseFolder, DefaultBinaryImportTask importTask, Result result,
             int batchCount) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString();
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (FileObject file : jsonFiles) {
             if (isStopRequested(baseFolder)) {
@@ -255,6 +257,10 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             String primaryTypeName = contentNode.getPrimaryType();
             String path = contentNode.getProperty("jcr:path").getValue();
+
+            if (!isBinaryPathIncluded(pathMatcher, params, path)) {
+                continue;
+            }
 
             if (!HippoNodeUtils.isBinaryPath(path)) {
                 continue;
@@ -341,6 +347,7 @@ public class ContentEximImportService extends AbstractContentEximService {
             ExecutionParams params, FileObject baseFolder, WorkflowDocumentVariantImportTask importTask, Result result,
             int batchCount) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString();
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (FileObject file : jsonFiles) {
             if (isStopRequested(baseFolder)) {
@@ -353,6 +360,10 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             String primaryTypeName = contentNode.getPrimaryType();
             String path = contentNode.getProperty("jcr:path").getValue();
+
+            if (!isDocumentPathIncluded(pathMatcher, params, path)) {
+                continue;
+            }
 
             if (!HippoNodeUtils.isDocumentPath(path)) {
                 continue;
