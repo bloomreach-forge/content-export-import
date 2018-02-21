@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.tika.io.IOUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
@@ -76,9 +78,11 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
     }
 
     @Path("/{id}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces("multipart/mixed")
     @GET
-    public String getProcessInfo(@PathParam("id") long processId) {
+    public List<Attachment> getProcessInfo(@PathParam("id") long processId) {
+        List<Attachment> attachments = new ArrayList<>();
+
         StringWriter sw = new StringWriter(1024);
         PrintWriter out = new PrintWriter(sw);
 
@@ -89,23 +93,20 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
 
             if (process != null) {
                 printProcessStatus(out, process);
+
                 final ExecutionParams params = process.getExecutionParams();
 
                 if (params != null) {
-                    out.print("\r\n");
-                    out.print("\r\n");
-                    out.printf("%11s\r\n", "PARAMS");
-                    out.print("\r\n");
-                    printExecutionParams(out, params);
-                    out.print("\r\n");
-                    out.print("\r\n");
+                    attachments.add(new Attachment("params", MediaType.APPLICATION_JSON, executionParamsToString(params)));
                 }
             }
         }
 
         printProcessStatusReportFooter(out);
 
-        return sw.toString();
+        attachments.add(new Attachment("status", MediaType.TEXT_PLAIN, sw.toString()));
+
+        return attachments;
     }
 
     @Path("/{id}/logs")
@@ -149,12 +150,17 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
                 process.getCommandInfo());
     }
 
-    private void printExecutionParams(PrintWriter out, ExecutionParams params) {
+    private String executionParamsToString(ExecutionParams params) {
         try {
+            StringWriter sw = new StringWriter(256);
+            PrintWriter out = new PrintWriter(sw);
             getObjectMapper().writeValue(out, params);
+            return sw.toString();
         } catch (Exception e) {
             log.error("Failed to write execution params.", e);
         }
+
+        return "{ }";
     }
 
     private void printLogFile(PrintWriter out, File logFile) {
