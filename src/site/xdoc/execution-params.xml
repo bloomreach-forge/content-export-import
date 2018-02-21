@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC
+  "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+  "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<!--
+    Copyright 2018 Hippo
+
+    Licensed under the Apache License, Version 2.0 (the  "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document>
+  <properties>
+    <title>ExecutionParams as Common Parameter Used in REST Services</title>
+  </properties>
+  <body>
+
+    <section name="ExecutionParams as Common Parameter Used in REST Services">
+
+      <subsection name="JSON Schema for ExecutionParams">
+
+        <p>
+          In both content exporting and importing endpoints, a JSON file or content may be used as input parameter,
+          and it may contain all the available parameters to instruct how to execute the process in more detail.
+        </p>
+        <p>
+          The parameter is abstracted in <code>ExecutionParams</code> object described below in JSON Schema format.
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  "$schema": "http://www.onehippo.org/onehippo-forge/content-exim/schema#",
+
+  "definitions": {
+    "ExecutionParams": {
+      "type": "object",
+      "properties": {
+        "batchSize": {
+          "description": "The batch size in content export or import process, equivalent to the batch size parameter in the Groovy Updater.",
+          "type": "integer"
+        },
+        "throttle": {
+          "description": "The throttle in content export or import process, equivalent to the throttle parameter in the Groovy Updater.",
+          "type": "integer"
+        },
+        "publishOnImport": {
+          "description": "Document publishing option on content importing process. It can be 'none', 'all' or 'live'. 'none' by default. It doesn't publish an imported/updated document automatically with 'none'. It publishes an imported/updated document automatically with 'all'. It publishes an imported/updated document automatically with 'live' only when the source content was a 'live' content.",
+          "type": "string"
+        },
+        "dataUrlSizeThreshold": {
+          "description": "The maximum byte size threshold to use either data: URL or file: URL for binary resource data.",
+          "type": "integer"
+        },
+        "binaries": {
+          "description": "Binary content JCR queries or node paths to export or import.",
+          "type": "#/definitions/QueriesAndPaths"
+        },
+        "documents": {
+          "description": "Document content JCR queries or node paths to export or import.",
+          "type": "#/definitions/QueriesAndPaths"
+        },
+        "docbasePropNames": {
+          "description": "Property names to convert docbase string property (not standard hippo:docbase) values to node paths or UUIDs.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "documentTags": {
+          "description": "Extra document tagging properites (name and value(s), separated by '=' and comma for values) to add in either exporting or importing process. e.g, myhippoproject:tags=a,b,c",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "binaryTags": {
+          "description": "Extra document tagging properites (name and value(s), separated by '=' and comma for values) to add in either exporting or importing process. e.g, myhippoproject:tags=a,b,c",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "galleryFolderPrimaryType": {
+          "description": "Gallery folder primary node type. 'hippogallery:stdImageGallery' by default.",
+          "type": "integer"
+        },
+        "galleryFolderFolderTypes": {
+          "description": "Gallery folder's 'folder-types' property. ['new-image-folder'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "galleryFolderGalleryTypes": {
+          "description": "Gallery folder's 'gallery-types' property. ['hippogallery:imageset'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assetFolderPrimaryType": {
+          "description": "Asset folder primary node type. 'hippogallery:stdAssetGallery' by default.",
+          "type": "integer"
+        },
+        "assetFolderFolderTypes": {
+          "description": "Asset folder's 'folder-types' property. ['new-file-folder'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assetFolderGalleryTypes": {
+          "description": "Asset folder's 'gallery-types' property. ['hippogallery:exampleAssetSet'] by default.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [ ]
+    },
+    "QueriesAndPaths": {
+      "type": "object",
+      "properties": {
+        "queries": {
+          "description": "JCR Query statements in either XPATH or SQL to execute queries in content exporting process.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "paths": {
+          "description": "JCR Node paths used in content exporting process. It is valid only when a path represents either a handle or a variant node.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "includes": {
+          "description": "ANT Path Style patterns to include. e.g, '/content/a/b/*', '/content/a/b/**/c', etc.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludes": {
+          "description": "Ant Path Style patterns to exclude, taking precedence over includes. e.g, '/content/a/b/*', '/content/a/b/**/c', etc.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [ ]
+    }
+}
+          ]]></source>
+        </div>
+
+      </subsection>
+
+      <subsection name="Simple Examples">
+
+        <p>
+          In content importing process, you don't have to provide an <code>ExecutionParams</code> object
+          (in either <code>paramsJson</code> form parameter or <code>params</code> file attachment)
+          because it takes resonable default values and process the <code>package</code> ZIP file attachment.
+        </p>
+
+        <p>
+          However, in content exporting process, you should provide information about what (which binary or document content) to export
+          at least. Therefore, one minimal <code>ExecutionParams</code> example for <code>/cms/ws/export</code> endpoint
+          would look like this:
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//element(*,hippo:document)'
+    ]
+  }
+}          ]]></source>
+        </div>
+
+        <p>
+          With the <code>ExecutionParams</code> input, the content export process will try to query the documents
+          based on the given JCR queries and packages everything, including binary content referred by the documents as well,
+          to a ZIP file which is sent over in HTTP response body to the client in the end.
+        </p>
+
+        <p>
+          You can also specify binary content queries separately as well:
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  binaries: {
+    queries: [
+      '/jcr:root/content//element(*,hippo:document)[@jcr:primaryType=\'hippogallery:imageset\' or @jcr:primaryType=\'hippogallery:exampleAssetSet\']'
+    ]
+  },
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//element(*,hippo:document)'
+    ]
+  }
+}          ]]></source>
+        </div>
+
+        <p>
+          You can specify multiple query statements for both binaries and documents.
+          Also, you can specify <code>paths</code> JSON array in <code>binaries</code> or <code>documents</code>
+          property to list binary or document node paths more specifically instead of using JCR queries.
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  documents: {
+    queries: [
+      '/jcr:root/content/documents/myhippoproject/news//element(*,hippo:document)',
+      '/jcr:root/content/documents/myhippoproject/events//element(*,hippo:document)'
+    ],
+    paths: [
+      '/content/documents/myhippoproject/content/about',
+      '/content/documents/myhippoproject/content/contact',
+    ]
+  }
+}          ]]></source>
+        </div>
+
+        <div class="alert alert-info">
+          The items in <code>paths</code> are valid only when each points to a handle node or variant node of
+          a document of a binary. Otherwise (e.g, a folder), it will be just ignored.
+          If you want to use a folder, then use <code>queries</code> in JCR query statement format instead.
+          <br/>
+          If both <code>queries</code> and <code>paths</code> are set, the built-in REST Services will merge
+          all the nodes into a set, not to have duplicate content nodes to process internally.
+        </div>
+
+        <p>
+          You can also specify other optional parameters such as <code>batchSize</code>, <code>threshold</code>,
+          <code>dataUrlSizeThreshold</code>, etc.
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  batchSize: 200,
+  threshold: 10,
+  dataUrlSizeThreshold: 262144,
+  documents: {
+    queries: [
+      '/jcr:root/content/documents//element(*,hippo:document)'
+    ]
+  }
+}          ]]></source>
+        </div>
+
+      </subsection>
+
+      <subsection name="Filtering Examples">
+
+        <p>
+          In both content exporting and importing processes, you can also specify
+          <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html" target="_blank">ANT-style path patterns</a>
+          to exclude or include content nodes.
+        </p>
+
+        <p>
+          <code>excludes</code> takes the precedance over <code>includes</code>.
+          When <code>includes</code> is not specified or an empty array, every content path will be included
+          unless the path is excluded by <code>excludes</code>.
+        </p>
+
+        <div class="brush: javascript">
+          <source><![CDATA[
+{
+  binaries: {
+    // ...
+    includes : [ '/content/gallery/myhippoproject/**' ],
+    excludes : [ '/content/gallery/myhippoproject/samples/**' ]
+  },
+  documents: {
+    // ...
+    includes : [ '/content/documents/myhippoproject/**' ],
+    excludes : [ '/content/documents/myhippoproject/news/**' ]
+  }
+}          ]]></source>
+        </div>
+
+        <p>
+          In the above example, all the binary content found in the queries and paths (omitted in the examples)
+          will be checked with the <code>excludes</code> and <code>includes</code>.
+          If the path of a binary content item is not in <code>excludes</code> patterns, and if the path is
+          in <code>includes</code> patterns or <code>includes</code> is empty, then
+          the binary content item will be exported or imported.
+        </p>
+
+        <p>
+          In the same way, all the document content found in the queries and paths (omitted in the examples) will
+          be checked and excluded or included in exporting or importing processes.
+        </p>
+
+      </subsection>
+
+    </section>
+
+  </body>
+</document>

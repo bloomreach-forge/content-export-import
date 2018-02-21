@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)
+  Copyright 2015-2018 Hippo B.V. (http://www.onehippo.com)
  
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>2.1.2</version>
+  <version>2.1.3</version>
   <packaging>pom</packaging>
   <url>https://github.com/onehippo-forge/content-export-import</url>
 
@@ -36,8 +36,11 @@
 
     <servlet-api.version>3.0.1</servlet-api.version>
     <javax.jcr.version>2.0</javax.jcr.version>
+
     <hippo.repository.version>5.1.0</hippo.repository.version>
     <hippo.services.version>4.1.0</hippo.services.version>
+    <hippo.cms7.utilities.version>4.1.0</hippo.cms7.utilities.version>
+
     <commons-lang.version>2.6</commons-lang.version>
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-vfs2.version>2.1</commons-vfs2.version>
@@ -184,6 +187,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.onehippo.cms7</groupId>
+        <artifactId>hippo-cms7-utilities</artifactId>
+        <version>${hippo.cms7.utilities.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.onehippo.forge.hippo-pojo-bind</groupId>
         <artifactId>hippo-pojo-bind-jcr</artifactId>
         <version>${forge.hippo-pojo-bind-jcr.version}</version>
@@ -288,6 +297,18 @@
         <artifactId>slf4j-api</artifactId>
         <version>${lib.slf4j.version}</version>
         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-ext</artifactId>
+        <version>${lib.slf4j.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>

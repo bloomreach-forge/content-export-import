@@ -45,6 +45,20 @@
       </table>
     </section>
     <section name="Release Notes of 2.1.x">
+      <subsection name="2.1.3">
+        <ul>
+          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-141'>HIPFORGE-141</a>] -         [Content-EXIM] Capability to show the execution progress and status of Export/Import REST Services
+          </li>
+          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-145'>HIPFORGE-145</a>] -         [Content-EXIM] Node path filter parameter in both export and import
+          </li>
+          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-146'>HIPFORGE-146</a>] -         [Content-EXIM] Replace publishOnImport boolean option by publishOption enum in ExecutionParams
+          </li>
+          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-142'>HIPFORGE-142</a>] -         [Content-EXIM] Include execution logs in zip file from the /ws/exim/export service
+          </li>
+          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-143'>HIPFORGE-143</a>] -         [Content-EXIM] Change the response output to simply print execution logs followed by summary in /ws/exim/import process
+          </li>
+        </ul>
+      </subsection>
       <subsection name="2.1.2">
         <ul>
           <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-135'>HIPFORGE-135</a>] -         [Content-EXIM] Migrate the existing demo Groovy scripts to Repository JAX-RS Services

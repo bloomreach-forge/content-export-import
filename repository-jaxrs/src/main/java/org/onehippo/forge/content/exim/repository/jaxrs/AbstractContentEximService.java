@@ -20,7 +20,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.security.Principal;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,18 +38,26 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
+import org.onehippo.cms7.utilities.logging.PrintStreamLogger;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
+import org.onehippo.forge.content.exim.core.util.AntPathMatcher;
+import org.onehippo.forge.content.exim.core.util.TeeLoggerWrapper;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
+import org.onehippo.forge.content.exim.repository.jaxrs.param.QueriesAndPaths;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
+import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
+import org.onehippo.forge.content.exim.repository.jaxrs.util.ServletRequestUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +65,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * AbstractContentEximService.
@@ -70,6 +83,11 @@ public abstract class AbstractContentEximService {
      * Prefix of the temporary folder or files. e.g, temporary folder in zip content creation.
      */
     protected static final String TEMP_PREFIX = "_exim_";
+
+    /**
+     * The whole execution log file entry name.
+     */
+    protected static final String EXIM_EXECUTION_LOG_REL_PATH = "EXIM-INF/execution.log";
 
     /**
      * Zip Entry name of the summary log for binaries.
@@ -92,6 +110,8 @@ public abstract class AbstractContentEximService {
      */
     protected static final String STOP_REQUEST_FILE_REL_PATH = "EXIM-INF/_stop_";
 
+    private ProcessMonitor processMonitor;
+
     /**
      * Jackson ObjectMapper instance.
      */
@@ -112,6 +132,15 @@ public abstract class AbstractContentEximService {
         objectMapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+
+    protected void setProcessMonitor(ProcessMonitor processMonitor) {
+        this.processMonitor = processMonitor;
+    }
+
+    protected ProcessMonitor getProcessMonitor() {
+        return processMonitor;
     }
 
     /**
@@ -275,7 +304,7 @@ public abstract class AbstractContentEximService {
         }
 
         if (StringUtils.isNotBlank(publishOnImportParam)) {
-            params.setPublishOnImport(BooleanUtils.toBoolean(publishOnImportParam));
+            params.setPublishOnImport(publishOnImportParam);
         }
 
         if (StringUtils.isNotBlank(dataUrlSizeThresholdParam)) {
@@ -284,7 +313,8 @@ public abstract class AbstractContentEximService {
         }
 
         if (StringUtils.isNotBlank(docbasePropNamesParam)) {
-            params.setDocbasePropNames(new LinkedHashSet<>(Arrays.asList(StringUtils.split(docbasePropNamesParam, ","))));
+            params.setDocbasePropNames(
+                    new LinkedHashSet<>(Arrays.asList(StringUtils.split(docbasePropNamesParam, ","))));
         }
 
         if (StringUtils.isNotBlank(documentTagsParam)) {
@@ -350,4 +380,142 @@ public abstract class AbstractContentEximService {
         return updated;
     }
 
+    /**
+     * Find user principal's name from {@code securityContext} or {@code request}.
+     * @param securityContext security context
+     * @param request servlet request
+     * @return user principal's name from {@code securityContext} or {@code request}
+     */
+    protected String getUserPrincipalName(SecurityContext securityContext, HttpServletRequest request) {
+        if (securityContext != null) {
+            Principal userPrincipal = securityContext.getUserPrincipal();
+            if (userPrincipal != null) {
+                return userPrincipal.getName();
+            }
+        }
+
+        if (request != null) {
+            Principal userPrincipal = request.getUserPrincipal();
+            if (userPrincipal != null) {
+                return userPrincipal.getName();
+            }
+
+            final String authHeader = request.getHeader("Authorization");
+
+            if (StringUtils.isNotBlank(authHeader)) {
+                if (StringUtils.startsWithIgnoreCase(authHeader, "Basic ")) {
+                    final String encoded = authHeader.substring(6).trim();
+                    final String decoded = new String(Base64.getDecoder().decode(encoded));
+                    return StringUtils.substringBefore(decoded, ":");
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Fill basic info from {@code securityContext} and {@code request} in {@code process}.
+     * @param process process
+     * @param securityContext security context
+     * @param request servlet request
+     */
+    protected void fillProcessStatusByRequestInfo(ProcessStatus process, SecurityContext securityContext,
+            HttpServletRequest request) {
+        process.setUsername(getUserPrincipalName(securityContext, request));
+        process.setClientInfo(ServletRequestUtils.getFarthestRemoteAddr(request));
+
+        StringBuilder sbCommand = new StringBuilder(256).append(request.getMethod()).append(' ')
+                .append(request.getRequestURI());
+        String queryString = request.getQueryString();
+        if (StringUtils.isNotBlank(queryString)) {
+            sbCommand.append('?').append(queryString);
+        }
+        process.setCommandInfo(sbCommand.toString());
+    }
+
+    /**
+     * Create a tee-ing logger.
+     * @param mainLogger main logger
+     * @param secondOutput output for the second logger
+     * @return a tee-ing logger
+     */
+    protected Logger createTeeLogger(final Logger mainLogger, final PrintStream secondOutput) {
+        final Logger second = new TimestampPrintStreamLogger("exim", PrintStreamLogger.INFO_LEVEL, secondOutput);
+        return new TeeLoggerWrapper(mainLogger, second);
+    }
+
+    /**
+     * Return true if the given {@code path} is included in the {@code param}'s binary path includes parameter.
+     * @param pathMatcher AntPathMatcher instance
+     * @param params Execution params
+     * @param path binary path
+     * @return true if the given {@code path} is included in the {@code param}'s binary path includes parameter
+     */
+    protected boolean isBinaryPathIncluded(final AntPathMatcher pathMatcher, final ExecutionParams params,
+            final String path) {
+        QueriesAndPaths queriesAndPaths = params.getBinaries();
+
+        if (queriesAndPaths == null) {
+            return true;
+        }
+
+        return isPathIncluded(pathMatcher, queriesAndPaths.getExcludes(), queriesAndPaths.getIncludes(), path);
+    }
+
+    /**
+     * Return true if the given {@code path} is included in the {@code param}'s document path includes parameter.
+     * @param pathMatcher AntPathMatcher instance
+     * @param params Execution params
+     * @param path document path
+     * @return true if the given {@code path} is included in the {@code param}'s document path includes parameter
+     */
+    protected boolean isDocumentPathIncluded(final AntPathMatcher pathMatcher, final ExecutionParams params,
+            final String path) {
+        QueriesAndPaths queriesAndPaths = params.getDocuments();
+
+        if (queriesAndPaths == null) {
+            return true;
+        }
+
+        return isPathIncluded(pathMatcher, queriesAndPaths.getExcludes(), queriesAndPaths.getIncludes(), path);
+    }
+
+    private boolean isPathIncluded(final AntPathMatcher pathMatcher, final Collection<String> excludes,
+            final Collection<String> includes, final String path) {
+        if (CollectionUtils.isNotEmpty(excludes)) {
+            for (String exclude : excludes) {
+                if (pathMatcher.match(exclude, path)) {
+                    return false;
+                }
+            }
+        }
+
+        if (CollectionUtils.isNotEmpty(includes)) {
+            for (String include : includes) {
+                if (pathMatcher.match(include, path)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private static class TimestampPrintStreamLogger extends PrintStreamLogger {
+
+        private static final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss,SSS");
+
+        public TimestampPrintStreamLogger(final String name, final int level, final PrintStream... out)
+                throws IllegalArgumentException {
+            super(name, level, out);
+        }
+
+        @Override
+        protected String getMessageString(final String level, final String message) {
+            final String ts = dateFormat.format(System.currentTimeMillis());
+            return level + " " + ts + " " + message;
+        }
+    }
 }

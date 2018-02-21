@@ -15,9 +15,12 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.LinkedHashSet;
@@ -26,13 +29,16 @@ import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -52,12 +58,14 @@ import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.impl.DefaultBinaryExportTask;
 import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentManagerImpl;
 import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentVariantExportTask;
+import org.onehippo.forge.content.exim.core.util.AntPathMatcher;
 import org.onehippo.forge.content.exim.core.util.ContentNodeUtils;
 import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
+import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ResultItemSetCollector;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ZipCompressUtils;
 import org.onehippo.forge.content.pojo.model.ContentNode;
@@ -80,7 +88,8 @@ public class ContentEximExportService extends AbstractContentEximService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @POST
-    public Response exportContentToZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
+    public Response exportContentToZip(@Context SecurityContext securityContext, @Context HttpServletRequest request,
+            @Multipart(value = "batchSize", required = false) String batchSizeParam,
             @Multipart(value = "throttle", required = false) String throttleParam,
             @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
             @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
@@ -90,13 +99,28 @@ public class ContentEximExportService extends AbstractContentEximService {
             @Multipart(value = "paramsJson", required = false) String paramsJsonParam,
             @Multipart(value = "params", required = false) Attachment paramsAttachment) {
 
+        Logger procLogger = log;
+
+        File tempLogFile = null;
+        PrintStream tempLogOut = null;
         File baseFolder = null;
         Session session = null;
         ExecutionParams params = new ExecutionParams();
+        ProcessStatus processStatus = null;
 
         try {
+            tempLogFile = File.createTempFile(TEMP_PREFIX, ".log");
+            tempLogOut = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempLogFile)));
+            procLogger = createTeeLogger(log, tempLogOut);
+
+            if (getProcessMonitor() != null) {
+                processStatus = getProcessMonitor().startProcess();
+                fillProcessStatusByRequestInfo(processStatus, securityContext, request);
+                processStatus.setLogFile(tempLogFile);
+            }
+
             baseFolder = Files.createTempDirectory(TEMP_PREFIX).toFile();
-            log.info("ContentEximService#exportContentToZip begins at {}.", baseFolder);
+            procLogger.info("ContentEximService#exportContentToZip begins at {}.", baseFolder);
 
             if (paramsAttachment != null) {
                 final String json = attachmentToString(paramsAttachment, "UTF-8");
@@ -110,6 +134,10 @@ public class ContentEximExportService extends AbstractContentEximService {
             }
             overrideExecutionParamsByParameters(params, batchSizeParam, throttleParam, publishOnImportParam,
                     dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
+
+            if (processStatus != null) {
+                processStatus.setExecutionParams(params);
+            }
 
             session = createSession();
             Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
@@ -137,8 +165,8 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             try {
                 documentExportTask.start();
-                batchCount = exportDocuments(params, documentExportTask, result, batchCount, baseFolderObject,
-                        referredNodePaths);
+                batchCount = exportDocuments(procLogger, processStatus, params, documentExportTask, result, batchCount,
+                        baseFolderObject, referredNodePaths);
             } finally {
                 documentExportTask.stop();
             }
@@ -150,7 +178,8 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             try {
                 binaryExportTask.start();
-                batchCount = exportBinaries(params, binaryExportTask, result, batchCount, baseFolderObject);
+                batchCount = exportBinaries(procLogger, processStatus, params, binaryExportTask, result, batchCount,
+                        baseFolderObject);
             } finally {
                 binaryExportTask.stop();
             }
@@ -158,6 +187,13 @@ public class ContentEximExportService extends AbstractContentEximService {
             session.logout();
             session = null;
 
+            procLogger.info("ContentEximService#exportContentToZip ends.");
+
+            tempLogOut.close();
+            tempLogOut = null;
+            procLogger = log;
+
+            final String tempLogOutString = FileUtils.readFileToString(tempLogFile, "UTF-8");
             final File zipBaseFolder = baseFolder;
 
             final StreamingOutput entity = new StreamingOutput() {
@@ -166,6 +202,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                     ZipArchiveOutputStream zipOutput = null;
                     try {
                         zipOutput = new ZipArchiveOutputStream(output);
+                        ZipCompressUtils.addEntryToZip(EXIM_EXECUTION_LOG_REL_PATH, tempLogOutString, "UTF-8",
+                                zipOutput);
                         ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_BINARIES_LOG_REL_PATH,
                                 binaryExportTask.getSummary(), "UTF-8", zipOutput);
                         ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_DOCUMENTS_LOG_REL_PATH,
@@ -184,31 +222,58 @@ public class ContentEximExportService extends AbstractContentEximService {
             return Response.ok().header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
                     .entity(entity).build();
         } catch (Exception e) {
-            log.error("Failed to export content.", e);
+            procLogger.error("Failed to export content.", e);
             if (baseFolder != null) {
                 try {
                     FileUtils.deleteDirectory(baseFolder);
                 } catch (Exception ioe) {
-                    log.error("Failed to delete the temporary folder at {}", baseFolder.getPath(), e);
+                    procLogger.error("Failed to delete the temporary folder at {}", baseFolder.getPath(), e);
                 }
             }
             final String message = new StringBuilder().append(e.getMessage()).append("\r\n").toString();
             return Response.serverError().entity(message).build();
         } finally {
-            log.info("ContentEximService#exportContentToZip ends.");
+            procLogger.info("ContentEximService#exportContentToZip finally ends.");
+
+            if (getProcessMonitor() != null) {
+                try {
+                    getProcessMonitor().stopProcess(processStatus);
+                } catch (Exception e) {
+                    procLogger.error("Failed to stop process.", e);
+                }
+            }
+
             if (session != null) {
-                session.logout();
+                try {
+                    session.logout();
+                } catch (Exception e) {
+                    procLogger.error("Failed to logout JCR session.", e);
+                }
+            }
+
+            if (tempLogOut != null) {
+                IOUtils.closeQuietly(tempLogOut);
+            }
+
+            if (tempLogFile != null) {
+                try {
+                    tempLogFile.delete();
+                } catch (Exception e) {
+                    log.error("Failed to delete temporary log file.", e);
+                }
             }
         }
     }
 
-    private int exportBinaries(ExecutionParams params, DefaultBinaryExportTask exportTask, Result result,
-            int batchCount, FileObject baseFolder) throws Exception {
+    private int exportBinaries(Logger procLogger, ProcessStatus processStatus, ExecutionParams params,
+            DefaultBinaryExportTask exportTask, Result result, int batchCount, FileObject baseFolder) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (ResultItem item : result.getItems()) {
             if (isStopRequested(baseFolder)) {
-                log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                procLogger.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(),
+                        STOP_REQUEST_FILE_REL_PATH);
                 break;
             }
 
@@ -216,6 +281,10 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             try {
                 String handlePath = item.getPath();
+
+                if (!isBinaryPathIncluded(pathMatcher, params, handlePath)) {
+                    continue;
+                }
 
                 if (!HippoNodeUtils.isBinaryPath(handlePath)) {
                     continue;
@@ -244,8 +313,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                 Set<String> docbasePropNames = params.getDocbasePropNames();
                 if (CollectionUtils.isNotEmpty(docbasePropNames)) {
                     for (String docbasePropName : docbasePropNames) {
-                        ContentNodeUtils.replaceDocbasePropertiesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
-                                "properties[@itemName='" + docbasePropName + "']");
+                        ContentNodeUtils.replaceDocbasePropertiesByPaths(exportTask.getDocumentManager().getSession(),
+                                contentNode, "properties[@itemName='" + docbasePropName + "']");
                     }
                 }
 
@@ -259,16 +328,25 @@ public class ContentEximExportService extends AbstractContentEximService {
                 record.setAttribute("file", file.getName().getPath());
                 exportTask.writeContentNodeToJsonFile(contentNode, file);
 
-                log.debug("Exported document from {} to {}.", handlePath, file.getName().getPath());
+                procLogger.debug("Exported document from {} to {}.", handlePath, file.getName().getPath());
                 record.setSucceeded(true);
             } catch (Exception e) {
-                log.error("Failed to process record: {}", record, e);
+                procLogger.error("Failed to process record: {}", record, e);
                 if (record != null) {
                     record.setErrorMessage(e.toString());
                 }
             } finally {
                 if (record != null) {
                     exportTask.endRecord();
+                    result.incrementTotalBinaryCount();
+                    if (record.isSucceeded()) {
+                        result.incrementSucceededBinaryCount();
+                    } else {
+                        result.incrementFailedBinaryCount();
+                    }
+                    if (processStatus != null) {
+                        processStatus.setProgress(result.getProgress());
+                    }
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
@@ -285,13 +363,16 @@ public class ContentEximExportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int exportDocuments(ExecutionParams params, WorkflowDocumentVariantExportTask exportTask, Result result,
-            int batchCount, FileObject baseFolder, Set<String> referredBinaryPaths) throws Exception {
+    private int exportDocuments(Logger procLogger, ProcessStatus processStatus, ExecutionParams params,
+            WorkflowDocumentVariantExportTask exportTask, Result result, int batchCount, FileObject baseFolder,
+            Set<String> referredBinaryPaths) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString() + "/";
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (ResultItem item : result.getItems()) {
             if (isStopRequested(baseFolder)) {
-                log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                procLogger.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(),
+                        STOP_REQUEST_FILE_REL_PATH);
                 break;
             }
 
@@ -299,6 +380,10 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             try {
                 String handlePath = item.getPath();
+
+                if (!isDocumentPathIncluded(pathMatcher, params, handlePath)) {
+                    continue;
+                }
 
                 if (!HippoNodeUtils.isDocumentPath(handlePath)) {
                     continue;
@@ -332,8 +417,8 @@ public class ContentEximExportService extends AbstractContentEximService {
                 Set<String> docbasePropNames = params.getDocbasePropNames();
                 if (CollectionUtils.isNotEmpty(docbasePropNames)) {
                     for (String docbasePropName : docbasePropNames) {
-                        ContentNodeUtils.replaceDocbasePropertiesByPaths(exportTask.getDocumentManager().getSession(), contentNode,
-                                "properties[@itemName='" + docbasePropName + "']");
+                        ContentNodeUtils.replaceDocbasePropertiesByPaths(exportTask.getDocumentManager().getSession(),
+                                contentNode, "properties[@itemName='" + docbasePropName + "']");
                     }
                 }
 
@@ -347,16 +432,25 @@ public class ContentEximExportService extends AbstractContentEximService {
                 record.setAttribute("file", file.getName().getPath());
 
                 exportTask.writeContentNodeToJsonFile(contentNode, file);
-                log.debug("Exported document from {} to {}.", handlePath, file.getName().getPath());
+                procLogger.debug("Exported document from {} to {}.", handlePath, file.getName().getPath());
                 record.setSucceeded(true);
             } catch (Exception e) {
-                log.error("Failed to process record: {}", record, e);
+                procLogger.error("Failed to process record: {}", record, e);
                 if (record != null) {
                     record.setErrorMessage(e.toString());
                 }
             } finally {
                 if (record != null) {
                     exportTask.endRecord();
+                    result.incrementTotalDocumentCount();
+                    if (record.isSucceeded()) {
+                        result.incrementSucceededDocumentCount();
+                    } else {
+                        result.incrementFailedDocumentCount();
+                    }
+                    if (processStatus != null) {
+                        processStatus.setProgress(result.getProgress());
+                    }
                 }
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {

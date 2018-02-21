@@ -15,39 +15,53 @@
  */
 package org.onehippo.forge.content.exim.repository.jaxrs;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.apache.tika.io.IOUtils;
+import org.hippoecm.repository.api.HippoNodeType;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
 import org.onehippo.forge.content.exim.core.impl.DefaultBinaryImportTask;
 import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentManagerImpl;
 import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentVariantImportTask;
+import org.onehippo.forge.content.exim.core.util.AntPathMatcher;
 import org.onehippo.forge.content.exim.core.util.ContentNodeUtils;
 import org.onehippo.forge.content.exim.core.util.ContentPathUtils;
 import org.onehippo.forge.content.exim.core.util.HippoBinaryNodeUtils;
 import org.onehippo.forge.content.exim.core.util.HippoNodeUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
+import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
 import org.onehippo.forge.content.pojo.model.ContentNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,9 +82,10 @@ public class ContentEximImportService extends AbstractContentEximService {
 
     @Path("/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("multipart/mixed")
     @POST
-    public Response importContentFromZip(@Multipart(value = "batchSize", required = false) String batchSizeParam,
+    public Response importContentFromZip(@Context SecurityContext securityContext, @Context HttpServletRequest request,
+            @Multipart(value = "batchSize", required = false) String batchSizeParam,
             @Multipart(value = "throttle", required = false) String throttleParam,
             @Multipart(value = "publishOnImport", required = false) String publishOnImportParam,
             @Multipart(value = "dataUrlSizeThreshold", required = false) String dataUrlSizeThresholdParam,
@@ -82,15 +97,32 @@ public class ContentEximImportService extends AbstractContentEximService {
             @Multipart(value = "package", required = true) Attachment packageAttachment)
             throws JsonProcessingException {
 
+        List<Attachment> attachments = new ArrayList<>();
+
+        Logger procLogger = log;
+
         Result result = new Result();
 
+        File tempLogFile = null;
+        PrintStream tempLogOut = null;
         File tempZipFile = null;
         Session session = null;
         ExecutionParams params = new ExecutionParams();
+        ProcessStatus processStatus = null;
 
         try {
+            tempLogFile = File.createTempFile(TEMP_PREFIX, ".log");
+            tempLogOut = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempLogFile)));
+            procLogger = createTeeLogger(log, tempLogOut);
+
+            if (getProcessMonitor() != null) {
+                processStatus = getProcessMonitor().startProcess();
+                fillProcessStatusByRequestInfo(processStatus, securityContext, request);
+                processStatus.setLogFile(tempLogFile);
+            }
+
             tempZipFile = File.createTempFile(TEMP_PREFIX, ".zip");
-            log.info("ContentEximService#importContentFromZip begins with {}", tempZipFile.getPath());
+            procLogger.info("ContentEximService#importContentFromZip begins with {}", tempZipFile.getPath());
 
             if (packageAttachment == null) {
                 result.addError("No zip attachment.");
@@ -110,6 +142,10 @@ public class ContentEximImportService extends AbstractContentEximService {
             overrideExecutionParamsByParameters(params, batchSizeParam, throttleParam, publishOnImportParam,
                     dataUrlSizeThresholdParam, docbasePropNamesParam, documentTagsParam, binaryTagsParam);
 
+            if (processStatus != null) {
+                processStatus.setExecutionParams(params);
+            }
+
             transferAttachmentToFile(packageAttachment, tempZipFile);
 
             FileObject baseFolder = VFS.getManager().resolveFile("zip:" + tempZipFile.toURI());
@@ -119,55 +155,102 @@ public class ContentEximImportService extends AbstractContentEximService {
             DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
 
             final DefaultBinaryImportTask binaryImportTask = new DefaultBinaryImportTask(documentManager);
-            binaryImportTask.setLogger(log);
+            binaryImportTask.setLogger(procLogger);
 
             final WorkflowDocumentVariantImportTask documentImportTask = new WorkflowDocumentVariantImportTask(
                     documentManager);
-            documentImportTask.setLogger(log);
+            documentImportTask.setLogger(procLogger);
+
+            FileObject[] jsonFiles = binaryImportTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
 
             int batchCount = 0;
 
             try {
                 binaryImportTask.start();
-                batchCount = importBinaries(params, baseFolder, binaryImportTask, result, batchCount);
+                batchCount = importBinaries(procLogger, processStatus, jsonFiles, params, baseFolder, binaryImportTask,
+                        result, batchCount);
             } finally {
                 binaryImportTask.stop();
             }
 
             try {
                 documentImportTask.start();
-                batchCount = importDocuments(params, baseFolder, documentImportTask, result, batchCount);
+                batchCount = importDocuments(procLogger, processStatus, jsonFiles, params, baseFolder,
+                        documentImportTask, result, batchCount);
             } finally {
                 documentImportTask.stop();
             }
 
-            batchCount = cleanMirrorDocbaseValues(session, params, result, batchCount);
-            batchCount = cleanAllDocbaseFieldValues(session, params, result, batchCount);
+            batchCount = cleanMirrorDocbaseValues(procLogger, processStatus, session, params, result, batchCount);
+            batchCount = cleanAllDocbaseFieldValues(procLogger, processStatus, session, params, result, batchCount);
 
-            return Response.ok().entity(toJsonString(result)).build();
+            if (processStatus != null) {
+                processStatus.setProgress(1.0);
+            }
+
+            procLogger.info("ContentEximService#importContentFromZip ends.");
+
+            attachments.add(
+                    new Attachment("logs", MediaType.TEXT_PLAIN, FileUtils.readFileToString(tempLogFile, "UTF-8")));
+            attachments.add(new Attachment("summary", MediaType.APPLICATION_JSON, toJsonString(result)));
+
         } catch (Exception e) {
-            log.error("Failed to import content.", e);
+            procLogger.error("Failed to import content.", e);
             result.addError(e.toString());
             return Response.serverError().entity(toJsonString(result)).build();
         } finally {
-            log.info("ContentEximService#importContentFromZip ends.");
-            if (tempZipFile != null) {
-                tempZipFile.delete();
+            procLogger.info("ContentEximService#importContentFromZip finally ends.");
+
+            if (getProcessMonitor() != null) {
+                try {
+                    getProcessMonitor().stopProcess(processStatus);
+                } catch (Exception e) {
+                    procLogger.error("Failed to stop process.", e);
+                }
             }
+
             if (session != null) {
-                session.logout();
+                try {
+                    session.logout();
+                } catch (Exception e) {
+                    procLogger.error("Failed to logout JCR session.", e);
+                }
+            }
+
+            if (tempZipFile != null) {
+                try {
+                    tempZipFile.delete();
+                } catch (Exception e) {
+                    procLogger.error("Failed to delete temporary zip file.", e);
+                }
+            }
+
+            if (tempLogOut != null) {
+                IOUtils.closeQuietly(tempLogOut);
+            }
+
+            if (tempLogFile != null) {
+                try {
+                    tempLogFile.delete();
+                } catch (Exception e) {
+                    log.error("Failed to delete temporary log file.", e);
+                }
             }
         }
+
+        return Response.ok(new MultipartBody(attachments, true)).build();
     }
 
-    private int importBinaries(ExecutionParams params, FileObject baseFolder, DefaultBinaryImportTask importTask,
-            Result result, int batchCount) throws Exception {
+    private int importBinaries(Logger procLogger, ProcessStatus processStatus, FileObject[] jsonFiles,
+            ExecutionParams params, FileObject baseFolder, DefaultBinaryImportTask importTask, Result result,
+            int batchCount) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString();
-        FileObject[] files = importTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        for (FileObject file : files) {
+        for (FileObject file : jsonFiles) {
             if (isStopRequested(baseFolder)) {
-                log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                procLogger.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(),
+                        STOP_REQUEST_FILE_REL_PATH);
                 break;
             }
 
@@ -175,6 +258,10 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             String primaryTypeName = contentNode.getPrimaryType();
             String path = contentNode.getProperty("jcr:path").getValue();
+
+            if (!isBinaryPathIncluded(pathMatcher, params, path)) {
+                continue;
+            }
 
             if (!HippoNodeUtils.isBinaryPath(path)) {
                 continue;
@@ -221,7 +308,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
                 record.setSucceeded(true);
             } catch (Exception e) {
-                log.error("Failed to process record: {}", record, e);
+                procLogger.error("Failed to process record: {}", record, e);
                 if (record != null) {
                     record.setErrorMessage(e.toString());
                 }
@@ -232,6 +319,12 @@ public class ContentEximImportService extends AbstractContentEximService {
                     result.incrementTotalBinaryCount();
                     if (record.isSucceeded()) {
                         result.incrementSucceededBinaryCount();
+                    } else {
+                        result.incrementFailedBinaryCount();
+                    }
+                    if (processStatus != null) {
+                        // the remaining 5% for cleaning paths to convert those to uuids.
+                        processStatus.setProgress(0.95 * ((double) batchCount) / ((double) jsonFiles.length));
                     }
                 }
                 ++batchCount;
@@ -251,14 +344,16 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int importDocuments(ExecutionParams params, FileObject baseFolder,
-            WorkflowDocumentVariantImportTask importTask, Result result, int batchCount) throws Exception {
+    private int importDocuments(Logger procLogger, ProcessStatus processStatus, FileObject[] jsonFiles,
+            ExecutionParams params, FileObject baseFolder, WorkflowDocumentVariantImportTask importTask, Result result,
+            int batchCount) throws Exception {
         final String baseFolderUrlPrefix = baseFolder.getURL().toString();
-        FileObject[] files = importTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        for (FileObject file : files) {
+        for (FileObject file : jsonFiles) {
             if (isStopRequested(baseFolder)) {
-                log.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(), STOP_REQUEST_FILE_REL_PATH);
+                procLogger.info("Stop requested by file at {}/{}", baseFolder.getName().getPath(),
+                        STOP_REQUEST_FILE_REL_PATH);
                 break;
             }
 
@@ -266,6 +361,10 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             String primaryTypeName = contentNode.getPrimaryType();
             String path = contentNode.getProperty("jcr:path").getValue();
+
+            if (!isDocumentPathIncluded(pathMatcher, params, path)) {
+                continue;
+            }
 
             if (!HippoNodeUtils.isDocumentPath(path)) {
                 continue;
@@ -291,14 +390,21 @@ public class ContentEximImportService extends AbstractContentEximService {
                 String updatedPath = importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,
                         primaryTypeName, path, locale, localizedName);
 
-                if (params.isPublishOnImport()) {
+                boolean isToPublish = ExecutionParams.PUBLISH_ON_IMPORT_ALL.equals(params.getPublishOnImport());
+
+                if (!isToPublish && ExecutionParams.PUBLISH_ON_IMPORT_LIVE.equals(params.getPublishOnImport())) {
+                    isToPublish = ContentNodeUtils.containsStringValueInProperty(contentNode,
+                            HippoNodeType.HIPPO_AVAILABILITY, "live");
+                }
+
+                if (isToPublish) {
                     importTask.getDocumentManager().depublishDocument(updatedPath);
                     importTask.getDocumentManager().publishDocument(updatedPath);
                 }
 
                 record.setSucceeded(true);
             } catch (Exception e) {
-                log.error("Failed to process record: {}", record, e);
+                procLogger.error("Failed to process record: {}", record, e);
                 if (record != null) {
                     record.setErrorMessage(e.toString());
                 }
@@ -309,6 +415,12 @@ public class ContentEximImportService extends AbstractContentEximService {
                     result.incrementTotalDocumentCount();
                     if (record.isSucceeded()) {
                         result.incrementSucceededDocumentCount();
+                    } else {
+                        result.incrementFailedDocumentCount();
+                    }
+                    if (processStatus != null) {
+                        // the remaining 5% for cleaning paths to convert those to uuids.
+                        processStatus.setProgress(0.95 * ((double) batchCount) / ((double) jsonFiles.length));
                     }
                 }
                 ++batchCount;
@@ -328,8 +440,8 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int cleanMirrorDocbaseValues(Session session, ExecutionParams params, Result result, int batchCount)
-            throws Exception {
+    private int cleanMirrorDocbaseValues(Logger procLogger, ProcessStatus processStatus, Session session,
+            ExecutionParams params, Result result, int batchCount) throws Exception {
         Set<String> mirrorNodePaths = getQueriedNodePaths(session,
                 "//element(*)[jcr:like(@hippo:docbase,'/content/%')]", Query.XPATH);
         session.refresh(false);
@@ -351,7 +463,7 @@ public class ContentEximImportService extends AbstractContentEximService {
             } catch (Exception e) {
                 String message = "Failed to clean mirror docbase value at " + mirrorNodePath + ". " + e;
                 result.addError(message);
-                log.error("Failed to clean mirror docbase value at {}.", mirrorNodePath, e);
+                procLogger.error("Failed to clean mirror docbase value at {}.", mirrorNodePath, e);
             } finally {
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {
@@ -370,8 +482,8 @@ public class ContentEximImportService extends AbstractContentEximService {
         return batchCount;
     }
 
-    private int cleanAllDocbaseFieldValues(Session session, ExecutionParams params, Result result, int batchCount)
-            throws Exception {
+    private int cleanAllDocbaseFieldValues(Logger procLogger, ProcessStatus processStatus, Session session,
+            ExecutionParams params, Result result, int batchCount) throws Exception {
         Set<String> docbasePropNames = params.getDocbasePropNames();
 
         if (CollectionUtils.isEmpty(docbasePropNames)) {
@@ -380,16 +492,16 @@ public class ContentEximImportService extends AbstractContentEximService {
 
         for (String docbasePropName : docbasePropNames) {
             if (StringUtils.isNotBlank(docbasePropName)) {
-                batchCount = cleanSingleDocbaseFieldValues(session, params, StringUtils.trim(docbasePropName), result,
-                        batchCount);
+                batchCount = cleanSingleDocbaseFieldValues(procLogger, processStatus, session, params,
+                        StringUtils.trim(docbasePropName), result, batchCount);
             }
         }
 
         return batchCount;
     }
 
-    private int cleanSingleDocbaseFieldValues(Session session, ExecutionParams params, String docbasePropName,
-            Result result, int batchCount) throws Exception {
+    private int cleanSingleDocbaseFieldValues(Logger procLogger, ProcessStatus processStatus, Session session,
+            ExecutionParams params, String docbasePropName, Result result, int batchCount) throws Exception {
         Set<String> nodePaths = getQueriedNodePaths(session,
                 "//element(*)[jcr:like(@" + docbasePropName + ",'/content/%')]", Query.XPATH);
 
@@ -438,7 +550,7 @@ public class ContentEximImportService extends AbstractContentEximService {
                 String message = "Failed to clean mirror docbase value at " + nodePath + "/@" + docbasePropName + ". "
                         + e;
                 result.addError(message);
-                log.error("Failed to clean mirror docbase value at {}/@{}.", nodePath, docbasePropName, e);
+                procLogger.error("Failed to clean mirror docbase value at {}/@{}.", nodePath, docbasePropName, e);
             } finally {
                 ++batchCount;
                 if (batchCount % params.getBatchSize() == 0) {

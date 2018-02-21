@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <!--
-    Copyright 2015-2017 Hippo
+    Copyright 2015-2018 Hippo
 
     Licensed under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
@@ -35,7 +35,12 @@
     <menu name="Home">
       <item name="Introduction" href="index.html" />
       <item name="Installation" href="install.html" />
-      <item name="Built-in REST Services" href="builtin-rest-services.html" />
+      <item name="Built-in REST Services" href="builtin-rest-services.html">
+        <item name="ExecutionParams as a Common Parameter" href="execution-params.html" />
+        <item name="Command Line Example to Export Content" href="cmd-example-export.html" />
+        <item name="Command Line Example to Import Content" href="cmd-example-import.html" />
+        <item name="Command Line Examples To Monitor Processes" href="cmd-example-status.html" />
+      </item>
       <item name="Tutorials" href="tutorials.html">
         <item name="Exporting Binaries" href="tutorials-export-bins.html" />
         <item name="Exporting Documents" href="tutorials-export-docs.html" />

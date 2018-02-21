@@ -58,7 +58,8 @@ public class ContentNodeUtils {
      * @param baseContentNode base {@link ContentNode} instance
      * @throws RepositoryException if fails to find a JCR node associated by the UUID value
      */
-    public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode) throws RepositoryException {
+    public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode)
+            throws RepositoryException {
         replaceDocbasesByPaths(session, baseContentNode, MIRROR_DOCBASES_XPATH);
     }
 
@@ -72,7 +73,8 @@ public class ContentNodeUtils {
      * @param jxpath <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression
      * @throws RepositoryException if fails to find a JCR node associated by the UUID value
      */
-    public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode, final String jxpath) throws RepositoryException {
+    public static void replaceDocbasesByPaths(final Session session, final ContentNode baseContentNode,
+            final String jxpath) throws RepositoryException {
         replaceDocbasesByPaths(session, baseContentNode, jxpath, null);
     }
 
@@ -121,7 +123,8 @@ public class ContentNodeUtils {
      * @param jxpath <a href="https://commons.apache.org/proper/commons-jxpath/">JXPath</a> expression
      * @throws RepositoryException if fails to find a JCR node associated by the UUID value
      */
-    public static void replaceDocbasePropertiesByPaths(final Session session, final ContentNode baseContentNode, final String jxpath) throws RepositoryException {
+    public static void replaceDocbasePropertiesByPaths(final Session session, final ContentNode baseContentNode,
+            final String jxpath) throws RepositoryException {
         List<ContentProperty> docbaseProps = baseContentNode.queryPropertiesByXPath(jxpath);
         Node linkedNode;
         List<String> docbases;
@@ -180,7 +183,8 @@ public class ContentNodeUtils {
      * @param startsWith start with string of the value
      * @param urlPrefix url prefix
      */
-    public static void prependUrlPrefixInJcrDataValues(ContentNode baseContentNode, String startsWith, String urlPrefix) {
+    public static void prependUrlPrefixInJcrDataValues(ContentNode baseContentNode, String startsWith,
+            String urlPrefix) {
         List<ContentNode> childNodes = baseContentNode.queryNodesByXPath("//nodes[properties[@itemName='jcr:data']]");
 
         for (ContentNode childNode : childNodes) {
@@ -190,5 +194,30 @@ public class ContentNodeUtils {
                 childNode.setProperty("jcr:data", ContentPropertyType.BINARY, urlPrefix + value);
             }
         }
+    }
+
+    /**
+     * Return true if the property (by the given {@code propertyName}) in the {@code contentNode} has the same string value
+     * as {@code value}.
+     * @param contentNode content node
+     * @param propertyName property name
+     * @param value string value
+     * @return true if the property (by the given {@code propertyName}) in the {@code contentNode} has the same string value
+     * as {@code value}
+     */
+    public static boolean containsStringValueInProperty(final ContentNode contentNode, final String propertyName,
+            final String value) {
+        if (!contentNode.hasProperty(propertyName)) {
+            return false;
+        }
+
+        ContentProperty prop = contentNode.getProperty(propertyName);
+
+        if (prop.getValueCount() == 0) {
+            return false;
+        }
+
+        List<String> values = prop.getValues();
+        return values.contains(value);
     }
 }

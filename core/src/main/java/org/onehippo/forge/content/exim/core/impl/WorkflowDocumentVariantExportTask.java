@@ -48,7 +48,6 @@ public class WorkflowDocumentVariantExportTask extends AbstractContentExportTask
         if (contentNodeMappingItemFilter == null) {
             DefaultHippoJcrItemMappingFilter filter = new DefaultHippoJcrItemMappingFilter();
             filter.addPropertyPathExclude("hippostdpubwf:*");
-            filter.addPropertyPathExclude("hippo:availability");
             filter.addPropertyPathExclude("hippo:paths");
             filter.addPropertyPathExclude("hippo:related");
             filter.addPropertyPathExclude("hippostd:holder");
