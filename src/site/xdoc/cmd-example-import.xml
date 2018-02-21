@@ -42,7 +42,7 @@
           <source><![CDATA[
 $ cat import-params.json
 {
-  publishOnImport: false
+  publishOnImport: "none"
 }
           ]]></source>
         </div>
@@ -117,7 +117,7 @@ Content-ID: <summary>
         <div class="brush: bash">
           <source><![CDATA[
 $ curl -i \
-    -F "publishOnImport=true" \
+    -F "publishOnImport=live" \
     -F "params=@import-params.json" \
     -F "package=@exim.zip" \
     -u admin:admin \
@@ -134,7 +134,7 @@ $ curl -i \
         <div class="brush: bash">
           <source><![CDATA[
 $ curl -i \
-    -F "publishOnImport=true" \
+    -F "publishOnImport=live" \
     -F "documentTags=contenteximdemo:tags=exim,v1.1" \
     -F "package=@exim.zip" \
     -u admin:admin \

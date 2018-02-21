@@ -84,7 +84,7 @@ Content-ID: <params>
 {
   "batchSize" : 200,
   "throttle" : 10,
-  "publishOnImport" : false,
+  "publishOnImport" : "none",
   "dataUrlSizeThreshold" : 262144,
   "binaries" : {
     "queries" : [ ],

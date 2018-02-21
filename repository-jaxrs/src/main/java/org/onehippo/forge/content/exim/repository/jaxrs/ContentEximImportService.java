@@ -47,6 +47,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.tika.io.IOUtils;
+import org.hippoecm.repository.api.HippoNodeType;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.core.ContentMigrationRecord;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -389,7 +390,14 @@ public class ContentEximImportService extends AbstractContentEximService {
                 String updatedPath = importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,
                         primaryTypeName, path, locale, localizedName);
 
-                if (params.isPublishOnImport()) {
+                boolean isToPublish = ExecutionParams.PUBLISH_ON_IMPORT_ALL.equals(params.getPublishOnImport());
+
+                if (!isToPublish && ExecutionParams.PUBLISH_ON_IMPORT_LIVE.equals(params.getPublishOnImport())) {
+                    isToPublish = ContentNodeUtils.containsStringValueInProperty(contentNode,
+                            HippoNodeType.HIPPO_AVAILABILITY, "live");
+                }
+
+                if (isToPublish) {
                     importTask.getDocumentManager().depublishDocument(updatedPath);
                     importTask.getDocumentManager().publishDocument(updatedPath);
                 }

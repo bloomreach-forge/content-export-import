@@ -43,7 +43,6 @@ import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.FastDateFormat;
@@ -305,7 +304,7 @@ public abstract class AbstractContentEximService {
         }
 
         if (StringUtils.isNotBlank(publishOnImportParam)) {
-            params.setPublishOnImport(BooleanUtils.toBoolean(publishOnImportParam));
+            params.setPublishOnImport(publishOnImportParam);
         }
 
         if (StringUtils.isNotBlank(dataUrlSizeThresholdParam)) {

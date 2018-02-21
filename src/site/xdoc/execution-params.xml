@@ -53,8 +53,8 @@
           "type": "integer"
         },
         "publishOnImport": {
-          "description": "Flag whether or not publish the document after importing. false by default.",
-          "type": "boolean"
+          "description": "Document publishing option on content importing process. It can be 'none', 'all' or 'live'. 'none' by default. It doesn't publish an imported/updated document automatically with 'none'. It publishes an imported/updated document automatically with 'all'. It publishes an imported/updated document automatically with 'live' only when the source content was a 'live' content.",
+          "type": "string"
         },
         "dataUrlSizeThreshold": {
           "description": "The maximum byte size threshold to use either data: URL or file: URL for binary resource data.",

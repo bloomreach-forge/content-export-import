@@ -18,6 +18,7 @@ package org.onehippo.forge.content.exim.repository.jaxrs.param;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -39,6 +40,27 @@ public class ExecutionParams {
      * Default binary data byte maximum size in DATA URLs.
      */
     private static final long DEFAULT_DATA_URL_SIZE_THRESHOLD = 256 * 1024;
+
+    /**
+     * An option of {@link #publishOnImport} value, not to publish a document automatically on import.
+     */
+    public static final String PUBLISH_ON_IMPORT_NONE = "none";
+
+    /**
+     * An option of {@link #publishOnImport} value, to publish a document automatically on import.
+     */
+    public static final String PUBLISH_ON_IMPORT_ALL = "all";
+
+    /**
+     * An option of {@link #publishOnImport} value, to publish a document automatically if the source of the content
+     * has <code>hippo:availability</code> property including {@code live} value.
+     */
+    public static final String PUBLISH_ON_IMPORT_LIVE = "live";
+
+    /**
+     * The default option of {@link #publishOnImport} value.
+     */
+    public static final String PUBLISH_ON_IMPORT_DEFAULT = PUBLISH_ON_IMPORT_NONE;
 
     /**
      * Default gallery folder's primary node type name.
@@ -72,7 +94,7 @@ public class ExecutionParams {
 
     private Integer batchSize;
     private Long throttle;
-    private boolean publishOnImport;
+    private String publishOnImport = PUBLISH_ON_IMPORT_DEFAULT;
     private Long dataUrlSizeThreshold;
     private QueriesAndPaths binaries;
     private QueriesAndPaths documents;
@@ -110,12 +132,18 @@ public class ExecutionParams {
         this.throttle = throttle;
     }
 
-    public boolean isPublishOnImport() {
+    public String getPublishOnImport() {
         return publishOnImport;
     }
 
-    public void setPublishOnImport(boolean publishOnImport) {
-        this.publishOnImport = publishOnImport;
+    public void setPublishOnImport(String publishOnImport) {
+        if (StringUtils.equalsIgnoreCase(publishOnImport, PUBLISH_ON_IMPORT_LIVE)) {
+            this.publishOnImport = PUBLISH_ON_IMPORT_LIVE;
+        } else if (StringUtils.equalsIgnoreCase(publishOnImport, PUBLISH_ON_IMPORT_ALL) || BooleanUtils.toBoolean(publishOnImport)) {
+            this.publishOnImport = PUBLISH_ON_IMPORT_ALL;
+        } else {
+            this.publishOnImport = PUBLISH_ON_IMPORT_NONE;
+        }
     }
 
     public Long getDataUrlSizeThreshold() {
