@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC
+  "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+  "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<!--
+    Copyright 2018 Hippo
+
+    Licensed under the Apache License, Version 2.0 (the  "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document>
+  <properties>
+    <title>Command Line Examples To Import Content</title>
+  </properties>
+  <body>
+
+    <section name="Command Line Examples To Import Content">
+
+      <subsection name="Import Content from a Package ZIP">
+
+        <p>
+          In this section, we will see how to import binaries and documents
+          from the given <code>package</code> ZIP file
+          back to the <a href="index.html#Demo_Application">Demo Application</a>.
+        </p>
+
+        <p>
+          After running the <a href="index.html#Demo_Application">Demo Application</a>,
+          let's import binaries and documents like the following.
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ cat import-params.json
+{
+  publishOnImport: false
+}
+          ]]></source>
+        </div>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "params=@import-params.json" \
+    -F "package=@exim.zip" \
+    -u admin:admin \
+    http://localhost:8080/cms/ws/exim/import
+
+          ]]></source>
+        </div>
+        <div class="brush: plain">
+          <source><![CDATA[
+HTTP/1.1 200 
+Date: Tue, 20 Feb 2018 22:04:37 GMT
+Content-Type: multipart/mixed; boundary="uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4"
+Transfer-Encoding: chunked
+
+
+--uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4
+Content-Type: text/plain
+Content-Transfer-Encoding: binary
+Content-ID: <logs>
+
+INFO 2018-02-20 17:04:30,877 ContentEximService#importContentFromZip begins with /usr/local/tomcat/_exim_5892554060758255713.zip
+INFO 2018-02-20 17:04:37,634 ContentEximService#importContentFromZip ends.
+
+--uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4
+Content-Type: application/json
+Content-Transfer-Encoding: binary
+Content-ID: <summary>
+
+{
+  "totalBinaryCount" : 8,
+  "totalDocumentCount" : 24,
+  "succeededBinaryCount" : 8,
+  "failedBinaryCount" : 0,
+  "succeededDocumentCount" : 24,
+  "failedDocumentCount" : 0,
+  "items" : [ {
+    "path" : "/content/gallery/contenteximdemo/banners/banner-2.jpg",
+    "primaryType" : "hippogallery:imageset",
+    "succeeded" : true,
+    "errorMessage" : null
+  }, {
+    "path" : "/content/gallery/contenteximdemo/banners/banner-1.jpg",
+    "primaryType" : "hippogallery:imageset",
+    "succeeded" : true,
+    "errorMessage" : null
+  },
+  // ...
+  {
+    "path" : "/content/documents/contenteximdemo/events/2017/07/breakfast",
+    "primaryType" : "contenteximdemo:eventsdocument",
+    "succeeded" : true,
+    "errorMessage" : null
+  } ],
+  "errors" : [ ],
+  "progress" : 1.0
+}
+--uuid:de10ee65-f3e7-4817-ba3c-a7cfdeb0dcc4--
+          ]]></source>
+        </div>
+
+        <p>
+          You can also override properties in <code>ExecutionParams</code> by adding optional form parameters like the following:
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "publishOnImport=true" \
+    -F "params=@import-params.json" \
+    -F "package=@exim.zip" \
+    -u admin:admin \
+    http://localhost:8080/cms/ws/exim/import
+          ]]></source>
+        </div>
+
+        <p>
+          Actually, as you can omit <code>ExecutionParams</code> in content import proccess
+          to keep the default parameters, you can simply execute
+          the importing process without the <code>params</code> attachment, like the following example:
+        </p>
+
+        <div class="brush: bash">
+          <source><![CDATA[
+$ curl -i \
+    -F "publishOnImport=true" \
+    -F "documentTags=contenteximdemo:tags=exim,v1.1" \
+    -F "package=@exim.zip" \
+    -u admin:admin \
+    http://localhost:8080/cms/ws/exim/import
+          ]]></source>
+        </div>
+
+        <p>
+          You've just imported the binaries and documents in the content package ZIP file the system!
+          Now, you can check if those are good through CMS system as well!
+        </p>
+
+      </subsection>
+
+    </section>
+
+  </body>
+</document>

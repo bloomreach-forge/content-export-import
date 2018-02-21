@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onehippo.forge.content.exim.repository.jaxrs.util;
+package org.onehippo.forge.content.exim.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,29 +64,60 @@ public class AntPathMatcher {
     private String pathSeparator = DEFAULT_PATH_SEPARATOR;
 
     /**
-     * Set the path separator to use for pattern parsing. Default is "/", as in
-     * Ant.
+     * Set the path separator to use for pattern parsing. Default is "/", as in Ant.
+     * @param pathSeparator path separator
      */
     public void setPathSeparator(String pathSeparator) {
         this.pathSeparator = pathSeparator != null ? pathSeparator : DEFAULT_PATH_SEPARATOR;
     }
 
+    /**
+     * Check if {@code path} is an ANT style pattern string.
+     * @param path path pattern
+     * @return true if {@code path} is an ANT style pattern string
+     */
     public boolean isPattern(String path) {
         return path.indexOf('*') != -1 || path.indexOf('?') != -1;
     }
 
+    /**
+     * Matches.
+     * @param pattern pattern
+     * @param path path
+     * @return true if matched
+     */
     public boolean match(String pattern, String path) {
         return match(pattern, path, true);
     }
 
+    /**
+     * Match starts.
+     * @param pattern pattern
+     * @param path path
+     * @return true if match starts
+     */
     public boolean matchStart(String pattern, String path) {
         return matchStart(pattern, path, true);
     }
 
+    /**
+     * Match.
+     * @param pattern pattern
+     * @param path path
+     * @param isCaseSensitive case sensitiveness
+     * @return true if matches
+     */
     public boolean match(String pattern, String path, boolean isCaseSensitive) {
         return doMatch(pattern, path, true, isCaseSensitive);
     }
 
+    /**
+     * Match starts.
+     * @param pattern pattern
+     * @param path path
+     * @param isCaseSensitive case sensitiveness
+     * @return true if match starts
+     */
     public boolean matchStart(String pattern, String path, boolean isCaseSensitive) {
         return doMatch(pattern, path, false, isCaseSensitive);
     }
@@ -384,26 +415,29 @@ public class AntPathMatcher {
      * For example:
      * <ul>
      * <li>'<code>/docs/cvs/commit.html</code>' and '
-     * <code>/docs/cvs/commit.html</code> -> ''</li>
-     * <li>'<code>/docs/*</code>' and '<code>/docs/cvs/commit</code> -> '
+     * <code>/docs/cvs/commit.html</code> -&gt; ''</li>
+     * <li>'<code>/docs/*</code>' and '<code>/docs/cvs/commit</code> -&gt; '
      * <code>cvs/commit</code>'</li>
      * <li>'<code>/docs/cvs/*.html</code>' and '
-     * <code>/docs/cvs/commit.html</code> -> '<code>commit.html</code>'</li>
-     * <li>'<code>/docs/**</code>' and '<code>/docs/cvs/commit</code> -> '
+     * <code>/docs/cvs/commit.html</code> -&gt; '<code>commit.html</code>'</li>
+     * <li>'<code>/docs/**</code>' and '<code>/docs/cvs/commit</code> -&gt; '
      * <code>cvs/commit</code>'</li>
      * <li>'<code>/docs/**\/*.html</code>' and '
-     * <code>/docs/cvs/commit.html</code> -> '<code>cvs/commit.html</code>'</li>
-     * <li>'<code>/*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '
+     * <code>/docs/cvs/commit.html</code> -&gt; '<code>cvs/commit.html</code>'</li>
+     * <li>'<code>/*.html</code>' and '<code>/docs/cvs/commit.html</code> -&gt; '
      * <code>docs/cvs/commit.html</code>'</li>
-     * <li>'<code>*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '
+     * <li>'<code>*.html</code>' and '<code>/docs/cvs/commit.html</code> -&gt; '
      * <code>/docs/cvs/commit.html</code>'</li>
-     * <li>'<code>*</code>' and '<code>/docs/cvs/commit.html</code> -> '
+     * <li>'<code>*</code>' and '<code>/docs/cvs/commit.html</code> -&gt; '
      * <code>/docs/cvs/commit.html</code>'</li>
      * </ul>
      * <p>
      * Assumes that {@link #match} returns <code>true</code> for '
      * <code>pattern</code>' and '<code>path</code>', but does
      * <strong>not</strong> enforce this.
+     * @param pattern pattern
+     * @param path path
+     * @return extracted path within the pattern
      */
     public String extractPathWithinPattern(String pattern, String path) {
         String[] patternParts = tokenizeToStringArray(pattern, this.pathSeparator);
