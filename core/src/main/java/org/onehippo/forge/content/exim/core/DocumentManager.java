@@ -57,12 +57,24 @@ public interface DocumentManager {
 
     /**
      * Returns the physical document handle node path for the logical document location.
-     * Returns null if document doesn't exist at the location.
+     * Returns null if document doesn't exist at the location, without any exception,
+     * unlike {@link #getExistingDocumentHandleNode(String)}.
      * @param documentLocation logical document location
      * @return the physical document handle node path for the logical document location
      * @throws DocumentManagerException if fails to process
      */
     String getExistingDocumentPath(String documentLocation) throws DocumentManagerException;
+
+    /**
+     * Returns the physical document handle node for the logical document location.
+     * Throws a {@link DocumentManagerNotFoundException} if document doesn't exist at the location,
+     * unlike {@link #getExistingDocumentPath(String)}.
+     * @param documentLocation logical document location
+     * @return the physical document handle node for the logical document location
+     * @throws DocumentManagerNotFoundException if cannot find a document
+     * @throws RepositoryException if any repository exception occurs
+     */
+    Node getExistingDocumentHandleNode(String documentLocation) throws DocumentManagerNotFoundException, RepositoryException;
 
     /**
      * Returns true if a folder exists at {@code folderLocation}.
@@ -74,12 +86,24 @@ public interface DocumentManager {
 
     /**
      * Returns the physical folder node path for the logical folder location.
-     * Returns null if folder doesn't exist at the location.
+     * Returns null if folder doesn't exist at the location, without any exception,
+     * unlike {@link #getExistingFolderNode(String)}.
      * @param folderLocation logical folder location
      * @return the physical folder node path for the logical folder location
      * @throws DocumentManagerException if fails to process
      */
     String getExistingFolderPath(String folderLocation) throws DocumentManagerException;
+
+    /**
+     * Returns the physical folder node for the logical folder location.
+     * Throws a {@link DocumentManagerNotFoundException} if folder doesn't exist at the location,
+     * unlike {@link #getExistingDocumentPath(String)}.
+     * @param folderLocation logical folder location
+     * @return the physical folder node for the logical folder location
+     * @throws DocumentManagerException if cannot find a folder
+     * @throws RepositoryException if any repository exception occurs
+     */
+    Node getExistingFolderNode(String folderLocation) throws DocumentManagerNotFoundException, RepositoryException;
 
     /**
      * Creates a document in the specific {@code folderLocation}.

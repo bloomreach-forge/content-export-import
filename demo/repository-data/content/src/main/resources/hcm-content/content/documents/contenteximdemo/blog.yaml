@@ -12,11 +12,11 @@
     hippostd:foldertype: [new-blogauthor-document, new-blogauthor-folder]
     hippotranslation:id: c3170f87-28e9-49ce-840a-e02b2817103a
     hippotranslation:locale: en
-    /Hippo Author:
+    /hippo-author:
       jcr:primaryType: hippo:handle
       jcr:mixinTypes: ['mix:referenceable']
       jcr:uuid: 5a6e1136-dea0-4927-9130-9ce0a47b0189
-      /Hippo Author:
+      /hippo-author:
         jcr:primaryType: contenteximdemo:author
         jcr:mixinTypes: ['mix:referenceable']
         jcr:uuid: c6b0ff53-9cf3-49d5-941f-a0482a01121c
