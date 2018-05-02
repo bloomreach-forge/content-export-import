@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2016 Hippo B.V. (http://www.onehippo.com)
+ * Copyright 2016-2018 Hippo B.V. (http://www.onehippo.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -455,6 +455,33 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
      * {@inheritDoc}
      */
     @Override
+    public Document obtainEditableDocument(final Node documentHandleNode) throws DocumentManagerException {
+
+        if (documentHandleNode == null) {
+            throw new IllegalArgumentException("Document handle node may not be null");
+        }
+
+        try {
+            getLogger().debug("##### obtainEditableDocument for {}", documentHandleNode.getPath());
+
+            final DocumentWorkflow documentWorkflow = getDocumentWorkflow(documentHandleNode);
+            final Boolean obtainEditableInstance = (Boolean) documentWorkflow.hints().get("obtainEditableInstance");
+
+            if (BooleanUtils.isTrue(obtainEditableInstance)) {
+                return documentWorkflow.obtainEditableInstance();
+            } else {
+                throw new IllegalStateException( "Document at '" + documentHandleNode.getPath() + "' is not allowed to obtain an editable instance.");
+            }
+        } catch (Exception e) {
+            getLogger().error("Failed to obtain editable instance for document", e);
+            throw new DocumentManagerException("Failed to obtain editable instance for document", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void updateEditableDocument(Document editableDocument, ContentNode sourceContentNode)
             throws DocumentManagerException {
         try {
@@ -504,6 +531,36 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
      * {@inheritDoc}
      */
     @Override
+    public Document disposeEditableDocument(Document editableDocument) throws DocumentManagerException {
+
+        if (editableDocument == null) {
+            throw new IllegalArgumentException("Document object may not be null");
+        }
+
+        try {
+            final Node variant = editableDocument.getNode(getSession());
+            final Node handle = HippoNodeUtils.getHippoDocumentHandle(variant);
+            getLogger().debug("##### commitEditableDocument for {}", handle.getPath());
+
+            final DocumentWorkflow documentWorkflow = getDocumentWorkflow(handle);
+            final Boolean disposeEditableInstance = (Boolean) documentWorkflow.hints().get("disposeEditableInstance");
+
+            if (BooleanUtils.isTrue(disposeEditableInstance)) {
+                return documentWorkflow.disposeEditableInstance();
+            } else {
+                throw new IllegalStateException(
+                        "Document at '" + handle.getPath() + "' is not allowed to dispose an editable instance.");
+            }
+        } catch (Exception e) {
+            getLogger().error("Failed to dispose editable instance on document.", e);
+            throw new DocumentManagerException("Failed to dispose editable instance on document.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Document commitEditableDocument(String documentLocation) throws DocumentManagerException {
         getLogger().debug("##### commitEditableDocument('{}')", documentLocation);
 
@@ -531,6 +588,36 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
         }
 
         return document;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Document commitEditableDocument(Document editableDocument) throws DocumentManagerException {
+
+        if (editableDocument == null) {
+            throw new IllegalArgumentException("Document object may not be null");
+        }
+
+        try {
+            final Node variant = editableDocument.getNode(getSession());
+            final Node handle = HippoNodeUtils.getHippoDocumentHandle(variant);
+            getLogger().debug("##### commitEditableDocument for {}", handle.getPath());
+
+            final DocumentWorkflow documentWorkflow = getDocumentWorkflow(handle);
+            final Boolean commitEditableInstance = (Boolean) documentWorkflow.hints().get("commitEditableInstance");
+
+            if (BooleanUtils.isTrue(commitEditableInstance)) {
+                return documentWorkflow.commitEditableInstance();
+            } else {
+                throw new IllegalStateException(
+                        "Document at '" + handle.getPath() + "' is not allowed to commit an editable instance.");
+            }
+        } catch (Exception e) {
+            getLogger().error("Failed to commit editable instance on document.", e);
+            throw new DocumentManagerException("Failed to commit editable instance on document", e);
+        }
     }
 
     /**

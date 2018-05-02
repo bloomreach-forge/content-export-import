@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2016 Hippo B.V. (http://www.onehippo.com)
+ * Copyright 2016-2018 Hippo B.V. (http://www.onehippo.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.hippoecm.repository.api.Document;
+import org.hippoecm.repository.api.HippoNodeType;
 import org.onehippo.forge.content.exim.core.Constants;
 import org.onehippo.forge.content.exim.core.ContentMigrationException;
 import org.onehippo.forge.content.exim.core.DocumentManager;
@@ -93,6 +94,40 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
         return createdOrUpdatedDocumentLocation;
     }
 
+    @Override
+    public Node updateDocumentFromVariantContentNode(final ContentNode contentNode, final Node documentNode) throws ContentMigrationException {
+
+        if (documentNode == null) {
+            throw new IllegalArgumentException("Cannot update document: argument 'documentNode' is null (and argument 'contentNode'=" + contentNode + ")");
+        }
+
+        try {
+            // check types early
+            final String primaryTypeName;
+            final Node documentHandleNode;
+            if (documentNode.isNodeType(HippoNodeType.NT_HANDLE)) {
+                documentHandleNode = documentNode;
+                primaryTypeName = documentHandleNode.getNode(documentHandleNode.getName()).getPrimaryNodeType().getName();
+            }
+            else if (documentNode.getParent().isNodeType(HippoNodeType.NT_HANDLE)) {
+                documentHandleNode = documentNode.getParent();
+                primaryTypeName = documentHandleNode.getPrimaryNodeType().getName();
+            }
+            else {
+                throw new IllegalArgumentException("Cannot update document: node " + documentNode.getPath() +
+                        " (or its parent) is not a handle but " + documentNode.getPrimaryNodeType().getName());
+            }
+
+            if (getCurrentContentMigrationRecord() != null) {
+                getCurrentContentMigrationRecord().setContentType(primaryTypeName);
+            }
+
+            return updateHandleFromVariantContentNode(documentHandleNode, contentNode);
+        } catch (DocumentManagerException | RepositoryException e) {
+            throw new ContentMigrationException(e.toString(), e);
+        }
+    }
+
     /**
      * Create a document at the document handle node path ({@code documentLocation})
      * and returns the created document handle node path.
@@ -148,6 +183,37 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
         }
 
         return documentLocation;
+    }
+
+    protected Node updateHandleFromVariantContentNode(final Node documentHandleNode, final ContentNode contentNode)
+            throws DocumentManagerException, RepositoryException {
+
+        Document editableDocument = null;
+        Node handle = null;
+
+        try {
+            editableDocument = getDocumentManager().obtainEditableDocument(documentHandleNode);
+            final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
+            handle = HippoNodeUtils.getHippoDocumentHandle(variant);
+
+            if (getCurrentContentMigrationRecord() != null) {
+                getCurrentContentMigrationRecord().setContentId(handle.getIdentifier());
+            }
+
+            getContentNodeBinder().bind(variant, contentNode, getContentNodeBindingItemFilter(),
+                    getContentValueConverter());
+            getDocumentManager().getSession().save();
+
+            getDocumentManager().commitEditableDocument(editableDocument);
+        } catch (DocumentManagerException | RepositoryException e) {
+            if (editableDocument != null) {
+                getDocumentManager().disposeEditableDocument(editableDocument);
+            }
+
+            throw e;
+        }
+
+        return handle;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2016 Hippo B.V. (http://www.onehippo.com)
+ * Copyright 2016-2018 Hippo B.V. (http://www.onehippo.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,6 +127,15 @@ public interface DocumentManager {
     Document obtainEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
+     * Obtains an editable draft variant {@link Document} of the given document handle node ({@code documentHandleNode}).
+     *
+     * @param documentHandleNode document handle node
+     * @return a {@link Document} instance if the operation was successful
+     * @throws DocumentManagerException if fails to process
+     */
+    Document obtainEditableDocument(Node documentHandleNode) throws DocumentManagerException;
+
+    /**
      * Update editable {@link Document} instance ({@code editableDocument}) by the content of the given {@code sourceContentNode}.
      * @param editableDocument {@link Document} instance to edit
      * @param sourceContentNode source content node
@@ -144,12 +153,30 @@ public interface DocumentManager {
     Document disposeEditableDocument(String documentLocation) throws DocumentManagerException;
 
     /**
+     * Discards the draft variant which is currently being edited.
+     * @param editableDocument document object
+     * @return {@link Document} instance discarded if the operation was successful
+     * @throws DocumentManagerException if fails to process
+     */
+    Document disposeEditableDocument(Document editableDocument) throws DocumentManagerException;
+
+    /**
      * Commits the draft variant which is currently being edited.
      * @param documentLocation document handle path
      * @return {@link Document} instance committed if the operation was successful
      * @throws DocumentManagerException if fails to process
      */
     Document commitEditableDocument(String documentLocation) throws DocumentManagerException;
+
+    /**
+     * Commits the draft variant which is currently being edited.
+
+     * @param editableDocument document object
+     * @return {@link Document} instance committed if the operation was successful
+     * @throws DocumentManagerException if fails to process
+     */
+    Document commitEditableDocument(Document editableDocument) throws DocumentManagerException;
+
 
     /**
      * Publishes the document at the given document handle path ({@code documentLocation}).
