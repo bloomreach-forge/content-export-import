@@ -74,7 +74,7 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
     @Override
     public String createOrUpdateDocumentFromVariantContentNode(ContentNode contentNode, String primaryTypeName,
             String documentLocation, String locale, String localizedName) throws ContentMigrationException {
-        String createdOrUpdatedDocumentLocation = null;
+        String createdOrUpdatedDocumentLocation = documentLocation;
 
         try {
             if (getCurrentContentMigrationRecord() != null) {
@@ -82,11 +82,11 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
             }
 
             if (!getDocumentManager().documentExists(documentLocation)) {
-                createdOrUpdatedDocumentLocation = createDocumentFromVariantContentNode(primaryTypeName,
-                        documentLocation, locale, localizedName);
+                createdOrUpdatedDocumentLocation =
+                        createDocument(primaryTypeName, documentLocation, locale, localizedName);
             }
 
-            createdOrUpdatedDocumentLocation = updateDocumentFromVariantContentNode(documentLocation, contentNode);
+            createdOrUpdatedDocumentLocation = updateDocument(createdOrUpdatedDocumentLocation, contentNode);
         } catch (DocumentManagerException | RepositoryException e) {
             throw new ContentMigrationException(e.toString(), e);
         }
@@ -103,15 +103,12 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
 
         try {
             // check types early
-            final String primaryTypeName;
             final Node documentHandleNode;
             if (documentNode.isNodeType(HippoNodeType.NT_HANDLE)) {
                 documentHandleNode = documentNode;
-                primaryTypeName = documentHandleNode.getNode(documentHandleNode.getName()).getPrimaryNodeType().getName();
             }
             else if (documentNode.getParent().isNodeType(HippoNodeType.NT_HANDLE)) {
                 documentHandleNode = documentNode.getParent();
-                primaryTypeName = documentHandleNode.getPrimaryNodeType().getName();
             }
             else {
                 throw new IllegalArgumentException("Cannot update document: node " + documentNode.getPath() +
@@ -119,18 +116,28 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
             }
 
             if (getCurrentContentMigrationRecord() != null) {
-                getCurrentContentMigrationRecord().setContentType(primaryTypeName);
+                getCurrentContentMigrationRecord().setContentType(contentNode.getPrimaryType());
             }
 
-            return updateHandleFromVariantContentNode(documentHandleNode, contentNode);
+            return updateDocument(documentHandleNode, contentNode);
         } catch (DocumentManagerException | RepositoryException e) {
             throw new ContentMigrationException(e.toString(), e);
         }
     }
 
+
+    /**
+     * @deprecated renamed to #createDocument
+     */
+    @Deprecated
+    protected String createDocumentFromVariantContentNode(String primaryTypeName, String documentLocation,
+            String locale, String localizedName) throws DocumentManagerException, RepositoryException {
+        return createDocument(primaryTypeName, documentLocation, locale, localizedName);
+    }
     /**
      * Create a document at the document handle node path ({@code documentLocation})
      * and returns the created document handle node path.
+     *
      * @param primaryTypeName primary node type name of the document to create
      * @param documentLocation document handle node path where the document should be created
      * @param locale locale name for {@code localizedName} which is used as a localized name of the created document
@@ -139,7 +146,7 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
      * @throws DocumentManagerException if document creation fails
      * @throws RepositoryException if document creation fails due to unexpected repository error
      */
-    protected String createDocumentFromVariantContentNode(String primaryTypeName, String documentLocation,
+    protected String createDocument(String primaryTypeName, String documentLocation,
             String locale, String localizedName) throws DocumentManagerException, RepositoryException {
         documentLocation = StringUtils.removeEnd(documentLocation, "/");
         String[] folderPathAndName = ContentPathUtils.splitToFolderPathAndName(documentLocation);
@@ -149,52 +156,67 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
     }
 
     /**
+     * @deprecated renamed to #updateDocument
+     */
+    @Deprecated
+    protected String updateDocumentFromVariantContentNode(final String documentLocation, final ContentNode contentNode)
+            throws DocumentManagerException, RepositoryException {
+        return updateDocument(documentLocation, contentNode);
+    }
+
+    /**
      * Update the document located under the document handle node path ({@code documentLocation})
      * and returns the document handle node path where the content was updated.
+     *
      * @param documentLocation document handle node path
      * @param contentNode source {@link ContentNode} instance containing the document variant content data
      * @return the document handle node path where the content was updated
      * @throws DocumentManagerException if document update fails
      * @throws RepositoryException if document update fails due to unexpected repository error
      */
-    protected String updateDocumentFromVariantContentNode(final String documentLocation, final ContentNode contentNode)
+    protected String updateDocument(final String documentLocation, final ContentNode contentNode)
             throws DocumentManagerException, RepositoryException {
-        Document editableDocument = null;
 
-        try {
-            editableDocument = getDocumentManager().obtainEditableDocument(documentLocation);
-            final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
+        final Document editableDocument = getDocumentManager().obtainEditableDocument(documentLocation);
 
-            if (getCurrentContentMigrationRecord() != null) {
-                final Node handle = HippoNodeUtils.getHippoDocumentHandle(variant);
-                getCurrentContentMigrationRecord().setContentId(handle.getIdentifier());
-            }
-
-            getContentNodeBinder().bind(variant, contentNode, getContentNodeBindingItemFilter(),
-                    getContentValueConverter());
-            getDocumentManager().getSession().save();
-            getDocumentManager().commitEditableDocument(documentLocation);
-        } catch (DocumentManagerException | RepositoryException e) {
-            if (editableDocument != null) {
-                getDocumentManager().disposeEditableDocument(documentLocation);
-            }
-
-            throw e;
-        }
+        updateDocument(editableDocument, contentNode);
 
         return documentLocation;
     }
 
-    protected Node updateHandleFromVariantContentNode(final Node documentHandleNode, final ContentNode contentNode)
+    /**
+     * Update the document handle node ({@code documentHandleNode}) and returns the document handle node where the
+     * content was updated.
+     *
+     * @param documentHandleNode document handle node
+     * @param contentNode source {@link ContentNode} instance containing the document variant content data
+     * @return the document handle node where the content was updated
+     * @throws DocumentManagerException if document update fails
+     * @throws RepositoryException if document update fails due to unexpected repository error
+     */
+    protected Node updateDocument(final Node documentHandleNode, final ContentNode contentNode)
             throws DocumentManagerException, RepositoryException {
 
-        Document editableDocument = null;
-        Node handle = null;
+        final Document editableDocument = getDocumentManager().obtainEditableDocument(documentHandleNode);
+
+        return updateDocument(editableDocument, contentNode);
+    }
+
+    /**
+     * Update the editable document represented by the ({@code editabledocument}) argument and returns the document
+     * handle node content was updated.
+     *
+     * @param editableDocument document object
+     * @param contentNode source {@link ContentNode} instance containing the document variant content data
+     * @return the document handle node where the content was updated
+     * @throws DocumentManagerException if document update fails
+     * @throws RepositoryException if document update fails due to unexpected repository error
+     */
+    protected Node updateDocument(final Document editableDocument, final ContentNode contentNode) throws RepositoryException {
 
         try {
-            editableDocument = getDocumentManager().obtainEditableDocument(documentHandleNode);
             final Node variant = editableDocument.getCheckedOutNode(getDocumentManager().getSession());
-            handle = HippoNodeUtils.getHippoDocumentHandle(variant);
+            final Node handle = HippoNodeUtils.getHippoDocumentHandle(variant);
 
             if (getCurrentContentMigrationRecord() != null) {
                 getCurrentContentMigrationRecord().setContentId(handle.getIdentifier());
@@ -205,15 +227,15 @@ public class WorkflowDocumentVariantImportTask extends AbstractContentImportTask
             getDocumentManager().getSession().save();
 
             getDocumentManager().commitEditableDocument(editableDocument);
-        } catch (DocumentManagerException | RepositoryException e) {
+
+            return handle;
+        }
+        catch (DocumentManagerException | RepositoryException e) {
             if (editableDocument != null) {
                 getDocumentManager().disposeEditableDocument(editableDocument);
             }
 
             throw e;
         }
-
-        return handle;
     }
-
 }
