@@ -50,9 +50,13 @@
       </table>
     </section>
     <section name="Release Notes of 2.x">
-      <subsection name="2.2.0 (unreleased)">
-        <p class="smallinfo">Release Date: TBD</p>
+      <subsection name="2.2.0">
+        <p class="smallinfo">Release Date: 4 May 2018</p>
         <ul>
+          <li><a href='https://issues.onehippo.com/browse/HIPFORGE-159'>HIPFORGE-159</a><br/>
+            Introduce method <code>DocumentVariantImportTask#updateDocumentFromVariantContentNode</code>
+            besides <code>#creatOrUpdateDocumentFromVariantContentNode</code> for only updating existing documents.
+          </li>
           <li>
             Bump Hippo JCR POJO Binding dependency version to 1.2.0, see its
             <a href="https://onehippo-forge.github.io/jcr-pojo-binding/release-notes.html">release notes</a>.

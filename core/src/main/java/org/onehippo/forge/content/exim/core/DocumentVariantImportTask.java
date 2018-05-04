@@ -43,7 +43,7 @@ public interface DocumentVariantImportTask extends ContentMigrationTask {
             String documentLocation, String locale, String localizedName) throws ContentMigrationException;
 
     /**
-     * Updates the document given by {@code documentHandle} from teh POJO {@code contentNode}.
+     * Updates the document given by {@code documentHandle} from the POJO {@code contentNode}.
 
      * @param contentNode {@link ContentNode} instance as a source data to create or update a document
      * @param documentNode document handle JCR node that is to be updated, or a document JCR node that has a handle as parent.
