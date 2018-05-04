@@ -1,12 +1,12 @@
 /*
- * Copyright 2016-2016 Hippo B.V. (http://www.onehippo.com)
- * 
+ * Copyright 2016-2018 Hippo B.V. (http://www.onehippo.com)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -64,7 +64,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
     private String folderWorkflowCategory = "threepane";
 
     /**
-     * The workflow category name to get a document workflow. 
+     * The workflow category name to get a document workflow.
      */
     private String documentWorkflowCategory = "default";
 
@@ -84,6 +84,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Constructs with {@code session}.
+     *
      * @param session JCR session to use
      */
     public WorkflowDocumentManagerImpl(final Session session) {
@@ -108,6 +109,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns {@link ContentNodeBinder} instance. If not set, returns a default implementation.
+     *
      * @return {@link ContentNodeBinder} instance. If not set, returns a default implementation
      */
     public ContentNodeBinder<Node, ContentItem, Value> getContentNodeBinder() {
@@ -120,6 +122,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Sets {@link ContentNodeBinder} instance.
+     *
      * @param contentNodeBinder {@link ContentNodeBinder} instance
      */
     public void setContentNodeBinder(ContentNodeBinder<Node, ContentItem, Value> contentNodeBinder) {
@@ -128,6 +131,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns {@link ContentNodeBindingItemFilter} instance. If not set, returns a default implementation.
+     *
      * @return {@link ContentNodeBindingItemFilter} instance. If not set, returns a default implementation
      */
     public ContentNodeBindingItemFilter<ContentItem> getContentNodeBindingItemFilter() {
@@ -144,6 +148,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Sets {@link ContentNodeBindingItemFilter} instance.
+     *
      * @param contentNodeBindingItemFilter {@link ContentNodeBindingItemFilter} instance
      */
     public void setContentNodeBindingItemFilter(
@@ -153,6 +158,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns the document workflow category.
+     *
      * @return the document workflow category
      */
     public String getDocumentWorkflowCategory() {
@@ -161,6 +167,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Sets the document workflow category
+     *
      * @param documentWorkflowCategory the document workflow category
      */
     public void setDocumentWorkflowCategory(String documentWorkflowCategory) {
@@ -169,6 +176,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns the default workflow category.
+     *
      * @return the default workflow category
      */
     public String getDefaultWorkflowCategory() {
@@ -177,6 +185,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Sets the default workflow category.
+     *
      * @param defaultWorkflowCategory the default workflow category
      */
     public void setDefaultWorkflowCategory(String defaultWorkflowCategory) {
@@ -185,6 +194,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns the folder workflow category.
+     *
      * @return the folder workflow category
      */
     public String getFolderWorkflowCategory() {
@@ -193,6 +203,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Sets the folder workflow category.
+     *
      * @param folderWorkflowCategory the folder workflow category
      */
     public void setFolderWorkflowCategory(String folderWorkflowCategory) {
@@ -201,6 +212,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns the folder translation workflow category.
+     *
      * @return the folder translation workflow category
      */
     public String getFolderTranslationWorkflowCategory() {
@@ -209,6 +221,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Sets the folder translation workflow category.
+     *
      * @param folderTranslationWorkflowCategory the folder translation workflow category
      */
     public void setFolderTranslationWorkflowCategory(String folderTranslationWorkflowCategory) {
@@ -217,6 +230,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns the document translation workflow category.
+     *
      * @return the document translation workflow category
      */
     public String getDocumentTranslationWorkflowCategory() {
@@ -225,6 +239,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Sets the document translation workflow category.
+     *
      * @param documentTranslationWorkflowCategory the document translation workflow category
      */
     public void setDocumentTranslationWorkflowCategory(String documentTranslationWorkflowCategory) {
@@ -422,33 +437,50 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
      * {@inheritDoc}
      */
     @Override
-    public Document obtainEditableDocument(String documentLocation) throws DocumentManagerException {
-        getLogger().debug("##### obtainEditableDocument('{}')", documentLocation);
+    public Document obtainEditableDocument(final String documentLocation) throws DocumentManagerException {
+        getLogger().debug("##### obtainEditableDocument for location {}", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
         }
 
-        Document document = null;
-
         try {
             final Node documentHandleNode = getExistingDocumentHandleNode(documentLocation);
-            DocumentWorkflow documentWorkflow = getDocumentWorkflow(documentHandleNode);
-            Boolean obtainEditableInstance = (Boolean) documentWorkflow.hints().get("obtainEditableInstance");
-
-            if (BooleanUtils.isTrue(obtainEditableInstance)) {
-                document = documentWorkflow.obtainEditableInstance();
-            } else {
-                throw new IllegalStateException(
-                        "Document at '" + documentLocation + "' is not allowed to obtain an editable instance.");
-            }
-        } catch (Exception e) {
+            return obtainEditableDocument(documentHandleNode);
+        } catch (RepositoryException e) {
             getLogger().error("Failed to obtain editable instance on document.", e);
-            throw new DocumentManagerException(
-                    "Failed to obtain editable instance on document at '" + documentLocation + "'. " + e, e);
+            throw new DocumentManagerException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Document obtainEditableDocument(final Node documentHandleNode) throws DocumentManagerException {
+
+        if (documentHandleNode == null) {
+            throw new IllegalArgumentException("Document handle node may not be null");
         }
 
-        return document;
+        String handlePath = "";
+        try {
+            handlePath = documentHandleNode.getPath();
+            getLogger().debug("##### obtainEditableDocument for path {}", handlePath);
+
+            final DocumentWorkflow documentWorkflow = getDocumentWorkflow(documentHandleNode);
+            final Boolean obtainEditableInstance = (Boolean)documentWorkflow.hints().get("obtainEditableInstance");
+
+            if (BooleanUtils.isTrue(obtainEditableInstance)) {
+                return documentWorkflow.obtainEditableInstance();
+            } else {
+                throw new IllegalStateException("Document at '" + handlePath + "' is not allowed to obtain an editable instance.");
+            }
+        } catch (Exception e) {
+            final String message = "Failed to obtain editable instance for document '" + handlePath + "'";
+            getLogger().error(message, e);
+            throw new DocumentManagerException(message, e);
+        }
     }
 
     /**
@@ -471,33 +503,71 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
      * {@inheritDoc}
      */
     @Override
-    public Document disposeEditableDocument(String documentLocation) throws DocumentManagerException {
-        getLogger().debug("##### disposeEditableDocument('{}')", documentLocation);
+    public Document disposeEditableDocument(final String documentLocation) throws DocumentManagerException {
+        getLogger().debug("##### disposeEditableDocument for location {}", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
         }
 
-        Document document = null;
-
         try {
             final Node documentHandleNode = getExistingDocumentHandleNode(documentLocation);
-            DocumentWorkflow documentWorkflow = getDocumentWorkflow(documentHandleNode);
-            Boolean disposeEditableInstance = (Boolean) documentWorkflow.hints().get("disposeEditableInstance");
-
-            if (BooleanUtils.isTrue(disposeEditableInstance)) {
-                document = documentWorkflow.disposeEditableInstance();
-            } else {
-                throw new IllegalStateException(
-                        "Document at '" + documentLocation + "' is not allowed to dispose an editable instance.");
-            }
+            return disposeEditableDocument(documentHandleNode);
         } catch (Exception e) {
             getLogger().error("Failed to dispose editable instance on document.", e);
-            throw new DocumentManagerException(
-                    "Failed to dispose editable instance on document at '" + documentLocation + "'. " + e, e);
+            throw new DocumentManagerException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Document disposeEditableDocument(final Document editableDocument) throws DocumentManagerException {
+
+        if (editableDocument == null) {
+            throw new IllegalArgumentException("Document object may not be null");
         }
 
-        return document;
+        try {
+            final Node variant = editableDocument.getNode(getSession());
+            final Node handle = HippoNodeUtils.getHippoDocumentHandle(variant);
+            getLogger().debug("##### disposeEditableDocument for path {}", handle.getPath());
+
+            return disposeEditableDocument(handle);
+        } catch (RepositoryException e) {
+            getLogger().error("Failed to dispose editable instance on document.", e);
+            throw new DocumentManagerException(e);
+        }
+    }
+
+    /**
+     * Discards the draft variant which is currently being edited.
+     */
+    protected Document disposeEditableDocument(final Node documentHandleNode) throws DocumentManagerException {
+
+        if (documentHandleNode == null) {
+            throw new IllegalArgumentException("Document handle node may not be null");
+        }
+
+        String handlePath = "";
+        try {
+            handlePath = documentHandleNode.getPath();
+
+            final DocumentWorkflow documentWorkflow = getDocumentWorkflow(documentHandleNode);
+            final Boolean disposeEditableInstance = (Boolean)documentWorkflow.hints().get("disposeEditableInstance");
+
+            if (BooleanUtils.isTrue(disposeEditableInstance)) {
+                return documentWorkflow.disposeEditableInstance();
+            } else {
+                throw new IllegalStateException(
+                        "Document at '" + handlePath + "' is not allowed to dispose an editable instance.");
+            }
+        } catch (Exception e) {
+            final String message = "Failed to dispose editable instance on document '" + handlePath + "'";
+            getLogger().error(message, e);
+            throw new DocumentManagerException(message, e);
+        }
     }
 
     /**
@@ -505,32 +575,70 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
      */
     @Override
     public Document commitEditableDocument(String documentLocation) throws DocumentManagerException {
-        getLogger().debug("##### commitEditableDocument('{}')", documentLocation);
+        getLogger().debug("##### commitEditableDocument for location {}", documentLocation);
 
         if (StringUtils.isBlank(documentLocation)) {
             throw new IllegalArgumentException("Invalid document location: '" + documentLocation + "'.");
         }
 
-        Document document = null;
-
         try {
-            final Node documentHandleNode = getExistingDocumentHandleNode(documentLocation);
-            DocumentWorkflow documentWorkflow = getDocumentWorkflow(documentHandleNode);
-            Boolean commitEditableInstance = (Boolean) documentWorkflow.hints().get("commitEditableInstance");
+            final Node hanlde = getExistingDocumentHandleNode(documentLocation);
+            return commitEditableDocument(hanlde);
+        } catch (RepositoryException e) {
+            getLogger().error("Failed to commit editable instance", e);
+            throw new DocumentManagerException(e);
+        }
+    }
 
-            if (BooleanUtils.isTrue(commitEditableInstance)) {
-                document = documentWorkflow.commitEditableInstance();
-            } else {
-                throw new IllegalStateException(
-                        "Document at '" + documentLocation + "' is not allowed to commit an editable instance.");
-            }
-        } catch (Exception e) {
-            getLogger().error("Failed to commit editable instance on document.", e);
-            throw new DocumentManagerException(
-                    "Failed to commit editable instance on document at '" + documentLocation + "'. " + e, e);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Document commitEditableDocument(Document editableDocument) throws DocumentManagerException {
+
+        if (editableDocument == null) {
+            throw new IllegalArgumentException("Document object may not be null");
         }
 
-        return document;
+        try {
+            final Node variant = editableDocument.getNode(getSession());
+            final Node handle = HippoNodeUtils.getHippoDocumentHandle(variant);
+
+            getLogger().debug("##### commitEditableDocument for {}", (handle == null) ? "null" : handle.getPath());
+            return commitEditableDocument(handle);
+        } catch (RepositoryException e) {
+            getLogger().error("Failed to commit editable instance", e);
+            throw new DocumentManagerException(e);
+        }
+    }
+
+    /**
+     * Commits the draft variant which is currently being edited.
+     */
+    protected Document commitEditableDocument(final Node documentHandleNode) throws DocumentManagerException {
+
+        if (documentHandleNode == null) {
+            throw new IllegalArgumentException("Document handle node may not be null");
+        }
+
+        String handlePath = "";
+        try {
+            handlePath = documentHandleNode.getPath();
+
+            final DocumentWorkflow documentWorkflow = getDocumentWorkflow(documentHandleNode);
+            final Boolean commitEditableInstance = (Boolean)documentWorkflow.hints().get("commitEditableInstance");
+
+            if (BooleanUtils.isTrue(commitEditableInstance)) {
+                return documentWorkflow.commitEditableInstance();
+            } else {
+                throw new IllegalStateException(
+                        "Document at '" + handlePath + "' is not allowed to commit an editable instance.");
+            }
+        } catch (Exception e) {
+            final String message = "Failed to commit editable instance on document '" + handlePath + "'";
+            getLogger().error(message, e);
+            throw new DocumentManagerException(message, e);
+        }
     }
 
     /**
@@ -744,6 +852,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * {@inheritDoc}
+     *
      * @param documentHandleNode document handle node
      * @return a document workflow on {@code documentHandleNode}
      * @throws RepositoryException if unexpected repository exception occurs
@@ -756,6 +865,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns a folder workflow instance on {@code folderNode}.
+     *
      * @param folderNode folder node
      * @return a folder workflow instance on {@code folderNode}
      * @throws RepositoryException if unexpected repository exception occurs
@@ -766,6 +876,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns a {@link DefaultWorkflow} instance on {@code documentHandleNode}.
+     *
      * @param documentHandleNode document handle node
      * @return {@link DefaultWorkflow} instance on {@code documentHandleNode}
      * @throws RepositoryException if unexpected repository exception occurs
@@ -777,6 +888,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns a folder {@link TranslationWorkflow} instance on {@code folderNode}.
+     *
      * @param folderNode folder node
      * @return a folder {@link TranslationWorkflow} instance on {@code folderNode}
      * @throws RepositoryException if unexpected repository exception occurs
@@ -788,6 +900,7 @@ public class WorkflowDocumentManagerImpl implements DocumentManager {
 
     /**
      * Returns a document {@link TranslationWorkflow} instance on {@code documentVariantNode}.
+     *
      * @param documentVariantNode document variant node
      * @return a document {@link TranslationWorkflow} instance on {@code documentVariantNode}
      * @throws RepositoryException if unexpected repository exception occurs
