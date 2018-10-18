@@ -48,8 +48,8 @@
     <commons-csv.version>1.5</commons-csv.version>
     <commons-compress.version>1.15</commons-compress.version>
 
-    <tika-core.version>1.7</tika-core.version>
-    <tika-parsers.version>1.7</tika-parsers.version>
+    <tika-core.version>1.19.1</tika-core.version>
+    <tika-parsers.version>1.19.1</tika-parsers.version>
 
     <lib.junit.version>4.12</lib.junit.version>
     <lib.easymock.version>3.4</lib.easymock.version>
