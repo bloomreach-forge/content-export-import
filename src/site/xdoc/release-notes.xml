@@ -60,7 +60,7 @@
             <a href="https://issues.onehippo.com/browse/HIPFORGE-222">HIPFORGE-222</a>: Bump Tika version from 1.7 to 1.19.1.
           </li>
           <li>
-            <a href="https://issues.onehippo.com/browse/HIPFORGE-229">HIPFORGE-229</a>: Bump Comons Compress version from 1.15 to 1.18.
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-229">HIPFORGE-229</a>: Bump Commons Compress version from 1.15 to 1.18.
           </li>
           <li>
             Bump Hippo JCR POJO Binding dependency version to 1.3.0, see its
