@@ -27,7 +27,7 @@
 
       <p>
         The code snippets are excerpts (or slightly simplififed ones) from
-        <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-values-having-paths.groovy">Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths</a>.
+        <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-values-having-paths.groovy">Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths</a>.
       </p>
 
       <subsection name="Introduction">

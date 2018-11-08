@@ -23,16 +23,16 @@
         <p>
           This project provides higher level features and examples of Content Import and Export,
           using Hippo Workflow API (for higher/workflow level document management),
-          <a href="https://onehippo-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library
+          <a href="https://bloomreach-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library
           (for lower level JCR mappings/bindings) and
-          <a href="https://onehippo-forge.github.io/gallery-magick">Gallery Magick Image Processing</a> library
+          <a href="https://bloomreach-forge.github.io/gallery-magick">Gallery Magick Image Processing</a> library
           (for thumbnail image generation).
         </p>
         <p>
           Also, this project provides <a href="builtin-rest-services.html">Built-in REST Services</a> for content exporting and importing.
         </p>
         <p>
-          So, while <a href="https://onehippo-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library
+          So, while <a href="https://bloomreach-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library
           focuses only on JCR Node level mappings and bindings and doesn't provide any Hippo Workflow level operations,
           this project aims to provide higher level, that is, Hippo Workflow level,
           Content Export/Import features.
@@ -43,7 +43,7 @@
       </subsection>
 
       <subsection name="Code base on GitHub">
-        <p>The code of this project is on GitHub at <a href="https://github.com/onehippo-forge/content-export-import/">https://github.com/onehippo-forge/content-export-import/</a>.</p>
+        <p>The code of this project is on GitHub at <a href="https://github.com/bloomreach-forge/content-export-import/">https://github.com/bloomreach-forge/content-export-import/</a>.</p>
       </subsection>
     </section>
 
@@ -88,13 +88,13 @@
           <li>
             POJO mapping is not that important, especially if the mapping/binding is not based on Industry standards.
             So, simple POJO-based bean mapping from/to JCR nodes
-            (provided by <a href="https://onehippo-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library)
+            (provided by <a href="https://bloomreach-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library)
             is already good enough in most use cases.
             The library is also easy enough, so developers can convert from/to their own domain-specific beans easily if needed.
           </li>
           <li>
             The simple POJO-based mapping/binding
-            (provided by <a href="https://onehippo-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library)
+            (provided by <a href="https://bloomreach-forge.github.io/jcr-pojo-binding" target="_blank">Hippo JCR POJO Binding</a> library)
             can be easily marshalled/unmarshalled to/from JSON/XML easily,
             supporting (de facto) Industry standards such as Jackson or JAXB.
           </li>
@@ -196,7 +196,7 @@
             <td><a href="apidocs/org/onehippo/forge/content/exim/core/BinaryExportTask.html">BinaryExportTask</a></td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to export binary (gallery/asset) data to
-              <a href="https://onehippo-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
+              <a href="https://bloomreach-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
             </td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/impl/DefaultBinaryExportTask.html">DefaultBinaryExportTask</a>
@@ -206,7 +206,7 @@
             <td><a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantExportTask.html">DocumentVariantExportTask</a></td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to export document variant nodes to
-              <a href="https://onehippo-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
+              <a href="https://bloomreach-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
             </td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantExportTask.html">WorkflowDocumentVariantExportTask</a>
@@ -216,7 +216,7 @@
             <td><a href="apidocs/org/onehippo/forge/content/exim/core/BinaryImportTask.html">BinaryImportTask</a></td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to import binary (gallery/asset) data from
-              <a href="https://onehippo-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
+              <a href="https://bloomreach-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects.
             </td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/impl/DefaultBinaryImportTask.html">DefaultBinaryImportTask</a>
@@ -226,7 +226,7 @@
             <td><a href="apidocs/org/onehippo/forge/content/exim/core/DocumentVariantImportTask.html">DocumentVariantImportTask</a></td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/ContentMigrationTask.html">ContentMigrationTask</a> to import
-              <a href="https://onehippo-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects and create or update documents.
+              <a href="https://bloomreach-forge.github.io/jcr-pojo-binding/apidocs/org/onehippo/forge/content/pojo/model/ContentNode.html">ContentNode</a> objects and create or update documents.
             </td>
             <td>
               <a href="apidocs/org/onehippo/forge/content/exim/core/impl/WorkflowDocumentVariantImportTask.html">WorkflowDocumentVariantImportTask</a>
@@ -269,7 +269,7 @@
           </tr>
           <tr>
             <td>
-              <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-binaries.groovy">Example_Export_Asset_and_Image_Set_Content</a>
+              <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-binaries.groovy">Example_Export_Asset_and_Image_Set_Content</a>
             </td>
             <td>
               A example script to export asset and image set content, using
@@ -278,7 +278,7 @@
           </tr>
           <tr>
             <td>
-              <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-published-documents.groovy">Example_Export_Published_Documents</a>
+              <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-published-documents.groovy">Example_Export_Published_Documents</a>
             </td>
             <td>
               A example script to export published documents, using
@@ -287,7 +287,7 @@
           </tr>
           <tr>
             <td>
-              <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-binaries.groovy">Example_Import_Asset_and_Image_Set_Content</a>
+              <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-binaries.groovy">Example_Import_Asset_and_Image_Set_Content</a>
             </td>
             <td>
               A example script to import asset and image set content, using
@@ -296,7 +296,7 @@
           </tr>
           <tr>
             <td>
-              <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-image-files.groovy">Example_Import_Image_Files</a>
+              <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-image-files.groovy">Example_Import_Image_Files</a>
             </td>
             <td>
               A example script to import image set content by scanning image files in a directory without JSON files, using
@@ -305,7 +305,7 @@
           </tr>
           <tr>
             <td>
-              <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-documents-as-unpublished.groovy">Example_Import_Documents_As_Unpublished</a>
+              <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-documents-as-unpublished.groovy">Example_Import_Documents_As_Unpublished</a>
             </td>
             <td>
               A example script to import documents as unpublished status, using
@@ -314,7 +314,7 @@
           </tr>
           <tr>
             <td>
-              <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-values-having-paths.groovy">Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths</a>
+              <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-values-having-paths.groovy">Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths</a>
             </td>
             <td>
               A example script to clean interim hippo:docbase values of Hippo Mirror nodes having paths instead of UUIDs.
@@ -322,7 +322,7 @@
           </tr>
           <tr>
             <td>
-              <a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.groovy">Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths</a>
+              <a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.groovy">Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths</a>
             </td>
             <td>
               A example script to clean interim String Docbase property values having paths instead of UUIDs.
@@ -357,13 +357,13 @@ $ mvn -P cargo.run
         </p>
 
         <ol>
-          <li><a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-binaries.groovy">Example_Export_Asset_and_Image_Set_Content</a></li>
-          <li><a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-published-documents.groovy">Example_Export_Published_Documents</a></li>
-          <li><a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-binaries.groovy">Example_Import_Asset_and_Image_Set_Content</a></li>
-          <li><a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-image-files.groovy">Example_Import_Image_Files</a></li>
-          <li><a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-documents-as-unpublished.groovy">Example_Import_Documents_As_Unpublished</a></li>
-          <li><a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-values-having-paths.groovy">Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths</a></li>
-          <li><a href="https://github.com/onehippo-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.groovy">Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths</a></li>
+          <li><a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-binaries.groovy">Example_Export_Asset_and_Image_Set_Content</a></li>
+          <li><a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-export-published-documents.groovy">Example_Export_Published_Documents</a></li>
+          <li><a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-binaries.groovy">Example_Import_Asset_and_Image_Set_Content</a></li>
+          <li><a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-image-files.groovy">Example_Import_Image_Files</a></li>
+          <li><a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-import-documents-as-unpublished.groovy">Example_Import_Documents_As_Unpublished</a></li>
+          <li><a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-values-having-paths.groovy">Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths</a></li>
+          <li><a href="https://github.com/bloomreach-forge/content-export-import/tree/master/updater-examples/src/main/resources/hcm-config/configuration/update/registry/example-clean-docbase-string-property-values-having-paths.groovy">Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths</a></li>
         </ol>
 
         <img src="images/updater-editors-view.png" alt="Updater Editor" />
