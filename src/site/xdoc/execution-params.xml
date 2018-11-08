@@ -38,7 +38,7 @@
         <div class="brush: javascript">
           <source><![CDATA[
 {
-  "$schema": "http://www.onehippo.org/onehippo-forge/content-exim/schema#",
+  "$schema": "http://www.onehippo.org/bloomreach-forge/content-exim/schema#",
 
   "definitions": {
     "ExecutionParams": {

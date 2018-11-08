@@ -23,7 +23,7 @@
   <artifactId>content-exim</artifactId>
   <version>2.3.0</version>
   <packaging>pom</packaging>
-  <url>https://github.com/onehippo-forge/content-export-import</url>
+  <url>https://github.com/bloomreach-forge/content-export-import</url>
 
   <properties>
 
@@ -103,9 +103,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:onehippo-forge/content-export-import.git</connection>
-    <developerConnection>scm:git:git@github.com:onehippo-forge/content-export-import.git</developerConnection>
-    <url>https://github.com/onehippo-forge/content-export-import.git</url>
+    <connection>scm:git:git@github.com:bloomreach-forge/content-export-import.git</connection>
+    <developerConnection>scm:git:git@github.com:bloomreach-forge/content-export-import.git</developerConnection>
+    <url>https://github.com/bloomreach-forge/content-export-import.git</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -124,7 +124,7 @@
 
   <ciManagement>
     <system>Travic CI</system>
-    <url>https://travis-ci.org/onehippo-forge/content-export-import</url>
+    <url>https://travis-ci.org/bloomreach-forge/content-export-import</url>
   </ciManagement>
 
   <repositories>
