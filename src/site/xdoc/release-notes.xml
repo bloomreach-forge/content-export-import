@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright 2018 Hippo
+    Copyright 2018-2019 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -50,6 +50,14 @@
       </table>
     </section>
     <section name="Release Notes of 2.x">
+      <subsection name="2.3.1 (Unreleased)">
+        <p class="smallinfo">Release Date: TBD</p>
+        <ul>
+          <li>
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-241">HIPFORGE-241</a>: Bump Tika version from 1.19.1 to 1.20.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="2.3.0">
         <p class="smallinfo">Release Date: 24 October 2018</p>
         <ul>
