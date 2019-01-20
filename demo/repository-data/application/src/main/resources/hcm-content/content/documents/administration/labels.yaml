@@ -5,9 +5,10 @@
   hippostd:foldertype: [new-document, new-folder]
   /facets:
     jcr:primaryType: hippo:handle
-    jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+    jcr:mixinTypes: ['hippo:named', 'hippo:versionInfo', 'mix:referenceable']
     jcr:uuid: 1b99a97e-8d94-46c4-8873-0be288325b6f
     hippo:name: Facets
+    hippo:versionHistory: 1413ddab-cdd4-444e-8417-7a08002699f2
     /facets[1]:
       jcr:primaryType: resourcebundle:resourcebundle
       jcr:mixinTypes: ['mix:referenceable']
@@ -38,11 +39,28 @@
       resourcebundle:id: essentials.facets
       resourcebundle:keys: [facets.placeholder, facets.searchbutton, facets.remove]
       resourcebundle:messages: [Search blog posts, Search, remove]
+    /facets[3]:
+      jcr:primaryType: resourcebundle:resourcebundle
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: 7962317b-ac28-4066-b800-8ed570b504fe
+      hippo:availability: [live]
+      hippostd:state: published
+      hippostdpubwf:createdBy: system
+      hippostdpubwf:creationDate: 2019-01-20T13:20:59.193+09:00
+      hippostdpubwf:lastModificationDate: 2019-01-20T13:20:59.323+09:00
+      hippostdpubwf:lastModifiedBy: system
+      hippostdpubwf:publicationDate: 2019-01-20T13:35:52.215+09:00
+      resourcebundle:descriptions: [Placeholder label for facets search., Label on
+          facet search button., Label for link to remove a facet filter.]
+      resourcebundle:id: essentials.facets
+      resourcebundle:keys: [facets.placeholder, facets.searchbutton, facets.remove]
+      resourcebundle:messages: [Search blog posts, Search, remove]
   /global:
     jcr:primaryType: hippo:handle
-    jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+    jcr:mixinTypes: ['hippo:named', 'hippo:versionInfo', 'mix:referenceable']
     jcr:uuid: da8d02f8-e240-4d03-b231-3518812846e6
     hippo:name: Global
+    hippo:versionHistory: c84c260d-eeb3-4f8a-b7ee-a30a79ee3bc5
     /global[1]:
       jcr:primaryType: resourcebundle:resourcebundle
       jcr:mixinTypes: ['mix:referenceable']
@@ -71,11 +89,27 @@
       resourcebundle:id: essentials.global
       resourcebundle:keys: [footer.text]
       resourcebundle:messages: [©2019]
+    /global[3]:
+      jcr:primaryType: resourcebundle:resourcebundle
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: e392875e-cd37-429b-b413-02c1193f89af
+      hippo:availability: [live]
+      hippostd:state: published
+      hippostdpubwf:createdBy: system
+      hippostdpubwf:creationDate: 2019-01-20T13:20:59.361+09:00
+      hippostdpubwf:lastModificationDate: 2019-01-20T13:20:59.422+09:00
+      hippostdpubwf:lastModifiedBy: system
+      hippostdpubwf:publicationDate: 2019-01-20T13:35:52.867+09:00
+      resourcebundle:descriptions: [Text shown in the global page footer.]
+      resourcebundle:id: essentials.global
+      resourcebundle:keys: [footer.text]
+      resourcebundle:messages: [©2019]
   /pagination:
     jcr:primaryType: hippo:handle
-    jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+    jcr:mixinTypes: ['hippo:named', 'hippo:versionInfo', 'mix:referenceable']
     jcr:uuid: d27e7e45-2b52-4fac-81a4-3b47edee02a5
     hippo:name: Pagination
+    hippo:versionHistory: 747901a9-2304-41b6-bf51-7e8782edbb0f
     /pagination[1]:
       jcr:primaryType: resourcebundle:resourcebundle
       jcr:mixinTypes: ['mix:referenceable']
@@ -108,11 +142,29 @@
       resourcebundle:id: essentials.pagination
       resourcebundle:keys: [results.indication, page.previous, page.next]
       resourcebundle:messages: [document(s), previous, next]
+    /pagination[3]:
+      jcr:primaryType: resourcebundle:resourcebundle
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: bf3b6c5f-93c1-454c-a80b-b8f5d82dc4fe
+      hippo:availability: [live]
+      hippostd:state: published
+      hippostdpubwf:createdBy: system
+      hippostdpubwf:creationDate: 2019-01-20T13:20:59.471+09:00
+      hippostdpubwf:lastModificationDate: 2019-01-20T13:20:59.534+09:00
+      hippostdpubwf:lastModifiedBy: system
+      hippostdpubwf:publicationDate: 2019-01-20T13:35:49.562+09:00
+      resourcebundle:descriptions: ['Used in the indication, how many results were
+          found. The label is appended to the number of results.', Label used for
+          the link to the previous page., Label used for the link to the next page.]
+      resourcebundle:id: essentials.pagination
+      resourcebundle:keys: [results.indication, page.previous, page.next]
+      resourcebundle:messages: [document(s), previous, next]
   /homepage:
     jcr:primaryType: hippo:handle
-    jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+    jcr:mixinTypes: ['hippo:named', 'hippo:versionInfo', 'mix:referenceable']
     jcr:uuid: 3e936645-c53f-4067-832e-139e58509cf9
     hippo:name: Homepage
+    hippo:versionHistory: ca15f7d2-3f31-4875-beb7-f4653cd12d5f
     /homepage[1]:
       jcr:primaryType: resourcebundle:resourcebundle
       jcr:mixinTypes: ['mix:referenceable']
@@ -151,11 +203,32 @@
           site styling. Instead, the generated pages use minimal styling to render
           the content. It is the task of the project developer to adjust the front-end
           to the site''s needs.']
+    /homepage[3]:
+      jcr:primaryType: resourcebundle:resourcebundle
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: 4f1ac83f-e5fd-49d2-8b6a-b5645414c720
+      hippo:availability: [live]
+      hippostd:state: published
+      hippostdpubwf:createdBy: system
+      hippostdpubwf:creationDate: 2019-01-20T13:20:59.579+09:00
+      hippostdpubwf:lastModificationDate: 2019-01-20T13:20:59.651+09:00
+      hippostdpubwf:lastModifiedBy: system
+      hippostdpubwf:publicationDate: 2019-01-20T13:35:51.185+09:00
+      resourcebundle:descriptions: [Title displayed on homepage., Text displayed on
+          homepage.]
+      resourcebundle:id: essentials.homepage
+      resourcebundle:keys: [homepage.title, homepage.text]
+      resourcebundle:messages: [Home Page, 'Every website comes with its own styling
+          requirements. The BloomReach setup application can therefore not address
+          site styling. Instead, the generated pages use minimal styling to render
+          the content. It is the task of the project developer to adjust the front-end
+          to the site''s needs.']
   /blog:
     jcr:primaryType: hippo:handle
-    jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+    jcr:mixinTypes: ['hippo:named', 'hippo:versionInfo', 'mix:referenceable']
     jcr:uuid: 0550dade-f3cf-46f5-90e0-9b1ac9067c53
     hippo:name: Blog
+    hippo:versionHistory: 608f98ff-3a2e-4fb8-9c3a-23cfb2280c14
     /blog[1]:
       jcr:primaryType: resourcebundle:resourcebundle
       jcr:mixinTypes: ['mix:referenceable']
@@ -190,11 +263,30 @@
       resourcebundle:keys: [blog.moreby, blog.notfound, blog.read.post, blog.back.to.list]
       resourcebundle:messages: [More by, No other posts found., '> Read the entire
           blog post', < Back to blog posts]
+    /blog[3]:
+      jcr:primaryType: resourcebundle:resourcebundle
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: d37e04df-88fa-4325-8e5e-5e3ca4c00cee
+      hippo:availability: [live]
+      hippostd:state: published
+      hippostdpubwf:createdBy: system
+      hippostdpubwf:creationDate: 2019-01-20T13:20:59.743+09:00
+      hippostdpubwf:lastModificationDate: 2019-01-20T13:20:59.813+09:00
+      hippostdpubwf:lastModifiedBy: system
+      hippostdpubwf:publicationDate: 2019-01-20T13:35:51.818+09:00
+      resourcebundle:descriptions: ['Header used in "more blogs from same author",
+          prefix to the author name.', Message displayed when no other blogs from
+          same author were found., '', '']
+      resourcebundle:id: essentials.blog
+      resourcebundle:keys: [blog.moreby, blog.notfound, blog.read.post, blog.back.to.list]
+      resourcebundle:messages: [More by, No other posts found., '> Read the entire
+          blog post', < Back to blog posts]
   /pagenotfound:
     jcr:primaryType: hippo:handle
-    jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+    jcr:mixinTypes: ['hippo:named', 'hippo:versionInfo', 'mix:referenceable']
     jcr:uuid: e2a18810-f558-449e-af5c-370fc56a2db2
     hippo:name: Page not found
+    hippo:versionHistory: fac2ac61-3f35-4934-9cd1-a7169b4a6bf1
     /pagenotfound[1]:
       jcr:primaryType: resourcebundle:resourcebundle
       jcr:mixinTypes: ['mix:referenceable']
@@ -221,6 +313,23 @@
       hippostdpubwf:creationDate: 2019-01-20T13:20:59.853+09:00
       hippostdpubwf:lastModificationDate: 2019-01-20T13:20:59.980+09:00
       hippostdpubwf:lastModifiedBy: system
+      resourcebundle:descriptions: [Title displayed when page is not found., Text
+          displayed when page is not found.]
+      resourcebundle:id: essentials.pagenotfound
+      resourcebundle:keys: [pagenotfound.title, pagenotfound.text]
+      resourcebundle:messages: [Page not found (404), 'The page you requested was
+          not found. - [This text can be edited here: http://localhost:8080/cms/?1&path=/content/documents/administration/labels/pagenotfound]']
+    /pagenotfound[3]:
+      jcr:primaryType: resourcebundle:resourcebundle
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: 85763465-e101-4784-93a7-fd20e10e9c6c
+      hippo:availability: [live]
+      hippostd:state: published
+      hippostdpubwf:createdBy: system
+      hippostdpubwf:creationDate: 2019-01-20T13:20:59.853+09:00
+      hippostdpubwf:lastModificationDate: 2019-01-20T13:20:59.980+09:00
+      hippostdpubwf:lastModifiedBy: system
+      hippostdpubwf:publicationDate: 2019-01-20T13:35:50.686+09:00
       resourcebundle:descriptions: [Title displayed when page is not found., Text
           displayed when page is not found.]
       resourcebundle:id: essentials.pagenotfound
