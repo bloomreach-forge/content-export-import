@@ -1,0 +1,15 @@
+definitions:
+  config:
+    /hippo:namespaces/contenteximdemo/basedocument:
+      jcr:primaryType: hipposysedit:templatetype
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: 5e8caf6d-ba76-42d4-8d1a-a91e123605c6
+      /hipposysedit:nodetype:
+        jcr:primaryType: hippo:handle
+        jcr:mixinTypes: ['mix:referenceable']
+        jcr:uuid: 90c3d5c1-a2f1-4adb-a7f8-72e430c5dca1
+        /hipposysedit:nodetype:
+          jcr:primaryType: hipposysedit:nodetype
+          jcr:mixinTypes: ['hipposysedit:remodel']
+          hipposysedit:supertype: ['hippo:document', 'hippostdpubwf:document', 'hippostd:publishableSummary']
+          hipposysedit:uri: http://www.contenteximdemo.com/contenteximdemo/nt/1.0

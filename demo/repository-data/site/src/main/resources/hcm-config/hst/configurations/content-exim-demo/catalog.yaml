@@ -1,0 +1,6 @@
+definitions:
+  config:
+    /hst:hst/hst:configurations/contenteximdemo/hst:catalog:
+      jcr:primaryType: hst:catalog
+      /contenteximdemo-catalog:
+        jcr:primaryType: hst:containeritempackage

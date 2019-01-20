@@ -1,0 +1,6 @@
+group: 
+  name: content-exim-demo
+  after: hippo-cms
+project: content-exim-demo
+module:
+  name: content-exim-demo-repository-data-site

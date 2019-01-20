@@ -1,0 +1,4 @@
+/hst:hst/hst:configurations/contenteximdemo/hst:workspace/hst:sitemenus/main/events:
+  .meta:order-before: content
+  jcr:primaryType: hst:sitemenuitem
+  hst:referencesitemapitem: events

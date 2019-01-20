@@ -1,0 +1,4 @@
+/hst:hst/hst:configurations/contenteximdemo/hst:workspace/hst:sitemenus/main/home:
+  .meta:order-before: blog
+  jcr:primaryType: hst:sitemenuitem
+  hst:referencesitemapitem: root

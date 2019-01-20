@@ -1,0 +1,30 @@
+<'contenteximdemo'='http://www.contenteximdemo.com/contenteximdemo/nt/1.0'>
+<'hippo'='http://www.onehippo.org/jcr/hippo/nt/2.0.4'>
+<'hippostd'='http://www.onehippo.org/jcr/hippostd/nt/2.0'>
+<'hippostdpubwf'='http://www.onehippo.org/jcr/hippostdpubwf/nt/1.0'>
+<'hippotranslation'='http://www.onehippo.org/jcr/hippotranslation/nt/1.0'>
+
+[contenteximdemo:account] > hippo:compound, hippostd:relaxed
+  orderable
+
+[contenteximdemo:basedocument] > hippo:document, hippostd:publishableSummary, hippostdpubwf:document
+  orderable
+
+[contenteximdemo:author] > contenteximdemo:basedocument, hippostd:relaxed, hippotranslation:translated
+  orderable
+
+[contenteximdemo:bannerdocument] > contenteximdemo:basedocument, hippostd:relaxed, hippotranslation:translated
+  orderable
+
+[contenteximdemo:blogpost] > contenteximdemo:basedocument, hippostd:relaxed, hippotranslation:translated
+  orderable
+
+[contenteximdemo:contentdocument] > contenteximdemo:basedocument, hippostd:relaxed, hippotranslation:translated
+  orderable
+
+[contenteximdemo:eventsdocument] > contenteximdemo:basedocument, hippostd:relaxed, hippotranslation:translated
+  orderable
+
+[contenteximdemo:newsdocument] > contenteximdemo:basedocument, hippostd:relaxed, hippotranslation:translated
+  orderable
+

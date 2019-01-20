@@ -1,0 +1,5 @@
+group: 
+  name: content-exim-demo
+project: content-exim-demo
+module:
+  name: content-exim-demo-repository-data-webfiles

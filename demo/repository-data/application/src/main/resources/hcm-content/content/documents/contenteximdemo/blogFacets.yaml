@@ -1,0 +1,15 @@
+/content/documents/contenteximdemo/blogFacets:
+  jcr:primaryType: hippofacnav:facetnavigation
+  hippo:docbase: 6a31d8fb-4891-4682-8005-db93f8930c6a
+  hippofacnav:facetnodenames: [Authors, Categories, Tags, Date]
+  hippofacnav:facets: ['contenteximdemo:authornames', 'contenteximdemo:categories',
+    'hippostd:tags', "contenteximdemo:publicationdate$[\n                {name:'Last\
+      \ 7 days',resolution:'day', begin:-6, end:1},\n                {name:'Last month',resolution:'day',\
+      \ begin:-30, end:1},\n                {name:'Last 3 months',resolution:'day',\
+      \ begin:-91, end:1},\n                {name:'Last 6 months',resolution:'day',\
+      \ begin:-182, end:1},\n                {name:'Last year',resolution:'day', begin:-365,\
+      \ end:1}\n                ]"]
+  hippofacnav:filters: ['jcr:primaryType = contenteximdemo:blogpost']
+  hippofacnav:limit: 100
+  hippofacnav:sortby: ['contenteximdemo:publicationdate']
+  hippofacnav:sortorder: [descending]
