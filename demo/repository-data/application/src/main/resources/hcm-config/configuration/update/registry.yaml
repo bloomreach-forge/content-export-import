@@ -1,0 +1,319 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:update/hippo:registry/Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths:
+      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+        \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
+        );\r\n * you may not use this file except in compliance with the License.\r\
+        \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
+        \n *\r\n * Unless required by applicable law or agreed to in writing, software\r\
+        \n * distributed under the License is distributed on an \"AS IS\" BASIS,\r\
+        \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
+        \n * See the License for the specific language governing permissions and\r\
+        \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.lang.*\r\
+        \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\n\r\nclass\
+        \ CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {\r\
+        \n\r\n  boolean doUpdate(Node node) {\r\n    log.debug \"Visiting ${node.path}\"\
+        \r\n    def docbasePath = node.getProperty(\"hippo:docbase\").getString()\r\
+        \n    def docbase\r\n\r\n    if (StringUtils.startsWith(docbasePath, \"/\"\
+        ) && node.session.nodeExists(docbasePath)) {\r\n      docbase = node.session.getNode(docbasePath).getIdentifier()\r\
+        \n      node.setProperty(\"hippo:docbase\", docbase)\r\n      log.info \"\
+        Reset ${node.path}/hippo:docbase to '${docbase}' from '${docbasePath}'.\"\r\
+        \n      return true\r\n    }\r\n\r\n    return false\r\n\r\n  }\r\n\r\n  boolean\
+        \ undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
+        \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
+        \n  }\r\n\r\n}"
+      hipposys:loglevel: DEBUG
+    /hippo:configuration/hippo:update/hippo:registry/Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths:
+      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+        \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
+        );\r\n * you may not use this file except in compliance with the License.\r\
+        \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
+        \n *\r\n * Unless required by applicable law or agreed to in writing, software\r\
+        \n * distributed under the License is distributed on an \"AS IS\" BASIS,\r\
+        \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
+        \n * See the License for the specific language governing permissions and\r\
+        \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.lang.*\r\
+        \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.hippoecm.repository.util.*\r\
+        \n\r\nclass CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor\
+        \ {\r\n\r\n  boolean doUpdate(Node node) {\r\n    log.debug \"Visiting ${node.path}\"\
+        \r\n    def propsUpdated = false\r\n    def docbase\r\n\r\n    parametersMap.docbasePropNames.eachWithIndex\
+        \ { docbasePropName, i ->\r\n      def valuesUpdated = false\r\n      String\
+        \ [] docbaseValues = JcrUtils.getMultipleStringProperty(node, docbasePropName,\
+        \ ArrayUtils.EMPTY_STRING_ARRAY)\r\n\r\n      docbaseValues.eachWithIndex\
+        \ { docbaseValue, j ->\r\n        if (StringUtils.startsWith(docbaseValue,\
+        \ \"/\") && node.session.nodeExists(docbaseValue)) {\r\n          docbase\
+        \ = node.session.getNode(docbaseValue).getIdentifier()\r\n          docbaseValues[j]\
+        \ = docbase\r\n          log.info \"Reset ${node.path}/${docbasePropName}\
+        \ value at position ${i} to '${docbase}' from '${docbaseValue}'.\"\r\n   \
+        \       valuesUpdated = true\r\n        }\r\n      }\r\n\r\n      if (valuesUpdated)\
+        \ {\r\n        node.setProperty(docbasePropName, docbaseValues)\r\n      \
+        \  propsUpdated = true\r\n      }\r\n    }\r\n\r\n    return propsUpdated\r\
+        \n\r\n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
+        \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
+        \n  }\r\n\r\n}"
+      hipposys:loglevel: DEBUG
+    /hippo:configuration/hippo:update/hippo:registry/Example_Export_Asset_and_Image_Set_Content:
+      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+        \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
+        );\r\n * you may not use this file except in compliance with the License.\r\
+        \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
+        \n *\r\n * Unless required by applicable law or agreed to in writing, software\r\
+        \n * distributed under the License is distributed on an \"AS IS\" BASIS,\r\
+        \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
+        \n * See the License for the specific language governing permissions and\r\
+        \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
+        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
+        \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
+        \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
+        \nimport org.onehippo.forge.content.exim.core.util.*\r\n\r\nclass ExportingAssetOrImageSetToFileUpdateVisitor\
+        \ extends BaseNodeUpdateVisitor {\r\n\r\n  def fileInJson = true\r\n  def\
+        \ documentManager\r\n  def exportTask\r\n  def targetBaseFolder\r\n  def binaryAttachmentFolder\r\
+        \n\r\n  void initialize(Session session) {\r\n    if (parametersMap.containsKey(\"\
+        fileInJson\")) {\r\n      fileInJson = parametersMap.get(\"fileInJson\")\r\
+        \n    }\r\n\r\n    def targetBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get(\"\
+        targetBaseFolderPath\"))\r\n    targetBaseFolder = VFS.getManager().resolveFile(targetBaseFolderPath)\r\
+        \n    def binaryAttachmentFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get(\"\
+        binaryAttachmentFolderPath\"))\r\n    binaryAttachmentFolder = VFS.getManager().resolveFile(binaryAttachmentFolderPath)\r\
+        \n\r\n    documentManager = new WorkflowDocumentManagerImpl(session)\r\n \
+        \   exportTask = new DefaultBinaryExportTask(documentManager)\r\n    exportTask.setLogger(log)\r\
+        \n    // set the base folder of externally stored binary files when the binary\
+        \ value size exceeds the threshold.\r\n    exportTask.setBinaryValueFileFolder(binaryAttachmentFolder)\r\
+        \n    // set the threshold size base on which to determine the binary value\
+        \ data should be embedded in data: URL string\r\n    // or stored in an external\
+        \ file when bigger than the threshold.\r\n    exportTask.setDataUrlSizeThreashold(256\
+        \ * 1024); // 256KB as threshold\r\n    exportTask.start()\r\n  }\r\n\r\n\
+        \  boolean doUpdate(Node node) {\r\n    def record\r\n\r\n    try {\r\n  \
+        \    // record instance to store execution status and detail of a unit of\
+        \ migration work item.\r\n      // these record instances will be collected\
+        \ and summarized when #logSummary() invoked later.\r\n      record = exportTask.beginRecord(node.identifier,\
+        \ node.path)\r\n\r\n      def handlePath = node.parent.path\r\n      def relPath\
+        \ = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(handlePath),\
+        \ \"/\")\r\n\r\n      // file to export in json (or xml).\r\n      def file\r\
+        \n      if (fileInJson) {\r\n        file = targetBaseFolder.resolveFile(relPath\
+        \ + \".json\")\r\n      } else {\r\n        file = targetBaseFolder.resolveFile(relPath\
+        \ + \".xml\")\r\n      }\r\n\r\n      record.setProcessed(true)\r\n      //\
+        \ export binary set (either imageset or assetset) node to ContentNode object.\r\
+        \n      def contentNode = exportTask.exportBinarySetToContentNode(node)\r\n\
+        \r\n      // replace hippo:docbase UUID properties inside the exported ContentNode\
+        \ by the corresponding node paths.\r\n      ContentNodeUtils.replaceDocbasesByPaths(documentManager.session,\
+        \ contentNode, ContentNodeUtils.MIRROR_DOCBASES_XPATH)\r\n\r\n      record.setAttribute(\"\
+        file\", file.name.path)\r\n\r\n      // write ContentNode object to json (or\
+        \ xml) file.\r\n      if (fileInJson) {\r\n        exportTask.writeContentNodeToJsonFile(contentNode,\
+        \ file)\r\n      } else {\r\n        exportTask.writeContentNodeToXmlFile(contentNode,\
+        \ file)\r\n      }\r\n\r\n      log.debug \"Exported document from '${handlePath}'\
+        \ to '${file.name.path}'.\"\r\n      record.setSucceeded(true)\r\n    } catch\
+        \ (e) {\r\n      log.error(\"Failed to process record.\", e)\r\n      record.setErrorMessage(e.toString())\r\
+        \n    } finally {\r\n      exportTask.endRecord()\r\n    }\r\n\r\n    return\
+        \ false\r\n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
+        \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
+        \n    exportTask.stop()\r\n    exportTask.logSummary()\r\n  }\r\n\r\n}"
+      hipposys:loglevel: DEBUG
+      hipposys:dryrun: false
+    /hippo:configuration/hippo:update/hippo:registry/Example_Export_Published_Documents:
+      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+        \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
+        );\r\n * you may not use this file except in compliance with the License.\r\
+        \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
+        \n *\r\n * Unless required by applicable law or agreed to in writing, software\r\
+        \n * distributed under the License is distributed on an \"AS IS\" BASIS,\r\
+        \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
+        \n * See the License for the specific language governing permissions and\r\
+        \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
+        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
+        \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
+        \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
+        \nimport org.onehippo.forge.content.exim.core.util.*\r\n\r\nclass ExportingDocumentVariantToFileUpdateVisitor\
+        \ extends BaseNodeUpdateVisitor {\r\n\r\n  def fileInJson = true\r\n  def\
+        \ documentManager\r\n  def exportTask\r\n  def targetBaseFolder\r\n\r\n  void\
+        \ initialize(Session session) {\r\n    if (parametersMap.containsKey(\"fileInJson\"\
+        )) {\r\n      fileInJson = parametersMap.get(\"fileInJson\")\r\n    }\r\n\r\
+        \n    def targetBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get(\"\
+        targetBaseFolderPath\"))\r\n    targetBaseFolder = VFS.getManager().resolveFile(targetBaseFolderPath)\r\
+        \n\r\n    documentManager = new WorkflowDocumentManagerImpl(session)\r\n \
+        \   exportTask = new WorkflowDocumentVariantExportTask(documentManager)\r\n\
+        \    exportTask.setLogger(log)\r\n    exportTask.start()\r\n  }\r\n\r\n  boolean\
+        \ doUpdate(Node node) {\r\n    def record\r\n\r\n    try {\r\n      // record\
+        \ instance to store execution status and detail of a unit of migration work\
+        \ item.\r\n      // these record instances will be collected and summarized\
+        \ when #logSummary() invoked later.\r\n      record = exportTask.beginRecord(node.identifier,\
+        \ node.path)\r\n\r\n      def handlePath = node.parent.path\r\n      // determine\
+        \ the exported file path based on handle path.\r\n      def relPath = StringUtils.removeStart(ContentPathUtils.removeIndexNotationInNodePath(handlePath),\
+        \ \"/\")\r\n\r\n      // file to export in json (or xml).\r\n      def file\r\
+        \n      if (fileInJson) {\r\n        file = targetBaseFolder.resolveFile(relPath\
+        \ + \".json\")\r\n      } else {\r\n        file = targetBaseFolder.resolveFile(relPath\
+        \ + \".xml\")\r\n      }\r\n\r\n      def document = new Document(node.identifier)\r\
+        \n      record.setProcessed(true)\r\n\r\n      // export document variant\
+        \ content to ContentNode object.\r\n      def contentNode = exportTask.exportVariantToContentNode(document)\r\
+        \n\r\n      // replace hippo:docbase UUID properties of mirror nodes inside\
+        \ the exported ContentNode by the corresponding node paths.\r\n      ContentNodeUtils.replaceDocbasesByPaths(documentManager.session,\
+        \ contentNode, ContentNodeUtils.MIRROR_DOCBASES_XPATH)\r\n\r\n      // replace\
+        \ string docbase UUID properties (e.g, contenteximdemo:newsdocument/@contenteximdemo:relatedarticle\
+        \ property) inside the exported ContentNode by the corresponding node paths\
+        \ as well.\r\n      ContentNodeUtils.replaceDocbasePropertiesByPaths(documentManager.session,\
+        \ contentNode, \"properties[@itemName='contenteximdemo:relatedarticle']\"\
+        )\r\n\r\n      record.setAttribute(\"file\", file.name.path)\r\n\r\n     \
+        \ // write ContentNode object to json (or xml) file.\r\n      if (fileInJson)\
+        \ {\r\n        exportTask.writeContentNodeToJsonFile(contentNode, file)\r\n\
+        \      } else {\r\n        exportTask.writeContentNodeToXmlFile(contentNode,\
+        \ file)\r\n      }\r\n\r\n      log.debug \"Exported document from '${handlePath}'\
+        \ to '${file.name.path}'.\"\r\n      record.setSucceeded(true)\r\n    } catch\
+        \ (e) {\r\n      log.error(\"Failed to process record.\", e)\r\n      record.setErrorMessage(e.toString())\r\
+        \n    } finally {\r\n      exportTask.endRecord()\r\n    }\r\n\r\n    return\
+        \ false\r\n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
+        \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
+        \n    exportTask.stop()\r\n    exportTask.logSummary()\r\n  }\r\n\r\n}"
+      hipposys:loglevel: DEBUG
+      hipposys:dryrun: false
+    /hippo:configuration/hippo:update/hippo:registry/Example_Import_Asset_and_Image_Set_Content:
+      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+        \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
+        );\r\n * you may not use this file except in compliance with the License.\r\
+        \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
+        \n *\r\n * Unless required by applicable law or agreed to in writing, software\r\
+        \n * distributed under the License is distributed on an \"AS IS\" BASIS,\r\
+        \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
+        \n * See the License for the specific language governing permissions and\r\
+        \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
+        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
+        \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
+        \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
+        \nimport org.onehippo.forge.content.exim.core.util.*\r\n\r\nclass ImportingAssetOrImageSetFromFileUpdateVisitor\
+        \ extends BaseNodeUpdateVisitor {\r\n\r\n  def fileInJson = true\r\n  def\
+        \ documentManager\r\n  def importTask\r\n  def sourceBaseFolder\r\n\r\n  void\
+        \ initialize(Session session) {\r\n    if (parametersMap.containsKey(\"fileInJson\"\
+        )) {\r\n      fileInJson = parametersMap.get(\"fileInJson\")\r\n    }\r\n\r\
+        \n    def sourceBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get(\"\
+        sourceBaseFolderPath\"))\r\n    sourceBaseFolder = VFS.getManager().resolveFile(sourceBaseFolderPath)\r\
+        \n\r\n    documentManager = new WorkflowDocumentManagerImpl(session)\r\n \
+        \   importTask = new DefaultBinaryImportTask(documentManager)\r\n    importTask.setLogger(log)\r\
+        \n    importTask.start()\r\n  }\r\n\r\n  boolean doUpdate(Node node) {\r\n\
+        \    def contentNode\r\n    def binaryPrimaryTypeName\r\n    def binaryFolderPrimaryTypeName\r\
+        \n    def binaryFolderFolderTypes\r\n    def binaryFolderGalleryTypes\r\n\
+        \    def binaryLocation\r\n    def binaryFolderPath\r\n    def binaryName\r\
+        \n    def updatedBinaryLocation\r\n\r\n    // import input files in json (or\
+        \ xml) format\r\n    def files\r\n    if (fileInJson) {\r\n      files = importTask.findFilesByNamePattern(sourceBaseFolder,\
+        \ \"^.+\\\\.json\\$\" , 1, 10)\r\n    } else {\r\n      files = importTask.findFilesByNamePattern(sourceBaseFolder,\
+        \ \"^.+\\\\.xml\\$\" , 1, 10)\r\n    }\r\n\r\n    def record\r\n\r\n    files.eachWithIndex\
+        \ { file, i ->\r\n      try {\r\n        // read ContentNode from json (or\
+        \ xml) file.\r\n        if (fileInJson) {\r\n          contentNode = importTask.readContentNodeFromJsonFile(file)\r\
+        \n        } else {\r\n          contentNode = importTask.readContentNodeFromXmlFile(file)\r\
+        \n        }\r\n\r\n        binaryPrimaryTypeName = contentNode.getPrimaryType()\r\
+        \n        // determine the target binary handle node path to create or update\
+        \ binary content from the jcr:path meta property in ContentNode object.\r\n\
+        \        binaryLocation = contentNode.getProperty(\"jcr:path\").getValue()\r\
+        \n\r\n        // record instance to store execution status and detail of a\
+        \ unit of migration work item.\r\n        // these record instances will be\
+        \ collected and summarized when #logSummary() invoked later.\r\n        record\
+        \ = importTask.beginRecord(\"\", binaryLocation)\r\n        record.setAttribute(\"\
+        file\", file.name.path)\r\n\r\n        if (binaryPrimaryTypeName == \"hippogallery:imageset\"\
+        \ || binaryPrimaryTypeName == \"hippogallery:exampleAssetSet\") {\r\n    \
+        \      record.setProcessed(true)\r\n          // split target folder path\
+        \ and binary handle node name from the binaryLocation.\r\n          def folderPathAndName\
+        \ = ContentPathUtils.splitToFolderPathAndName(binaryLocation)\r\n        \
+        \  binaryFolderPath = folderPathAndName[0]\r\n          binaryName = folderPathAndName[1]\r\
+        \n\r\n          // choose proper binary node type, hippostd:foldertype and\
+        \ hippostd:gallerytype values for either gallery image or asset.\r\n     \
+        \     if (binaryPrimaryTypeName == \"hippogallery:imageset\") {\r\n      \
+        \      binaryFolderPrimaryTypeName = \"hippogallery:stdImageGallery\"\r\n\
+        \            binaryFolderFolderTypes = [ \"new-image-folder\" ] as String[]\r\
+        \n            binaryFolderGalleryTypes = [ \"hippogallery:imageset\" ] as\
+        \ String[]\r\n          } else if (binaryPrimaryTypeName == \"hippogallery:exampleAssetSet\"\
+        ) {\r\n            binaryFolderPrimaryTypeName = \"hippogallery:stdAssetGallery\"\
+        \r\n            binaryFolderFolderTypes = [ \"new-file-folder\" ] as String[]\r\
+        \n            binaryFolderGalleryTypes = [ \"hippogallery:exampleAssetSet\"\
+        \ ] as String[]\r\n          }\r\n\r\n          // make sure that the binary\
+        \ target folder exists or created.\r\n          binaryFolderPath =\r\n   \
+        \           importTask.createOrUpdateBinaryFolder(binaryFolderPath, binaryFolderPrimaryTypeName,\r\
+        \n                                                    binaryFolderFolderTypes,\
+        \ binaryFolderGalleryTypes)\r\n\r\n          // create or update binary content\
+        \ from contentNode.\r\n          updatedBinaryLocation =\r\n             \
+        \ importTask.createOrUpdateBinaryFromContentNode(contentNode, binaryPrimaryTypeName,\r\
+        \n                                                             binaryFolderPath,\
+        \ binaryName)\r\n\r\n          // Extract text from binary if possible (e.g.,\
+        \ application/pdf) and save hippo:text property underneath.\r\n          HippoBinaryNodeUtils.extractTextFromBinariesAndSaveHippoTextsUnderHandlePath(documentManager.session,\
+        \ updatedBinaryLocation)\r\n\r\n          visitorContext.reportUpdated(binaryLocation)\r\
+        \n          log.debug \"Imported binary from '${file.name.path}' to '${updatedBinaryLocation}'.\"\
+        \r\n          record.setSucceeded(true)\r\n        } else {\r\n          visitorContext.reportSkipped(documentLocation)\r\
+        \n        }\r\n      } catch (e) {\r\n        log.error(\"Failed to process\
+        \ record.\", e)\r\n        visitorContext.reportFailed(binaryLocation)\r\n\
+        \        record.setErrorMessage(e.toString())\r\n      } finally {\r\n   \
+        \     importTask.endRecord()\r\n      }\r\n    }\r\n\r\n    return false\r\
+        \n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
+        \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
+        \n    importTask.stop()\r\n    importTask.logSummary()\r\n  }\r\n\r\n}"
+      hipposys:loglevel: DEBUG
+      hipposys:dryrun: false
+    /hippo:configuration/hippo:update/hippo:registry/Example_Import_Documents_As_Unpublished:
+      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+        \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
+        );\r\n * you may not use this file except in compliance with the License.\r\
+        \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
+        \n *\r\n * Unless required by applicable law or agreed to in writing, software\r\
+        \n * distributed under the License is distributed on an \"AS IS\" BASIS,\r\
+        \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
+        \n * See the License for the specific language governing permissions and\r\
+        \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
+        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
+        \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
+        \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
+        \nimport org.onehippo.forge.content.exim.core.util.*\r\n\r\nclass ImportingDocumentVariantInFileUpdateVisitor\
+        \ extends BaseNodeUpdateVisitor {\r\n\r\n  def fileInJson = true\r\n  def\
+        \ documentManager\r\n  def importTask\r\n  def sourceBaseFolder\r\n\r\n  void\
+        \ initialize(Session session) {\r\n    if (parametersMap.containsKey(\"fileInJson\"\
+        )) {\r\n      fileInJson = parametersMap.get(\"fileInJson\")\r\n    }\r\n\r\
+        \n    def sourceBaseFolderPath = StrSubstitutor.replaceSystemProperties(parametersMap.get(\"\
+        sourceBaseFolderPath\"))\r\n    sourceBaseFolder = VFS.getManager().resolveFile(sourceBaseFolderPath)\r\
+        \n\r\n    documentManager = new WorkflowDocumentManagerImpl(session)\r\n \
+        \   importTask = new WorkflowDocumentVariantImportTask(documentManager)\r\n\
+        \    importTask.setLogger(log)\r\n    importTask.start()\r\n  }\r\n\r\n  boolean\
+        \ doUpdate(Node node) {\r\n    def contentNode\r\n    def primaryTypeName\r\
+        \n    def documentLocation\r\n    def updatedDocumentLocation\r\n    def locale\r\
+        \n    def localizedName\r\n\r\n    // find all the *.json (or *.xml) files\
+        \ under the sourceBaseFoler.\r\n    def files\r\n    if (fileInJson) {\r\n\
+        \      files = importTask.findFilesByNamePattern(sourceBaseFolder, \"^.+\\\
+        \\.json\\$\" , 1, 10)\r\n    } else {\r\n      files = importTask.findFilesByNamePattern(sourceBaseFolder,\
+        \ \"^.+\\\\.xml\\$\" , 1, 10)\r\n    }\r\n\r\n    def record\r\n\r\n    files.eachWithIndex\
+        \ { file, i ->\r\n      try {\r\n\r\n        // read ContentNode from the\
+        \ json (or xml) file.\r\n        if (fileInJson) {\r\n          contentNode\
+        \ = importTask.readContentNodeFromJsonFile(file)\r\n        } else {\r\n \
+        \         contentNode = importTask.readContentNodeFromXmlFile(file)\r\n  \
+        \      }\r\n\r\n        primaryTypeName = contentNode.getPrimaryType()\r\n\
+        \        // determine the target document handle node path to create or update\
+        \ content from the jcr:path meta property in ContentNode object.\r\n     \
+        \   documentLocation = contentNode.getProperty(\"jcr:path\").getValue()\r\n\
+        \r\n        // record instance to store execution status and detail of a unit\
+        \ of migration work item.\r\n        // these record instances will be collected\
+        \ and summarized when #logSummary() invoked later.\r\n        record = importTask.beginRecord(\"\
+        \", documentLocation)\r\n        record.setAttribute(\"file\", file.name.path)\r\
+        \n        record.setProcessed(true)\r\n\r\n        locale = (contentNode.hasProperty(\"\
+        hippotranslation:locale\")) ? contentNode.getProperty(\"hippotranslation:locale\"\
+        ).getValue() : null\r\n        // find localized document name if jcr:localizedName\
+        \ meta property exists in the ContentNode object.\r\n        localizedName\
+        \ = contentNode.getProperty(\"jcr:localizedName\").getValue()\r\n\r\n    \
+        \    // create or update document at documentLocation from contentNode with\
+        \ localized name.\r\n        updatedDocumentLocation =\r\n            importTask.createOrUpdateDocumentFromVariantContentNode(contentNode,\
+        \ primaryTypeName, documentLocation, locale, localizedName)\r\n\r\n      \
+        \  // By default, the created or updated document is left as preview status.\r\
+        \n        // Optionally, if you want, you can publish the document again right\
+        \ away here by uncommenting the following lines.\r\n        //documentManager.depublishDocument(updatedDocumentLocation)\r\
+        \n        //documentManager.publishDocument(updatedDocumentLocation)\r\n\r\
+        \n        visitorContext.reportUpdated(documentLocation)\r\n        log.debug\
+        \ \"Imported document from '${file.name.path}' to '${updatedDocumentLocation}'.\"\
+        \r\n        record.setSucceeded(true)\r\n      } catch (e) {\r\n        log.error(\"\
+        Failed to process record.\", e)\r\n        visitorContext.reportFailed(documentLocation)\r\
+        \n        record.setErrorMessage(e.toString())\r\n      } finally {\r\n  \
+        \      importTask.endRecord()\r\n      }\r\n    }\r\n\r\n    return false\r\
+        \n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
+        \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
+        \n    importTask.stop()\r\n    importTask.logSummary()\r\n  }\r\n\r\n}"
+      hipposys:loglevel: DEBUG

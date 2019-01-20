@@ -1,0 +1,17 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:domains/content-exim:
+      jcr:primaryType: hipposys:domain
+      /rest:
+        jcr:primaryType: hipposys:authrole
+        hipposys:groups: [admin]
+        hipposys:role: restuser
+      /module-domain:
+        jcr:primaryType: hipposys:domainrule
+        /module:
+          jcr:primaryType: hipposys:facetrule
+          hipposys:equals: true
+          hipposys:facet: jcr:path
+          hipposys:filter: false
+          hipposys:type: Reference
+          hipposys:value: /hippo:configuration/hippo:modules/content-exim

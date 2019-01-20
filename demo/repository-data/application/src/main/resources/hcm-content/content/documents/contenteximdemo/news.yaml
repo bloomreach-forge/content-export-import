@@ -1,34 +1,28 @@
 /content/documents/contenteximdemo/news:
-  .meta:order-before: content
+  .meta:order-before: events
   jcr:primaryType: hippostd:folder
-  jcr:mixinTypes: ['hippotranslation:translated', 'mix:referenceable']
-  jcr:uuid: 79fcf6b9-a0e7-48f8-af1c-f8fe66a3a4fa
-  hippostd:foldertype: [new-news-document, new-news-folder]
-  hippotranslation:id: 7b660902-014f-401e-8016-cd318ce02832
-  hippotranslation:locale: en
+  jcr:mixinTypes: ['mix:versionable']
+  jcr:uuid: 68f0ee1b-9b37-4e98-b656-3fd430c821d5
+  hippostd:foldertype: [new-document, new-folder]
   /2019:
     jcr:primaryType: hippostd:folder
-    jcr:mixinTypes: ['hippotranslation:translated', 'mix:referenceable']
-    jcr:uuid: a31adcd9-7d95-43f7-a182-32f8ad997065
-    hippostd:foldertype: [new-news-document, new-news-folder]
-    hippotranslation:id: ad52d07d-2db3-4fc8-8216-5e6cf3ea58f7
-    hippotranslation:locale: en
+    jcr:mixinTypes: ['mix:versionable']
+    jcr:uuid: fa33cbb5-9f94-4f47-9ca5-03bff2742d5e
+    hippostd:foldertype: [new-document, new-folder]
     /01:
       jcr:primaryType: hippostd:folder
-      jcr:mixinTypes: ['hippotranslation:translated', 'mix:referenceable']
-      jcr:uuid: 6fb0a840-a45a-4c93-ad1c-20bd26a215bb
-      hippostd:foldertype: [new-news-document, new-news-folder]
-      hippotranslation:id: 1241fa88-193d-4e8e-b598-61434f4d3146
-      hippotranslation:locale: en
+      jcr:mixinTypes: ['mix:versionable']
+      jcr:uuid: 12e9da67-826e-4b88-b488-1a989bcdb0c9
+      hippostd:foldertype: [new-document, new-folder]
       /the-medusa-news:
         jcr:primaryType: hippo:handle
         jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
-        jcr:uuid: c580ac64-3874-4717-a6d9-e5ad72080abe
+        jcr:uuid: b00ed736-038c-4495-a400-cf55a7ad1fae
         hippo:name: The medusa news
-        /the-medusa-news:
+        /the-medusa-news[1]:
           jcr:primaryType: contenteximdemo:newsdocument
           jcr:mixinTypes: ['mix:referenceable']
-          jcr:uuid: b8561df2-dd73-4a4c-8974-2d802cd8bd66
+          jcr:uuid: e9496fb0-a9d0-4554-bac1-b69f05469ab8
           contenteximdemo:author: Alfred Anonymous
           contenteximdemo:date: 2019-01-20T12:45:00+09:00
           contenteximdemo:documenttype: news
@@ -42,14 +36,13 @@
           contenteximdemo:location: Rotterdam
           contenteximdemo:source: ''
           contenteximdemo:title: The medusa news
-          hippo:availability: [live, preview]
-          hippostd:holder: admin
-          hippostd:state: published
-          hippostdpubwf:createdBy: admin
-          hippostdpubwf:creationDate: 2013-11-12T13:03:00+01:00
-          hippostdpubwf:lastModificationDate: 2013-11-12T13:04:00+01:00
-          hippostdpubwf:lastModifiedBy: admin
-          hippostdpubwf:publicationDate: 2013-11-12T13:04:00+01:00
+          hippo:availability: []
+          hippo:related___pathreference: []
+          hippostd:state: draft
+          hippostdpubwf:createdBy: system
+          hippostdpubwf:creationDate: 2019-01-20T13:20:58.006+09:00
+          hippostdpubwf:lastModificationDate: 2019-01-20T13:20:58.006+09:00
+          hippostdpubwf:lastModifiedBy: system
           hippotranslation:id: 80cf53ea-fd6f-4319-b0e3-be432b74b24c
           hippotranslation:locale: en
           /contenteximdemo:content:
@@ -83,19 +76,14 @@
                         </html>
           /contenteximdemo:image:
             jcr:primaryType: hippogallerypicker:imagelink
-            hippo:docbase: 4709f797-61ae-4c36-93d4-63b5d50fc200
+            hippo:docbase: 674ed5bb-8f71-43a7-8d51-c5b8b1ad8de5
             hippo:facets: []
             hippo:modes: []
             hippo:values: []
-      /2013-harvest:
-        jcr:primaryType: hippo:handle
-        jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
-        jcr:uuid: 30092f4e-2ef7-4c72-86a5-8ce895908937
-        hippo:name: 2013 harvest
-        /2013-harvest:
+        /the-medusa-news[2]:
           jcr:primaryType: contenteximdemo:newsdocument
-          jcr:mixinTypes: ['mix:referenceable']
-          jcr:uuid: 25573dbe-8c10-4cec-a363-b5cdc39baa94
+          jcr:mixinTypes: ['mix:referenceable', 'mix:versionable']
+          jcr:uuid: 1f266e68-6917-4055-a398-f685ddb42591
           contenteximdemo:author: Alfred Anonymous
           contenteximdemo:date: 2019-01-20T12:45:00+09:00
           contenteximdemo:documenttype: news
@@ -106,18 +94,17 @@
             in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
             sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
             mollit anim id est laborum
-          contenteximdemo:location: Rome
+          contenteximdemo:location: Rotterdam
           contenteximdemo:source: ''
-          contenteximdemo:title: 2013 harvest
-          hippo:availability: [live, preview]
-          hippostd:holder: admin
-          hippostd:state: published
-          hippostdpubwf:createdBy: admin
-          hippostdpubwf:creationDate: 2013-11-12T14:31:00+01:00
-          hippostdpubwf:lastModificationDate: 2013-11-12T14:31:00+01:00
-          hippostdpubwf:lastModifiedBy: admin
-          hippostdpubwf:publicationDate: 2013-11-12T14:31:00+01:00
-          hippotranslation:id: a6b011cb-ed77-4135-8886-ee2a71b87d0e
+          contenteximdemo:title: The medusa news
+          hippo:availability: [preview]
+          hippo:related___pathreference: []
+          hippostd:state: unpublished
+          hippostdpubwf:createdBy: system
+          hippostdpubwf:creationDate: 2019-01-20T13:20:58.006+09:00
+          hippostdpubwf:lastModificationDate: 2019-01-20T13:20:58.110+09:00
+          hippostdpubwf:lastModifiedBy: system
+          hippotranslation:id: 80cf53ea-fd6f-4319-b0e3-be432b74b24c
           hippotranslation:locale: en
           /contenteximdemo:content:
             jcr:primaryType: hippostd:html
@@ -150,19 +137,19 @@
                         </html>
           /contenteximdemo:image:
             jcr:primaryType: hippogallerypicker:imagelink
-            hippo:docbase: beff458e-e07a-4065-8cad-8d96b67d13ec
+            hippo:docbase: 674ed5bb-8f71-43a7-8d51-c5b8b1ad8de5
             hippo:facets: []
             hippo:modes: []
             hippo:values: []
       /the-gastropoda-news:
         jcr:primaryType: hippo:handle
         jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
-        jcr:uuid: aeda2bcd-b21d-4ead-a2e6-c64a2ca051c8
+        jcr:uuid: aea647eb-4cab-4161-8d72-5ee6cc52b174
         hippo:name: The gastropoda news
-        /the-gastropoda-news:
+        /the-gastropoda-news[1]:
           jcr:primaryType: contenteximdemo:newsdocument
           jcr:mixinTypes: ['mix:referenceable']
-          jcr:uuid: b28b4c22-6796-4dac-97ab-a023fd136dcc
+          jcr:uuid: fa6d0a03-7ac2-44b4-a807-84c90a9335c0
           contenteximdemo:author: Alfred Anonymous
           contenteximdemo:date: 2019-01-20T12:45:00+09:00
           contenteximdemo:documenttype: news
@@ -176,14 +163,13 @@
           contenteximdemo:location: Liverpool
           contenteximdemo:source: ''
           contenteximdemo:title: The gastropoda news
-          hippo:availability: [live, preview]
-          hippostd:holder: admin
-          hippostd:state: published
-          hippostdpubwf:createdBy: admin
-          hippostdpubwf:creationDate: 2013-11-12T12:50:00+01:00
-          hippostdpubwf:lastModificationDate: 2013-11-12T12:52:00+01:00
-          hippostdpubwf:lastModifiedBy: admin
-          hippostdpubwf:publicationDate: 2013-11-12T12:52:00+01:00
+          hippo:availability: []
+          hippo:related___pathreference: []
+          hippostd:state: draft
+          hippostdpubwf:createdBy: system
+          hippostdpubwf:creationDate: 2019-01-20T13:20:58.175+09:00
+          hippostdpubwf:lastModificationDate: 2019-01-20T13:20:58.175+09:00
+          hippostdpubwf:lastModifiedBy: system
           hippotranslation:id: 790cfa87-41fe-4265-b585-08057745f111
           hippotranslation:locale: en
           /contenteximdemo:content:
@@ -217,7 +203,195 @@
                         </html>
           /contenteximdemo:image:
             jcr:primaryType: hippogallerypicker:imagelink
-            hippo:docbase: 3c740fcf-8ec5-4f00-a713-ff96caa645c8
+            hippo:docbase: b9a07146-fe91-4e81-8253-b52dfaee4ce3
+            hippo:facets: []
+            hippo:modes: []
+            hippo:values: []
+        /the-gastropoda-news[2]:
+          jcr:primaryType: contenteximdemo:newsdocument
+          jcr:mixinTypes: ['mix:referenceable', 'mix:versionable']
+          jcr:uuid: ff30b7be-4843-40ab-84d8-a1a7da7d65c1
+          contenteximdemo:author: Alfred Anonymous
+          contenteximdemo:date: 2019-01-20T12:45:00+09:00
+          contenteximdemo:documenttype: news
+          contenteximdemo:introduction: Lorem ipsum dolor sit amet, consectetur adipisicing
+            elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+            ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+            mollit anim id est laborum
+          contenteximdemo:location: Liverpool
+          contenteximdemo:source: ''
+          contenteximdemo:title: The gastropoda news
+          hippo:availability: [preview]
+          hippo:related___pathreference: []
+          hippostd:state: unpublished
+          hippostdpubwf:createdBy: system
+          hippostdpubwf:creationDate: 2019-01-20T13:20:58.175+09:00
+          hippostdpubwf:lastModificationDate: 2019-01-20T13:20:58.263+09:00
+          hippostdpubwf:lastModifiedBy: system
+          hippotranslation:id: 790cfa87-41fe-4265-b585-08057745f111
+          hippotranslation:locale: en
+          /contenteximdemo:content:
+            jcr:primaryType: hippostd:html
+            hippostd:content: |-
+              <html>
+                        <body>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum </p>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum </p>
+
+                        </body>
+                        </html>
+          /contenteximdemo:image:
+            jcr:primaryType: hippogallerypicker:imagelink
+            hippo:docbase: b9a07146-fe91-4e81-8253-b52dfaee4ce3
+            hippo:facets: []
+            hippo:modes: []
+            hippo:values: []
+      /2013-harvest:
+        jcr:primaryType: hippo:handle
+        jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+        jcr:uuid: 93dbf303-7df1-438a-8330-157a268fdfeb
+        hippo:name: 2013 harvest
+        /2013-harvest[1]:
+          jcr:primaryType: contenteximdemo:newsdocument
+          jcr:mixinTypes: ['mix:referenceable']
+          jcr:uuid: f7a4b4c8-9179-42e0-a3d3-31b02733ce58
+          contenteximdemo:author: Alfred Anonymous
+          contenteximdemo:date: 2019-01-20T12:45:00+09:00
+          contenteximdemo:documenttype: news
+          contenteximdemo:introduction: Lorem ipsum dolor sit amet, consectetur adipisicing
+            elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+            ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+            mollit anim id est laborum
+          contenteximdemo:location: Rome
+          contenteximdemo:source: ''
+          contenteximdemo:title: 2013 harvest
+          hippo:availability: []
+          hippo:related___pathreference: []
+          hippostd:state: draft
+          hippostdpubwf:createdBy: system
+          hippostdpubwf:creationDate: 2019-01-20T13:20:58.351+09:00
+          hippostdpubwf:lastModificationDate: 2019-01-20T13:20:58.351+09:00
+          hippostdpubwf:lastModifiedBy: system
+          hippotranslation:id: a6b011cb-ed77-4135-8886-ee2a71b87d0e
+          hippotranslation:locale: en
+          /contenteximdemo:content:
+            jcr:primaryType: hippostd:html
+            hippostd:content: |-
+              <html>
+                        <body>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum </p>
+
+                        </body>
+                        </html>
+          /contenteximdemo:image:
+            jcr:primaryType: hippogallerypicker:imagelink
+            hippo:docbase: 4d09abda-1ced-4514-b9ad-aa9eaae8df21
+            hippo:facets: []
+            hippo:modes: []
+            hippo:values: []
+        /2013-harvest[2]:
+          jcr:primaryType: contenteximdemo:newsdocument
+          jcr:mixinTypes: ['mix:referenceable', 'mix:versionable']
+          jcr:uuid: 7870e9f1-2440-45bd-b330-49d3f15a4d86
+          contenteximdemo:author: Alfred Anonymous
+          contenteximdemo:date: 2019-01-20T12:45:00+09:00
+          contenteximdemo:documenttype: news
+          contenteximdemo:introduction: Lorem ipsum dolor sit amet, consectetur adipisicing
+            elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+            ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+            mollit anim id est laborum
+          contenteximdemo:location: Rome
+          contenteximdemo:source: ''
+          contenteximdemo:title: 2013 harvest
+          hippo:availability: [preview]
+          hippo:related___pathreference: []
+          hippostd:state: unpublished
+          hippostdpubwf:createdBy: system
+          hippostdpubwf:creationDate: 2019-01-20T13:20:58.351+09:00
+          hippostdpubwf:lastModificationDate: 2019-01-20T13:20:58.442+09:00
+          hippostdpubwf:lastModifiedBy: system
+          hippotranslation:id: a6b011cb-ed77-4135-8886-ee2a71b87d0e
+          hippotranslation:locale: en
+          /contenteximdemo:content:
+            jcr:primaryType: hippostd:html
+            hippostd:content: |-
+              <html>
+                        <body>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum </p>
+
+                        </body>
+                        </html>
+          /contenteximdemo:image:
+            jcr:primaryType: hippogallerypicker:imagelink
+            hippo:docbase: 4d09abda-1ced-4514-b9ad-aa9eaae8df21
             hippo:facets: []
             hippo:modes: []
             hippo:values: []
