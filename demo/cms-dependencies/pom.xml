@@ -10,7 +10,23 @@
   <packaging>pom</packaging>
   <name>Hippo Content Export / Import Demo CMS Dependencies</name>
   <description>Hippo Content Export / Import Demo CMS Dependencies</description>
+
   <dependencies>
+
+    <dependency>
+      <groupId>org.onehippo.forge.content-exim</groupId>
+      <artifactId>content-exim-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.onehippo.forge.content-exim</groupId>
+      <artifactId>content-exim-updater-examples</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.onehippo.forge.content-exim</groupId>
+      <artifactId>content-exim-repository-jaxrs</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.onehippo.forge.content-exim</groupId>
