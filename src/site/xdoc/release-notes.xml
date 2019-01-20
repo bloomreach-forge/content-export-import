@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright 2018 Hippo
+    Copyright 2018-2019 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -32,8 +32,12 @@
           </th>
         </tr>
         <tr>
-          <td>2.1 and up</td>
-          <td>12.1 and up</td>
+          <td>3.x</td>
+          <td>13.x</td>
+        </tr>
+        <tr>
+          <td>2.1 or higher in 2.x range</td>
+          <td>12.1 or higher in 12.x range</td>
         </tr>
         <tr>
           <td>2.0.x</td>
@@ -49,7 +53,31 @@
         </tr>
       </table>
     </section>
+    <section name="Release Notes of 3.x">
+      <subsection name="3.0.0">
+        <p class="smallinfo">Release Date: 20 January 2019</p>
+        <ul>
+          <li>
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-264">HIPFORGE-264</a>: [Content-EXIM] Don't convert to path if docbase is already a temporary path instead of uuid
+          </li>
+          <li>
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-250">HIPFORGE-250</a>: [Content-EXIM] Upgrade for v13 compatibility
+          </li>
+        </ul>
+      </subsection>
+    </section>
     <section name="Release Notes of 2.x">
+      <subsection name="2.3.1">
+        <p class="smallinfo">Release Date: 20 January 2019</p>
+        <ul>
+          <li>
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-264">HIPFORGE-264</a>: [Content-EXIM] Don't convert to path if docbase is already a temporary path instead of uuid
+          </li>
+          <li>
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-241">HIPFORGE-241</a>: Bump Tika version from 1.19.1 to 1.20.
+          </li>
+        </ul>
+      </subsection>
       <subsection name="2.3.0">
         <p class="smallinfo">Release Date: 24 October 2018</p>
         <ul>

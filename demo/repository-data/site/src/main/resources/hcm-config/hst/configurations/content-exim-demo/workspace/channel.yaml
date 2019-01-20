@@ -1,0 +1,7 @@
+definitions:
+  config:
+    /hst:hst/hst:configurations/contenteximdemo/hst:workspace/hst:channel:
+      .meta:residual-child-node-category: content
+      jcr:primaryType: hst:channel
+      hst:name: Hippo Content Export / Import Demo
+      hst:type: website

@@ -29,7 +29,13 @@
                     <#assign active = ''/>
                 </#if>
                 <div class="item${active}">
-                    <img src="<@hst.link hippobean=item.image />" alt="${item.title?html}"/>
+                  <#-- button to edit shown item -->
+                  <#if configuredItems?? && configuredItems?has_content>
+                    <@hst.manageContent hippobean=item parameterName="document${configuredItems[item_index]}" rootPath="banners"/>
+                  <#else>
+                    <@hst.manageContent hippobean=item/>
+                  </#if>
+                  <img src="<@hst.link hippobean=item.image />" alt="${item.title?html}"/>
                     <div class="carousel-caption">
                         <#if item.link??>
                             <h3><a href="<@hst.link hippobean=item.link/>">${item.title?html}</a></h3>
@@ -59,6 +65,14 @@
             }
           </script>
         </#if>
+        <#-- buttons for still available items -->
+        <#if editMode && freeItems?? && freeItems?has_content>
+          <div>
+            <#list freeItems as number>
+              <div class="has-new-content-button item-button"><@hst.manageContent documentTemplateQuery="new-banner-document" parameterName="document${number}" rootPath="banners"/></div>
+            </#list>
+          </div>
+        </#if>
     </div>
 
     <@hst.headContribution category="htmlHead">
@@ -85,6 +99,11 @@
             .carousel-inner > .item > img {
                 margin: 0 auto;
             }
+          
+            /* order CC-buttons next to each other */
+            .item-button {
+              float: left;
+            }
         </style>
     </@hst.headContribution>
 
@@ -99,5 +118,8 @@
 <#elseif editMode>
   <div>
     <img src="<@hst.link path='/images/essentials/catalog-component-icons/carousel.png'/>"> Click to edit Carousel
+  </div>
+  <div class="has-new-content-button">
+    <@hst.manageContent documentTemplateQuery="new-banner-document" parameterName="document1" rootPath="banners"/>
   </div>
 </#if>

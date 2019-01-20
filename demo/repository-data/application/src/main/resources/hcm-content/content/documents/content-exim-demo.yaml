@@ -1,0 +1,6 @@
+/content/documents/contenteximdemo:
+  .meta:order-before: administration
+  jcr:primaryType: hippostd:folder
+  jcr:mixinTypes: ['mix:versionable']
+  jcr:uuid: f22256ca-b97b-40fa-977f-a9502631da8c
+  hippostd:foldertype: [new-document, new-folder]

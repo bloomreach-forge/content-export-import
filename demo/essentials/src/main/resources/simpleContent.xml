@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <installerDocument>
-    <name>simpleContent</name>
-    <dateAdded>2017-07-07T12:59:24.164-04:00</dateAdded>
-    <dateInstalled>2017-07-07T12:59:22.483-04:00</dateInstalled>
-    <installationState>installed</installationState>
+    <dateAdded>2019-01-20T12:45:13.988+09:00</dateAdded>
+    <dateInstalled>2019-01-20T12:45:13.988+09:00</dateInstalled>
+    <installationState>installing</installationState>
 </installerDocument>

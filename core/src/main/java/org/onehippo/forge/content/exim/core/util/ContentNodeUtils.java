@@ -101,9 +101,15 @@ public class ContentNodeUtils {
 
             if (StringUtils.isNotBlank(docbase) && !StringUtils.equals(ROOT_NODE_UUID, docbase)) {
                 try {
-                    linkedNode = session.getNodeByIdentifier(docbase);
-                    linkedNodePath = linkedNode.getPath();
+                    if (StringUtils.startsWith(docbase, "/")) {
+                        linkedNodePath = docbase;
+                    } else {
+                        linkedNode = session.getNodeByIdentifier(docbase);
+                        linkedNodePath = linkedNode.getPath();
+                    }
+
                     mirror.setProperty("hippo:docbase", linkedNodePath);
+
                     if (paths != null) {
                         paths.add(linkedNodePath);
                     }

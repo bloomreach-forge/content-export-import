@@ -90,7 +90,9 @@
     ]]></source>
         </div>
         <p>
-          And add the following dependency reference into your application subproject.
+          And add the following dependencies to your application subproject.
+          That is, In either <code>cms-dependencies/pom.xml</code> in Hippo CMS v13
+                          or <code>cms/pom.xml</code> in the earlier versions.
         </p>
         <div class="brush: xml">
           <source><![CDATA[

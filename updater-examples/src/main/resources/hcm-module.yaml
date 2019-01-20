@@ -1,5 +1,5 @@
-group: 
-  name: hippo-forge
-  after: hippo-cms
-project: content-exim
+group: hippo-cms
+project:
+    name: content-exim
+    after: [hippo-repository, hippo-cms]
 module: content-exim-updater-examples

@@ -1,0 +1,5 @@
+definitions:
+  namespace:
+    contenteximdemo:
+      uri: http://www.contenteximdemo.com/contenteximdemo/nt/1.0
+      cnd: namespaces/content-exim-demo.cnd
