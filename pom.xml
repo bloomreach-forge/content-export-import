@@ -31,7 +31,7 @@
     <project.build.javaVersion>1.8</project.build.javaVersion>
 
     <forge.hippo-pojo-bind-jcr.version>1.3.1</forge.hippo-pojo-bind-jcr.version>
-    <forge.gallery-magick.version>3.0.0</forge.gallery-magick.version>
+    <forge.gallery-magick.version>3.0.2</forge.gallery-magick.version>
     <jackson2.version>2.9.8</jackson2.version>
 
     <servlet-api.version>3.0.1</servlet-api.version>
