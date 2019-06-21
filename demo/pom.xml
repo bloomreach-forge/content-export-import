@@ -12,7 +12,7 @@
   <description>Hippo Content Export / Import Demo</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim-demo</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1</version>
   <packaging>pom</packaging>
 
   <!-- 
