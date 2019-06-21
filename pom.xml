@@ -32,7 +32,7 @@
 
     <forge.hippo-pojo-bind-jcr.version>1.3.1</forge.hippo-pojo-bind-jcr.version>
     <forge.gallery-magick.version>3.0.2</forge.gallery-magick.version>
-    <jackson2.version>2.9.8</jackson2.version>
+    <jackson2.version>2.9.9</jackson2.version>
 
     <servlet-api.version>3.0.1</servlet-api.version>
     <javax.jcr.version>2.0</javax.jcr.version>
