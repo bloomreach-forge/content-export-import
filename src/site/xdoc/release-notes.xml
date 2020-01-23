@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright 2018-2019 Hippo
+    Copyright 2018-2020 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -28,8 +28,12 @@
             Plugin Version
           </th>
           <th>
-            Hippo CMS Release Version
+            Bloomreach CMS Release Version
           </th>
+        </tr>
+        <tr>
+          <td>4.x</td>
+          <td>14.x</td>
         </tr>
         <tr>
           <td>3.x</td>
@@ -53,13 +57,22 @@
         </tr>
       </table>
     </section>
+    <section name="Release Notes of 4.x">
+      <subsection name="4.0.0 (Unreleased)">
+        <p class="smallinfo">Release Date: TBD</p>
+        <ul>
+          <li>Upgrade to Bloomreach Experience Manager 14.
+          </li>
+        </ul>
+      </subsection>
+    </section>
     <section name="Release Notes of 3.x">
       <subsection name="3.0.1">
         <p class="smallinfo">Release Date: 21 June 2019</p>
         <ul>
-          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-293'>HIPFORGE-293</a>] -         [Content-EXIM] Upgrade GalleryMagick to 3.0.2
+          <li><a href='https://issues.onehippo.com/browse/HIPFORGE-293'>HIPFORGE-293</a>: Upgrade GalleryMagick to 3.0.2
           </li>
-          <li>[<a href='https://issues.onehippo.com/browse/HIPFORGE-294'>HIPFORGE-294</a>] -         [Content-EXIM] Upgrade Jackson-bind to 2.9.9
+          <li><a href='https://issues.onehippo.com/browse/HIPFORGE-294'>HIPFORGE-294</a>: Upgrade Jackson-bind to 2.9.9
           </li>
         </ul>
       </subsection>
@@ -67,10 +80,10 @@
         <p class="smallinfo">Release Date: 20 January 2019</p>
         <ul>
           <li>
-            <a href="https://issues.onehippo.com/browse/HIPFORGE-264">HIPFORGE-264</a>: [Content-EXIM] Don't convert to path if docbase is already a temporary path instead of uuid
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-264">HIPFORGE-264</a>: Don't convert to path if docbase is already a temporary path instead of uuid
           </li>
           <li>
-            <a href="https://issues.onehippo.com/browse/HIPFORGE-250">HIPFORGE-250</a>: [Content-EXIM] Upgrade for v13 compatibility
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-250">HIPFORGE-250</a>: Upgrade for version 13 compatibility
           </li>
         </ul>
       </subsection>
@@ -80,7 +93,7 @@
         <p class="smallinfo">Release Date: 20 January 2019</p>
         <ul>
           <li>
-            <a href="https://issues.onehippo.com/browse/HIPFORGE-264">HIPFORGE-264</a>: [Content-EXIM] Don't convert to path if docbase is already a temporary path instead of uuid
+            <a href="https://issues.onehippo.com/browse/HIPFORGE-264">HIPFORGE-264</a>: Don't convert to path if docbase is already a temporary path instead of uuid
           </li>
           <li>
             <a href="https://issues.onehippo.com/browse/HIPFORGE-241">HIPFORGE-241</a>: Bump Tika version from 1.19.1 to 1.20.
