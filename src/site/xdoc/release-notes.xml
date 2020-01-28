@@ -28,7 +28,7 @@
             Plugin Version
           </th>
           <th>
-            Bloomreach CMS Release Version
+            Bloomreach Experience Manager Version
           </th>
         </tr>
         <tr>
@@ -58,11 +58,10 @@
       </table>
     </section>
     <section name="Release Notes of 4.x">
-      <subsection name="4.0.0 (Unreleased)">
-        <p class="smallinfo">Release Date: TBD</p>
+      <subsection name="4.0.0">
+        <p class="smallinfo">Release Date: 28 January 2020</p>
         <ul>
-          <li>Upgrade to Bloomreach Experience Manager 14.
-          </li>
+          <li>Upgrade to Bloomreach Experience Manager 14.</li>
         </ul>
       </subsection>
     </section>
