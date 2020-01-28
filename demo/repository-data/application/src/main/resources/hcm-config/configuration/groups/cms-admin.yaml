@@ -1,0 +1,8 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:groups/cms-admin:
+      hipposys:userroles:
+        .meta:category: system
+        .meta:add-new-system-values: true
+        type: string
+        value: [xm.default-user.cms-admin, xm.report.user]

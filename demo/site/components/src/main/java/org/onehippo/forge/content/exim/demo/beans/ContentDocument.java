@@ -1,6 +1,6 @@
 package org.onehippo.forge.content.exim.demo.beans;
 /*
- * Copyright 2014-2015 Hippo B.V. (http://www.onehippo.com)
+ * Copyright 2014-2020 Hippo B.V. (http://www.onehippo.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ import org.onehippo.cms7.essentials.dashboard.annotations.HippoEssentialsGenerat
 public class ContentDocument extends BaseDocument {
     @HippoEssentialsGenerated(internalName = "contenteximdemo:introduction")
     public String getIntroduction() {
-        return getProperty("contenteximdemo:introduction");
+        return getSingleProperty("contenteximdemo:introduction");
     }
 
     @HippoEssentialsGenerated(internalName = "contenteximdemo:title")
     public String getTitle() {
-        return getProperty("contenteximdemo:title");
+        return getSingleProperty("contenteximdemo:title");
     }
 
     @HippoEssentialsGenerated(internalName = "contenteximdemo:content")
@@ -40,6 +40,6 @@ public class ContentDocument extends BaseDocument {
 
     @HippoEssentialsGenerated(internalName = "contenteximdemo:publicationdate")
     public Calendar getPublicationDate() {
-        return getProperty("contenteximdemo:publicationdate");
+        return getSingleProperty("contenteximdemo:publicationdate");
     }
 }
