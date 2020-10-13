@@ -51,7 +51,7 @@
     <tika-core.version>1.22</tika-core.version>
     <tika-parsers.version>1.22</tika-parsers.version>
 
-    <lib.junit.version>4.12</lib.junit.version>
+    <lib.junit.version>4.13.1</lib.junit.version>
     <lib.easymock.version>3.4</lib.easymock.version>
     <lib.slf4j.version>1.7.25</lib.slf4j.version>
     <lib.log4j2.version>2.8.2</lib.log4j2.version>
