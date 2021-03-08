@@ -105,7 +105,10 @@ public class ContentEximImportService extends AbstractContentEximService {
 
         File tempLogFile = null;
         PrintStream tempLogOut = null;
+        // The physical uploaded zip java.io.file.
         File tempZipFile = null;
+        // The logical zip file folder in commons-VFS FileObject. This is the reading source.
+        FileObject baseFolder = null;
         Session session = null;
         ExecutionParams params = new ExecutionParams();
         ProcessStatus processStatus = null;
@@ -148,7 +151,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             transferAttachmentToFile(packageAttachment, tempZipFile);
 
-            FileObject baseFolder = VFS.getManager().resolveFile("zip:" + tempZipFile.toURI());
+            baseFolder = VFS.getManager().resolveFile("zip:" + tempZipFile.toURI());
 
             session = createSession();
 
@@ -214,6 +217,17 @@ public class ContentEximImportService extends AbstractContentEximService {
                     session.logout();
                 } catch (Exception e) {
                     procLogger.error("Failed to logout JCR session.", e);
+                }
+            }
+
+            // NOTE: Close the open connection to the logical VFS FileObject folder wrapping the temp zip file.
+            //       Otherwise, the open file descriptor by the zip VFS FileObject doesn't seem to be released,
+            //       and so OS cannot remove the temp zip file. 
+            if (baseFolder != null) {
+                try {
+                    baseFolder.close();  // Contributed by Freenet (Dev: Mark Kaloukh)
+                } catch (Exception e) {
+                    procLogger.error("Failed to remove VFS zip file folder lock.", e);
                 }
             }
 
