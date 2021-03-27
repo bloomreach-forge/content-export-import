@@ -58,6 +58,14 @@
       </table>
     </section>
     <section name="Release Notes of 4.x">
+      <subsection name="4.0.1">
+        <p class="smallinfo">Release Date: 26 March 2021</p>
+        <ul>
+          <li><a href='https://issues.onehippo.com/browse/HIPFORGE-397'>HIPFORGE-397</a>: Application seams to keep file handles open after deleting temporary files.
+              Thanks to Michael Eikel and Mark Kaloukh (Freenet).
+          </li>
+        </ul>
+      </subsection>
       <subsection name="4.0.0">
         <p class="smallinfo">Release Date: 28 January 2020</p>
         <ul>
