@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2015-2018 Hippo B.V. (http://www.onehippo.com)
+  Copyright 2015-2020 Hippo B.V. (http://www.onehippo.com)
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>3.0.1</version>
+    <version>4.0.1</version>
   </parent>
 
   <name>Hippo Content Export / Import Groovy Updater Script Examples</name>
