@@ -44,7 +44,7 @@
     <commons-lang.version>2.6</commons-lang.version>
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-vfs2.version>2.2</commons-vfs2.version>
-    <commons-io.version>2.6</commons-io.version>
+    <commons-io.version>2.7</commons-io.version>
     <commons-csv.version>1.6</commons-csv.version>
     <commons-compress.version>1.18</commons-compress.version>
 
