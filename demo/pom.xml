@@ -5,14 +5,14 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-release</artifactId>
-    <version>14.7.4</version>
+    <version>15.0.0</version>
   </parent>
 
   <name>Hippo Content Export / Import Demo</name>
   <description>Hippo Content Export / Import Demo</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim-demo</artifactId>
-  <version>4.0.2-SNAPSHOT</version>
+  <version>5.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- 
@@ -65,7 +65,7 @@
 
     <content-exim.version>${project.version}</content-exim.version>
 
-    <essentials.version>14.7.4</essentials.version>
+    <essentials.version>15.0.0</essentials.version>
     <jsp-api.version>2.2</jsp-api.version>
     <taglibs.version>1.2.5</taglibs.version>
 
@@ -84,7 +84,7 @@
     <repository>
       <id>hippo-maven2-forge</id>
       <name>Hippo Maven 2 Forge Repository</name>
-      <url>http://maven.onehippo.com/maven2-forge/</url>
+      <url>https://maven.onehippo.com/maven2-forge/</url>
     </repository>
   </repositories>
 
@@ -214,6 +214,33 @@
 
     <profile>
       <id>cargo.run</id>
+      <dependencies>
+        <dependency>
+          <groupId>jakarta.xml.bind</groupId>
+          <artifactId>jakarta.xml.bind-api</artifactId>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>jakarta.xml.ws</groupId>
+          <artifactId>jakarta.xml.ws-api</artifactId>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>jakarta.activation</groupId>
+          <artifactId>jakarta.activation-api</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
       <properties>
         <!-- Already defined in the cms project POM. Override here for your project, if necessary -->
         <!-- <repo.bootstrap>true</repo.bootstrap> -->
@@ -296,6 +323,31 @@
         <dependency>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-slf4j-impl</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>jakarta.xml.bind</groupId>
+          <artifactId>jakarta.xml.bind-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>jakarta.xml.ws</groupId>
+          <artifactId>jakarta.xml.ws-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>jakarta.activation</groupId>
+          <artifactId>jakarta.activation-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
           <scope>provided</scope>
         </dependency>
         <dependency>
