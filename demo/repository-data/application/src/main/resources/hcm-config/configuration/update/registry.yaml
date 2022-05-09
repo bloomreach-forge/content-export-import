@@ -1,7 +1,7 @@
 definitions:
   config:
     /hippo:configuration/hippo:update/hippo:registry/Example_Clean_Hippo_Mirror_Docbase_Values_Having_Paths:
-      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+      hipposys:script: "/*\r\n * Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
         );\r\n * you may not use this file except in compliance with the License.\r\
         \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
@@ -25,7 +25,7 @@ definitions:
         \n  }\r\n\r\n}"
       hipposys:loglevel: DEBUG
     /hippo:configuration/hippo:update/hippo:registry/Example_Clean_Hippo_String_Docbase_Property_Values_Having_Paths:
-      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+      hipposys:script: "/*\r\n * Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
         );\r\n * you may not use this file except in compliance with the License.\r\
         \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
@@ -55,7 +55,7 @@ definitions:
         \n  }\r\n\r\n}"
       hipposys:loglevel: DEBUG
     /hippo:configuration/hippo:update/hippo:registry/Example_Export_Asset_and_Image_Set_Content:
-      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+      hipposys:script: "/*\r\n * Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
         );\r\n * you may not use this file except in compliance with the License.\r\
         \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
@@ -114,7 +114,7 @@ definitions:
       hipposys:loglevel: DEBUG
       hipposys:dryrun: false
     /hippo:configuration/hippo:update/hippo:registry/Example_Export_Published_Documents:
-      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+      hipposys:script: "/*\r\n * Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
         );\r\n * you may not use this file except in compliance with the License.\r\
         \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
@@ -171,7 +171,7 @@ definitions:
       hipposys:loglevel: DEBUG
       hipposys:dryrun: false
     /hippo:configuration/hippo:update/hippo:registry/Example_Import_Asset_and_Image_Set_Content:
-      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+      hipposys:script: "/*\r\n * Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
         );\r\n * you may not use this file except in compliance with the License.\r\
         \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
@@ -252,7 +252,7 @@ definitions:
       hipposys:loglevel: DEBUG
       hipposys:dryrun: false
     /hippo:configuration/hippo:update/hippo:registry/Example_Import_Documents_As_Unpublished:
-      hipposys:script: "/*\r\n * Copyright 2015-2017 Hippo B.V. (http://www.onehippo.com)\r\
+      hipposys:script: "/*\r\n * Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
         );\r\n * you may not use this file except in compliance with the License.\r\
         \n * You may obtain a copy of the License at\r\n *\r\n *   http://www.apache.org/licenses/LICENSE-2.0\r\
