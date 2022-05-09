@@ -30,7 +30,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.javaVersion>11</project.build.javaVersion>
 
-    <forge.hippo-pojo-bind-jcr.version>2.0.0-SNAPSHOT</forge.hippo-pojo-bind-jcr.version>
+    <forge.hippo-pojo-bind-jcr.version>2.0.0</forge.hippo-pojo-bind-jcr.version>
     <forge.gallery-magick.version>3.0.2</forge.gallery-magick.version>
     <jackson2.version>2.13.1</jackson2.version>
 
