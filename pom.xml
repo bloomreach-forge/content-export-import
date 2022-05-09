@@ -122,11 +122,6 @@
     <url>https://issues.onehippo.com/projects/HIPFORGE</url>
   </issueManagement>
 
-  <ciManagement>
-    <system>Travic CI</system>
-    <url>https://travis-ci.org/bloomreach-forge/content-export-import</url>
-  </ciManagement>
-
   <repositories>
     <repository>
       <id>hippo</id>
