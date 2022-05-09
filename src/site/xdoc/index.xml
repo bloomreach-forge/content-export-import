@@ -340,7 +340,7 @@
 
     <section name="Demo Application">
 
-      <subsection name="Demo Application with Hippo CMS 12">
+      <subsection name="Demo Application with Bloomreach CMS 15">
 
         <p>In the demo subfolder, you can build and run demo application, which contains all the examples explained in this site documentation.</p>
         <p>Here are example comomands to check out, build and run demo application:</p>
