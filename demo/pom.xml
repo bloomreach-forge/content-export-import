@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-release</artifactId>
-    <version>14.0.0-2</version>
+    <version>14.7.4</version>
   </parent>
 
   <name>Hippo Content Export / Import Demo</name>
@@ -65,7 +65,7 @@
 
     <content-exim.version>${project.version}</content-exim.version>
 
-    <essentials.version>14.0.0</essentials.version>
+    <essentials.version>14.7.4</essentials.version>
     <jsp-api.version>2.2</jsp-api.version>
     <taglibs.version>1.2.5</taglibs.version>
 
