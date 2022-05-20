@@ -44,12 +44,12 @@
     <commons-lang.version>2.6</commons-lang.version>
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-vfs2.version>2.2</commons-vfs2.version>
-    <commons-io.version>2.7</commons-io.version>
+    <commons-io.version>2.8.0</commons-io.version>
     <commons-csv.version>1.6</commons-csv.version>
     <commons-compress.version>1.21</commons-compress.version>
 
-    <tika-core.version>1.22</tika-core.version>
-    <tika-parsers.version>1.22</tika-parsers.version>
+    <tika-core.version>1.27</tika-core.version>
+    <tika-parsers.version>1.27</tika-parsers.version>
 
     <lib.junit.version>4.13.1</lib.junit.version>
     <lib.easymock.version>3.4</lib.easymock.version>
@@ -172,6 +172,7 @@
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-repository-jaxrs</artifactId>
         <version>${hippo.repository.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -185,6 +186,7 @@
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-cms7-utilities</artifactId>
         <version>${hippo.cms7.utilities.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -203,18 +205,21 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson2.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
         <version>${jackson2.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
         <version>${tika-core.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -316,6 +321,7 @@
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${commons-lang.version}</version>
+        <scope>provided</scope>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -328,6 +334,7 @@
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>${commons-collections.version}</version>
+        <scope>provided</scope>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -351,6 +358,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
+        <scope>provided</scope>
         <version>${commons-io.version}</version>
         <exclusions>
           <exclusion>
@@ -369,6 +377,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
+        <scope>provided</scope>
         <version>${commons-compress.version}</version>
       </dependency>
 
