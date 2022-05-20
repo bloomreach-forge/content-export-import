@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright 2018-2020 Hippo
+    Copyright 2018-2022 Bloomreach
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -65,7 +65,13 @@
       <subsection name="5.0.0">
         <p class="smallinfo">Release Date: May 2022</p>
         <ul>
-          <li><a href='https://issues.onehippo.com/browse/HIPFORGE-421'>HIPFORGE-421</a>: Upgrade to Bloomreach Experience Manager 15.
+          <li><a href='https://issues.onehippo.com/browse/HIPFORGE-421'>HIPFORGE-421</a>:
+            Upgrade to Bloomreach Experience Manager 15.
+          </li>
+          <li>Improve the Maven dependency model by setting 'provided' scope to dependencies
+            for hippo-repository-jaxrs, hippo-services, hippo-cms7-utilities,
+            jackson-core, jackson-databind, tika-core, commons-lang, commons-collections,
+            commons-io, commons-compress.
           </li>
         </ul>
       </subsection>
