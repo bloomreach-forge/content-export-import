@@ -41,11 +41,12 @@
     <hippo.services.version>15.0.0</hippo.services.version>
     <hippo.cms7.utilities.version>15.0.0</hippo.cms7.utilities.version>
 
+    <commons-csv.version>1.9.0</commons-csv.version>
+    <commons-vfs2.version>2.9.0</commons-vfs2.version>
+
     <commons-lang.version>2.6</commons-lang.version>
     <commons-collections.version>3.2.2</commons-collections.version>
-    <commons-vfs2.version>2.2</commons-vfs2.version>
     <commons-io.version>2.8.0</commons-io.version>
-    <commons-csv.version>1.6</commons-csv.version>
     <commons-compress.version>1.21</commons-compress.version>
 
     <tika-core.version>1.27</tika-core.version>
@@ -202,6 +203,25 @@
       </dependency>
 
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-vfs2</artifactId>
+        <version>${commons-vfs2.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${commons-csv.version}</version>
+      </dependency>
+
+      <!--- PROVIDED dependencies -->
+      <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson2.version}</version>
@@ -344,18 +364,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-vfs2</artifactId>
-        <version>${commons-vfs2.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <scope>provided</scope>
@@ -366,12 +374,6 @@
             <artifactId>commons-logging</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-csv</artifactId>
-        <version>${commons-csv.version}</version>
       </dependency>
 
       <dependency>
