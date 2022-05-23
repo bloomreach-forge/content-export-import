@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright 2018-2020 Hippo
+    Copyright 2018-2022 Bloomreach
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@
           </th>
         </tr>
         <tr>
+          <td>5.x</td>
+          <td>15.x</td>
+        </tr>
+        <tr>
           <td>4.x</td>
           <td>14.x</td>
         </tr>
@@ -56,6 +60,22 @@
           <td>10.2+</td>
         </tr>
       </table>
+    </section>
+    <section name="Release Notes of 5.x">
+      <subsection name="5.0.0">
+        <p class="smallinfo">Release Date: 23 May 2022</p>
+        <ul>
+          <li><a href='https://issues.onehippo.com/browse/HIPFORGE-421'>HIPFORGE-421</a>:
+            Upgrade to Bloomreach Experience Manager 15, i.e. use version 15.0.0 and build on Java 11.
+          </li>
+          <li>Improve the Maven dependency model by setting 'provided' scope to dependencies
+            for hippo-repository-jaxrs, hippo-services, hippo-cms7-utilities,
+            jackson-core, jackson-databind, tika-core, commons-lang, commons-collections,
+            commons-io, commons-compress.
+          </li>
+          <li>Bump compile dependency versions for commons-csv from 1.6 to 1.9.0 and commons-vfs2 from 2.2 to 2.9.0.</li>
+        </ul>
+      </subsection>
     </section>
     <section name="Release Notes of 4.x">
       <subsection name="4.0.1">

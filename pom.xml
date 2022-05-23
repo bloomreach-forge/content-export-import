@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2015-2020 Hippo B.V. (http://www.onehippo.com)
+  Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,40 +21,41 @@
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>4.0.1</version>
+  <version>5.0.0</version>
   <packaging>pom</packaging>
   <url>https://github.com/bloomreach-forge/content-export-import</url>
 
   <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.javaVersion>1.8</project.build.javaVersion>
+    <project.build.javaVersion>11</project.build.javaVersion>
 
-    <forge.hippo-pojo-bind-jcr.version>1.3.1</forge.hippo-pojo-bind-jcr.version>
+    <forge.hippo-pojo-bind-jcr.version>2.0.0</forge.hippo-pojo-bind-jcr.version>
     <forge.gallery-magick.version>3.0.2</forge.gallery-magick.version>
-    <jackson2.version>2.10.1</jackson2.version>
+    <jackson2.version>2.13.1</jackson2.version>
 
-    <servlet-api.version>3.0.1</servlet-api.version>
+    <servlet-api.version>3.1.0</servlet-api.version>
     <javax.jcr.version>2.0</javax.jcr.version>
 
-    <hippo.repository.version>14.0.0-2</hippo.repository.version>
-    <hippo.services.version>14.0.0</hippo.services.version>
-    <hippo.cms7.utilities.version>14.0.0</hippo.cms7.utilities.version>
+    <hippo.repository.version>15.0.0</hippo.repository.version>
+    <hippo.services.version>15.0.0</hippo.services.version>
+    <hippo.cms7.utilities.version>15.0.0</hippo.cms7.utilities.version>
+
+    <commons-csv.version>1.9.0</commons-csv.version>
+    <commons-vfs2.version>2.9.0</commons-vfs2.version>
 
     <commons-lang.version>2.6</commons-lang.version>
     <commons-collections.version>3.2.2</commons-collections.version>
-    <commons-vfs2.version>2.2</commons-vfs2.version>
-    <commons-io.version>2.6</commons-io.version>
-    <commons-csv.version>1.6</commons-csv.version>
-    <commons-compress.version>1.18</commons-compress.version>
+    <commons-io.version>2.8.0</commons-io.version>
+    <commons-compress.version>1.21</commons-compress.version>
 
-    <tika-core.version>1.22</tika-core.version>
-    <tika-parsers.version>1.22</tika-parsers.version>
+    <tika-core.version>1.27</tika-core.version>
+    <tika-parsers.version>1.27</tika-parsers.version>
 
-    <lib.junit.version>4.12</lib.junit.version>
+    <lib.junit.version>4.13.1</lib.junit.version>
     <lib.easymock.version>3.4</lib.easymock.version>
-    <lib.slf4j.version>1.7.25</lib.slf4j.version>
-    <lib.log4j2.version>2.8.2</lib.log4j2.version>
+    <lib.slf4j.version>1.7.30</lib.slf4j.version>
+    <lib.log4j2.version>2.17.1</lib.log4j2.version>
 
     <plugin.compiler.version>3.1</plugin.compiler.version>
     <plugin.clean.version>2.5</plugin.clean.version>
@@ -83,7 +84,7 @@
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -122,21 +123,16 @@
     <url>https://issues.onehippo.com/projects/HIPFORGE</url>
   </issueManagement>
 
-  <ciManagement>
-    <system>Travic CI</system>
-    <url>https://travis-ci.org/bloomreach-forge/content-export-import</url>
-  </ciManagement>
-
   <repositories>
     <repository>
       <id>hippo</id>
       <name>Hippo Maven 2 Repository</name>
-      <url>http://maven.onehippo.com/maven2/</url>
+      <url>https://maven.onehippo.com/maven2/</url>
     </repository>
     <repository>
       <id>hippo-maven2-forge</id>
       <name>Hippo Maven 2 Forge Repository</name>
-      <url>http://maven.onehippo.com/maven2-forge/</url>
+      <url>https://maven.onehippo.com/maven2-forge/</url>
       <snapshots />
     </repository>
   </repositories>
@@ -177,6 +173,7 @@
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-repository-jaxrs</artifactId>
         <version>${hippo.repository.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -190,6 +187,7 @@
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-cms7-utilities</artifactId>
         <version>${hippo.cms7.utilities.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -205,15 +203,47 @@
       </dependency>
 
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-vfs2</artifactId>
+        <version>${commons-vfs2.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs-client</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${commons-csv.version}</version>
+      </dependency>
+
+      <!--- PROVIDED dependencies -->
+      <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson2.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson2.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
         <version>${tika-core.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -315,6 +345,7 @@
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${commons-lang.version}</version>
+        <scope>provided</scope>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -327,18 +358,7 @@
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>${commons-collections.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-vfs2</artifactId>
-        <version>${commons-vfs2.version}</version>
+        <scope>provided</scope>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -350,6 +370,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
+        <scope>provided</scope>
         <version>${commons-io.version}</version>
         <exclusions>
           <exclusion>
@@ -361,13 +382,8 @@
 
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-csv</artifactId>
-        <version>${commons-csv.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
+        <scope>provided</scope>
         <version>${commons-compress.version}</version>
       </dependency>
 

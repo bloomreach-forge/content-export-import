@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/bloomreach-forge/content-export-import.svg?branch=develop)](https://travis-ci.org/bloomreach-forge/content-export-import)
-
 # Hippo Content Import/Export
 
 This project provides higher level features and examples of Content Import and Export, using 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2016 Hippo B.V. (http://www.onehippo.com)
+ * Copyright 2016-2022 Bloomreach B.V. (https://www.bloomreach.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import org.apache.commons.vfs2.FileDepthSelector;
 import org.apache.commons.vfs2.FileFilter;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.util.Messages;
 
 /**
@@ -41,7 +42,7 @@ public class FileFilterDepthSelector extends FileDepthSelector {
      * {@inheritDoc}
      */
     @Override
-    public boolean includeFile(final FileSelectInfo fileInfo) {
+    public boolean includeFile(final FileSelectInfo fileInfo) throws Exception {
         if (!super.includeFile(fileInfo)) {
             return false;
         }
@@ -54,7 +55,7 @@ public class FileFilterDepthSelector extends FileDepthSelector {
      * @param fileInfo fileInfo
      * @return true if {@code fileInfo} is acceptable by using the internal filter
      */
-    protected boolean accept(final FileSelectInfo fileInfo) {
+    protected boolean accept(final FileSelectInfo fileInfo) throws FileSystemException {
         if (fileFilter != null) {
             return fileFilter.accept(fileInfo);
         }

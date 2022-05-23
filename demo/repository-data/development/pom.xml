@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim-demo-repository-data</artifactId>
-    <version>4.0.1</version>
+    <version>5.0.0</version>
   </parent>
 
   <name>Hippo Content Export / Import Demo Repository Data For Development</name>
