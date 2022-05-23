@@ -3,7 +3,7 @@
   "-//Apache Software Foundation//DTD XDOC 1.0//EN"
   "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2015 Hippo
+    Copyright 2015-2022 Bloomreach
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -27,36 +27,21 @@
 
       <subsection name="Add Dependencies">
         <p>
-          Make sure you have the forge Maven2 repository reference and dependency definition in the root pom.xml of your project.
+          Make sure you have the Forge Maven 2 repository reference and dependency definition in the root pom.xml of your project.
         </p>
         <div class="brush: xml">
           <source><![CDATA[
     <repositories>
-
-      <!-- SNIP -->
-
       <repository>
         <id>hippo-maven2</id>
         <name>Hippo Maven 2 Repository</name>
         <url>https://maven.onehippo.com/maven2-forge//</url>
       </repository>
-
-      <!-- SNIP -->
-
     </repositories>
 
-    <!-- SNIP -->
-
     <dependencyManagement>
-
-      <!-- SNIP -->
-
       <dependencies>
-
-        <!-- SNIP -->
-
         <!-- NOTE: You should set a property named 'forge.content-exim.version' to a version of this plugin! -->
-
         <dependency>
           <groupId>org.onehippo.forge.content-exim</groupId>
           <artifactId>content-exim-core</artifactId>
@@ -79,13 +64,7 @@
           <artifactId>content-exim-updater-examples</artifactId>
           <version>${forge.content-exim.version}</version>
         </dependency>
-
-        <!-- SNIP -->
-
       </dependencies>
-
-      <!-- SNIP -->
-
     </dependencyManagement>
     ]]></source>
         </div>
@@ -97,8 +76,6 @@
         <div class="brush: xml">
           <source><![CDATA[
     <dependencies>
-
-      <!-- SNIP -->
 
       <dependency>
         <groupId>org.onehippo.forge.content-exim</groupId>
@@ -119,9 +96,6 @@
         <groupId>org.onehippo.forge.content-exim</groupId>
         <artifactId>content-exim-updater-examples</artifactId>
       </dependency>
-
-      <!-- SNIP -->
-
     </dependencies>
     ]]></source>
         </div>
@@ -142,7 +116,7 @@
           other than <a href="https://commons.apache.org/proper/commons-vfs/filesystems.html#Local_Files">Local Files</a>,
           please make sure you add necessary optional dependencies additionally
           as <a href="https://commons.apache.org/proper/commons-vfs/">Apache Commons VFS library</a> doesn't
-          include those optional depencencies by default. See the following for those optional dependnecies:
+          include those optional dependencies by default. See the following for those optional dependencies:
         </p>
         <ul>
           <li>

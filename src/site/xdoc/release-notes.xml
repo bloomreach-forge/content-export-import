@@ -63,16 +63,17 @@
     </section>
     <section name="Release Notes of 5.x">
       <subsection name="5.0.0">
-        <p class="smallinfo">Release Date: May 2022</p>
+        <p class="smallinfo">Release Date: 23 May 2022</p>
         <ul>
           <li><a href='https://issues.onehippo.com/browse/HIPFORGE-421'>HIPFORGE-421</a>:
-            Upgrade to Bloomreach Experience Manager 15.
+            Upgrade to Bloomreach Experience Manager 15, i.e. use version 15.0.0 and build on Java 11.
           </li>
           <li>Improve the Maven dependency model by setting 'provided' scope to dependencies
             for hippo-repository-jaxrs, hippo-services, hippo-cms7-utilities,
             jackson-core, jackson-databind, tika-core, commons-lang, commons-collections,
             commons-io, commons-compress.
           </li>
+          <li>Bump compile dependency versions for commons-csv from 1.6 to 1.9.0 and commons-vfs2 from 2.2 to 2.9.0.</li>
         </ul>
       </subsection>
     </section>
