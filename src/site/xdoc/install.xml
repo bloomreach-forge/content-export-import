@@ -35,7 +35,7 @@
       <repository>
         <id>hippo-maven2</id>
         <name>Hippo Maven 2 Repository</name>
-        <url>https://maven.onehippo.com/maven2-forge//</url>
+        <url>https://maven.bloomreach.com/maven2-forge/</url>
       </repository>
     </repositories>
 
