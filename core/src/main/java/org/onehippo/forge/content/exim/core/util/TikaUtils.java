@@ -33,7 +33,7 @@ import org.apache.tika.parser.pdf.PDFParser;
 /**
  * Apache Tika utilities.
  */
-public class TikaUtils {
+public final class TikaUtils {
 
     private static final Object lock = new Object();
 

@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.tika.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
 import org.slf4j.Logger;

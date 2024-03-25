@@ -62,6 +62,14 @@
       </table>
     </section>
     <section name="Release Notes of 5.x">
+      <subsection name="5.0.1">
+        <p class="smallinfo">Release Date: 25 March 2024</p>
+        <ul>
+          <li><a href='https://issues.onehippo.com/browse/FORGE-511'>FORGE-511</a>:
+            Bug-fix: NoSuchMethodError thrown in ContentEximImportService
+          </li>
+        </ul>
+      </subsection>
       <subsection name="5.0.0">
         <p class="smallinfo">Release Date: 23 May 2022</p>
         <ul>
