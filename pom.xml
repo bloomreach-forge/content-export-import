@@ -21,7 +21,7 @@
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>5.0.1</version>
+  <version>5.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>https://github.com/bloomreach-forge/content-export-import</url>
 
