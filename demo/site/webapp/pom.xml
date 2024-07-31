@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim-demo-site</artifactId>
-    <version>5.0.1</version>
+    <version>6.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>content-exim-demo-webapp</artifactId>
   <packaging>war</packaging>
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.onehippo.forge.content-exim</groupId>
       <artifactId>content-exim-demo-components</artifactId>
-      <version>5.0.1</version>
+      <version>6.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.onehippo.cms7.hst.toolkit-resources.addon</groupId>
@@ -53,7 +53,7 @@
     <plugins>
       <plugin>
         <groupId>org.codehaus.cargo</groupId>
-        <artifactId>cargo-maven2-plugin</artifactId>
+        <artifactId>cargo-maven3-plugin</artifactId>
         <configuration>
           <configuration>
             <type>runtime</type>

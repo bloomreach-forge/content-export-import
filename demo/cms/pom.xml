@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim-demo</artifactId>
-    <version>5.0.1</version>
+    <version>6.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>content-exim-demo-cms</artifactId>
   <packaging>war</packaging>
@@ -36,7 +36,7 @@
       </plugin>
       <plugin>
         <groupId>org.codehaus.cargo</groupId>
-        <artifactId>cargo-maven2-plugin</artifactId>
+        <artifactId>cargo-maven3-plugin</artifactId>
         <configuration>
           <configuration>
             <type>runtime</type>
