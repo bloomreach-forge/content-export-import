@@ -1,12 +1,12 @@
 /*
- * Copyright 2022 Bloomreach B.V. (https://www.bloomreach.com)
- * 
+ * Copyright 2024 Bloomreach B.V. (https://www.bloomreach.com)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,15 +27,15 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -222,7 +222,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             // NOTE: Close the open connection to the logical VFS FileObject folder wrapping the temp zip file.
             //       Otherwise, the open file descriptor by the zip VFS FileObject doesn't seem to be released,
-            //       and so OS cannot remove the temp zip file. 
+            //       and so OS cannot remove the temp zip file.
             if (baseFolder != null) {
                 try {
                     baseFolder.close();  // Contributed by Freenet (Dev: Mark Kaloukh)

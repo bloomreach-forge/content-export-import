@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2015-2022 Bloomreach B.V. (https://www.bloomreach.com)
+  Copyright 2015-2024 Bloomreach B.V. (https://www.bloomreach.com)
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,68 +17,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.onehippo.cms7</groupId>
+    <artifactId>hippo-cms7-release</artifactId>
+    <version>16.0.0</version>
+  </parent>
+
   <name>Hippo Content Export / Import</name>
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>5.0.2-SNAPSHOT</version>
+  <version>6.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>https://github.com/bloomreach-forge/content-export-import</url>
 
   <properties>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.javaVersion>11</project.build.javaVersion>
+    <project.build.javaVersion>17</project.build.javaVersion>
 
     <forge.hippo-pojo-bind-jcr.version>2.0.0</forge.hippo-pojo-bind-jcr.version>
     <forge.gallery-magick.version>3.0.2</forge.gallery-magick.version>
-    <jackson2.version>2.13.1</jackson2.version>
 
-    <servlet-api.version>3.1.0</servlet-api.version>
-    <javax.jcr.version>2.0</javax.jcr.version>
-
-    <hippo.repository.version>15.0.0</hippo.repository.version>
-    <hippo.services.version>15.0.0</hippo.services.version>
-    <hippo.cms7.utilities.version>15.0.0</hippo.cms7.utilities.version>
-
-    <commons-csv.version>1.9.0</commons-csv.version>
     <commons-vfs2.version>2.9.0</commons-vfs2.version>
-
-    <commons-lang.version>2.6</commons-lang.version>
-    <commons-collections.version>3.2.2</commons-collections.version>
-    <commons-io.version>2.8.0</commons-io.version>
-    <commons-compress.version>1.21</commons-compress.version>
-
-    <tika-core.version>2.4.1</tika-core.version>
-    <tika-parsers.version>2.4.1</tika-parsers.version>
 
     <lib.junit.version>4.13.1</lib.junit.version>
     <lib.easymock.version>3.4</lib.easymock.version>
     <lib.slf4j.version>1.7.30</lib.slf4j.version>
     <lib.log4j2.version>2.17.1</lib.log4j2.version>
 
-    <plugin.compiler.version>3.1</plugin.compiler.version>
-    <plugin.clean.version>2.5</plugin.clean.version>
-    <plugin.deploy.version>2.8.1</plugin.deploy.version>
-    <plugin.install.version>2.5.1</plugin.install.version>
-    <plugin.jar.version>2.4</plugin.jar.version>
-    <plugin.javadoc.version>2.9.1</plugin.javadoc.version>
-    <plugin.jxr.version>2.3</plugin.jxr.version>
+    <plugin.jxr.version>3.4.0</plugin.jxr.version>
     <plugin.pmd.version>3.1</plugin.pmd.version>
-    <plugin.project-info-reports.version>2.7</plugin.project-info-reports.version>
-    <plugin.release.version>2.5</plugin.release.version>
-    <plugin.resources.version>2.6</plugin.resources.version>
-    <plugin.site.version>3.6</plugin.site.version>
-    <plugin.source.version>2.2.1</plugin.source.version>
-    <plugin.surefire.version>2.17</plugin.surefire.version>
-    <plugin.surefire-report.version>2.17</plugin.surefire-report.version>
-
-    <plugin.checkstyle.version>2.6</plugin.checkstyle.version>
-    <plugin.cobertura.version>2.4</plugin.cobertura.version>
-    <plugin.findbugs.version>2.3.2</plugin.findbugs.version>
+    <plugin.resources.version>3.0.2</plugin.resources.version>
 
     <extension.wagon-svn.version>1.9</extension.wagon-svn.version>
-
   </properties>
 
   <licenses>
@@ -112,9 +83,9 @@
 
   <distributionManagement>
     <repository>
-      <name>Hippo Maven 2 Forge Repository</name>
-      <id>hippo-maven2-forge</id>
-      <url>https://maven.onehippo.com/content/repositories/forge-releases/</url>
+      <id>bloomreach-maven2-forge</id>
+      <name>Bloomreach Maven 2 Forge Repository</name>
+      <url>https://maven.bloomreach.com/content/repositories/forge-releases/</url>
       <uniqueVersion>false</uniqueVersion>
     </repository>
   </distributionManagement>
@@ -125,14 +96,14 @@
 
   <repositories>
     <repository>
-      <id>hippo</id>
-      <name>Hippo Maven 2 Repository</name>
-      <url>https://maven.onehippo.com/maven2/</url>
+      <id>bloomreach-maven2</id>
+      <name>Bloomreach Maven 2 Repository</name>
+      <url>https://maven.bloomreach.com/maven2/</url>
     </repository>
     <repository>
-      <id>hippo-maven2-forge</id>
-      <name>Hippo Maven 2 Forge Repository</name>
-      <url>https://maven.onehippo.com/maven2-forge/</url>
+      <id>bloomreach-maven2-forge</id>
+      <name>Bloomreach Maven 2 Forge Repository</name>
+      <url>https://maven.bloomreach.com/maven2-forge/</url>
       <snapshots />
     </repository>
   </repositories>
@@ -142,8 +113,8 @@
     <dependencies>
 
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
         <version>${servlet-api.version}</version>
         <scope>provided</scope>
       </dependency>
@@ -179,14 +150,14 @@
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-services</artifactId>
-        <version>${hippo.services.version}</version>
+        <version>${hippo.release.version}</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-cms7-utilities</artifactId>
-        <version>${hippo.cms7.utilities.version}</version>
+        <version>${hippo.release.version}</version>
         <scope>provided</scope>
       </dependency>
 
@@ -242,14 +213,14 @@
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
-        <version>${tika-core.version}</version>
+        <version>${tika.version}</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-parsers-standard-package</artifactId>
-        <version>${tika-parsers.version}</version>
+        <version>${tika.version}</version>
         <exclusions>
           <exclusion>
             <artifactId>bcmail-jdk15</artifactId>
@@ -342,9 +313,9 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
-        <version>${commons-lang.version}</version>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
         <scope>provided</scope>
         <exclusions>
           <exclusion>
@@ -355,9 +326,9 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-collections</groupId>
-        <artifactId>commons-collections</artifactId>
-        <version>${commons-collections.version}</version>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>${commons-collections4.version}</version>
         <scope>provided</scope>
         <exclusions>
           <exclusion>
@@ -457,7 +428,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>${plugin.project-info-reports.version}</version>
+        <version>${maven.plugin.project-info.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -477,7 +448,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${plugin.javadoc.version}</version>
+        <version>${maven.plugin.javadoc.version}</version>
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
           <skip>false</skip>
@@ -496,7 +467,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${plugin.surefire-report.version}</version>
+        <version>${maven.plugin.surefire-report.version}</version>
       </plugin>
     </plugins>
   </reporting>
@@ -509,7 +480,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${plugin.compiler.version}</version>
+        <version>${maven.plugin.compiler.version}</version>
         <configuration>
           <source>${project.build.javaVersion}</source>
           <target>${project.build.javaVersion}</target>
@@ -518,27 +489,27 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>${plugin.clean.version}</version>
+        <version>${maven.plugin.clean.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
-        <version>${plugin.install.version}</version>
+        <version>${maven.plugin.install.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${plugin.deploy.version}</version>
+        <version>${maven.plugin.deploy.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>${plugin.jar.version}</version>
+        <version>${maven.plugin.jar.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${plugin.surefire.version}</version>
+        <version>${maven.plugin.surefire.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -548,21 +519,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>${plugin.site.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${plugin.source.version}</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
+        <version>${maven.plugin.site.version}</version>
       </plugin>
     </plugins>
 
@@ -585,7 +542,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-site-plugin</artifactId>
-            <version>${plugin.site.version}</version>
+            <version>${maven.plugin.site.version}</version>
             <configuration>
               <outputDirectory>docs</outputDirectory>
             </configuration>

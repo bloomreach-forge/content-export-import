@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright 2018-2022 Bloomreach
+    Copyright 2018-2024 Bloomreach
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@
           </th>
         </tr>
         <tr>
+          <td>6.x</td>
+          <td>16.x</td>
+        </tr>
+        <tr>
           <td>5.x</td>
           <td>15.x</td>
         </tr>
@@ -60,6 +64,16 @@
           <td>10.2+</td>
         </tr>
       </table>
+    </section>
+    <section name="Release Notes of 6.x">
+      <subsection name="6.0.0">
+        <p class="smallinfo">Release Date: 31 July 2024</p>
+        <ul>
+          <li><a href='https://issues.onehippo.com/browse/FORGE-519'>FORGE-519</a>:
+            Upgrade to Bloomreach Experience Manager 16, i.e. use version 16.0.0, build on Java 17, and Javax to Jakarta namespace migration.
+          </li>
+        </ul>
+      </subsection>
     </section>
     <section name="Release Notes of 5.x">
       <subsection name="5.0.1">

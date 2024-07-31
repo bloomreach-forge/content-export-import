@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Bloomreach B.V. (https://www.bloomreach.com)
+ * Copyright 2024 Bloomreach B.V. (https://www.bloomreach.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,17 +29,17 @@ import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.StreamingOutput;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
