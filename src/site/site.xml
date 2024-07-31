@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <!--
-    Copyright 2015-2022 Bloomreach
+    Copyright 2015-2024 Bloomreach
 
     Licensed under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
@@ -45,7 +45,7 @@
         <item name="Exporting Binaries" href="tutorials-export-bins.html" />
         <item name="Exporting Documents" href="tutorials-export-docs.html" />
         <item name="Importing Binaries" href="tutorials-import-bins.html" />
-        <item name="Importing Image Set From Files" href="tutorials-import-image-files.html" /> 
+        <item name="Importing Image Set From Files" href="tutorials-import-image-files.html" />
         <item name="Importing Documents" href="tutorials-import-docs.html" />
         <item name="Cleaning Hippo Mirror Docbase Values" href="tutorials-clean-mirror-docbase.html" />
         <item name="Clean Hippo String Docbase Property Values" href="tutorials-clean-string-docbase.html" />
@@ -60,4 +60,3 @@
   </body>
 
 </project>
-

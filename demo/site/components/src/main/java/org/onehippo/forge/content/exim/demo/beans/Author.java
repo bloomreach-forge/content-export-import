@@ -1,7 +1,7 @@
 package org.onehippo.forge.content.exim.demo.beans;
 
 /*
- * Copyright 2014-2022 Bloomreach B.V. (https://www.bloomreach.com)
+ * Copyright 2014-2024 Bloomreach B.V. (https://www.bloomreach.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
