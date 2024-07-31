@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                   <meta name="Date-Revision-yyyymmdd" content="20240731" />
               <meta http-equiv="Content-Language" content="en" />
-      <title>Hippo Content EXIM (EXport/IMport) Documentation &#x2013; Reactor Dependency Convergence</title>
+      <title>Hippo Content EXIM (EXport/IMport) Documentation &#x2013; Issue Management</title>
   <link rel="stylesheet" href="./css/forge-maven-skin-syntaxhighlighter-3.2.1.min.css"/>
   <link rel="stylesheet" href="./css/forge-maven-skin-3.2.1.min.css"/>
   <link rel="stylesheet" href="./css/site.css" />
@@ -88,12 +88,12 @@
                                                                                                                                                                                                                                     <li>  <a href="project-info.html" title="Project Information">  <span class="icon-chevron-down"></span>  Project Information</a>  
     <ul class="nav nav-list">
                   <li>  <a href="dependencies.html" title="Dependencies">  <span class="none"></span>  Dependencies</a>  </li>
-                        <li class="active">  <a href="#"><span class="none"></span>Dependency Convergence</a>
-  </li>
+                        <li>  <a href="dependency-convergence.html" title="Dependency Convergence">  <span class="none"></span>  Dependency Convergence</a>  </li>
                         <li>  <a href="dependency-info.html" title="Dependency Information">  <span class="none"></span>  Dependency Information</a>  </li>
                         <li>  <a href="dependency-management.html" title="Dependency Management">  <span class="none"></span>  Dependency Management</a>  </li>
                         <li>  <a href="distribution-management.html" title="Distribution Management">  <span class="none"></span>  Distribution Management</a>  </li>
-                                  <li>  <a href="issue-management.html" title="Issue Management">  <span class="none"></span>  Issue Management</a>  </li>
+                                  <li class="active">  <a href="#"><span class="none"></span>Issue Management</a>
+  </li>
                         <li>  <a href="licenses.html" title="Licenses">  <span class="none"></span>  Licenses</a>  </li>
                         <li>  <a href="modules.html" title="Project Modules">  <span class="none"></span>  Project Modules</a>  </li>
                         <li>  <a href="plugin-management.html" title="Plugin Management">  <span class="none"></span>  Plugin Management</a>  </li>
@@ -118,74 +118,12 @@
   </div>
   <div id="bodyColumn"  class="span10" >
     <section>
-<h2><a name="Reactor_Dependency_Convergence"></a>Reactor Dependency Convergence</h2>
-<table border="0" class="table table-striped"><caption>
-  <b>Legend:</b>
-</caption>
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>At least one dependency has a differing version of the dependency or has SNAPSHOT dependencies.</td></tr></table><br />
-<table border="0" class="table table-striped"><caption>
-  <b>Statistics:</b>
-</caption>
-<tr class="a">
-<th>Number of modules:</th>
-<td>4</td></tr>
-<tr class="b">
-<th>Number of dependencies (NOD):</th>
-<td>177</td></tr>
-<tr class="a">
-<th>Number of unique artifacts (NOA):</th>
-<td>179</td></tr>
-<tr class="b">
-<th>Number of version-conflicting artifacts (NOC):</th>
-<td>2</td></tr>
-<tr class="a">
-<th>Number of SNAPSHOT artifacts (NOS):</th>
-<td>0</td></tr>
-<tr class="b">
-<th>Convergence (NOD/NOA):</th>
-<td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>98 %</b></td></tr>
-<tr class="a">
-<th>Ready for release (100% convergence and no SNAPSHOTS):</th>
-<td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>Error</b><br />You do not have 100% convergence.</td></tr></table></section><section>
-<h3><a name="Dependencies_used_in_modules"></a>Dependencies used in modules</h3><section>
-<h4><a name="org.apache.httpcomponents:httpclient"></a>org.apache.httpcomponents:httpclient</h4>
-<table border="0" class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table border="0" class="table table-striped">
-<tr class="b">
-<td width="25%">4.5.13</td>
-<td>
-<ol style="list-style-type: decimal">
-<li>org.onehippo.forge.content-exim:content-exim-core:jar:6.0.0<br />\-&#160;org.onehippo.cms7:hippo-repository-testutils:jar:16.0.0:test<br />&#160;&#160;&#160;\-&#160;io.rest-assured:rest-assured:jar:5.4.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.httpcomponents:httpclient:jar:4.5.13:test<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.httpcomponents:httpmime:jar:4.5.13:test<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.httpcomponents:httpclient:jar:4.5.13:test<br /></li><br />
-<li>org.onehippo.forge.content-exim:content-exim-repository-jaxrs:jar:6.0.0<br />\-&#160;org.onehippo.cms7:hippo-repository-testutils:jar:16.0.0:test<br />&#160;&#160;&#160;\-&#160;io.rest-assured:rest-assured:jar:5.4.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.httpcomponents:httpclient:jar:4.5.13:test<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.httpcomponents:httpmime:jar:4.5.13:test<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.httpcomponents:httpclient:jar:4.5.13:test<br /></li><br /></ol></td></tr>
-<tr class="a">
-<td width="25%">4.5.14</td>
-<td>
-<ol style="list-style-type: decimal">
-<li>org.onehippo.forge.content-exim:content-exim-core:jar:6.0.0<br />\-&#160;org.onehippo.cms7:hippo-repository-testutils:jar:16.0.0:test<br />&#160;&#160;&#160;\-&#160;org.apache.httpcomponents:httpclient:jar:4.5.14:test<br /></li><br />
-<li>org.onehippo.forge.content-exim:content-exim-repository-jaxrs:jar:6.0.0<br />\-&#160;org.onehippo.cms7:hippo-repository-testutils:jar:16.0.0:test<br />&#160;&#160;&#160;\-&#160;org.apache.httpcomponents:httpclient:jar:4.5.14:test<br /></li><br /></ol></td></tr></table></td></tr></table></section><section>
-<h4><a name="org.bouncycastle:bcprov-jdk15on"></a>org.bouncycastle:bcprov-jdk15on</h4>
-<table border="0" class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table border="0" class="table table-striped">
-<tr class="b">
-<td width="25%">1.60</td>
-<td>
-<ol style="list-style-type: decimal">
-<li>org.onehippo.forge.content-exim:content-exim-core:jar:6.0.0<br />\-&#160;org.apache.tika:tika-parsers-standard-package:jar:2.4.1:provided<br />&#160;&#160;&#160;\-&#160;org.apache.tika:tika-parser-microsoft-module:jar:2.4.1:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.healthmarketscience.jackcess:jackcess-encrypt:jar:4.0.1:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.60:provided<br /></li><br />
-<li>org.onehippo.forge.content-exim:content-exim-repository-jaxrs:jar:6.0.0<br />\-&#160;org.apache.tika:tika-parsers-standard-package:jar:2.4.1:provided<br />&#160;&#160;&#160;\-&#160;org.apache.tika:tika-parser-microsoft-module:jar:2.4.1:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.healthmarketscience.jackcess:jackcess-encrypt:jar:4.0.1:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.60:provided<br /></li><br /></ol></td></tr>
-<tr class="a">
-<td width="25%">1.70</td>
-<td>
-<ol style="list-style-type: decimal">
-<li>org.onehippo.forge.content-exim:content-exim-core:jar:6.0.0<br />\-&#160;org.apache.tika:tika-parsers-standard-package:jar:2.4.1:provided<br />&#160;&#160;&#160;+-&#160;org.apache.tika:tika-parser-crypto-module:jar:2.4.1:provided<br />&#160;&#160;&#160;|&#160;&#160;+-&#160;org.bouncycastle:bcmail-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;+-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;+-&#160;org.bouncycastle:bcutil-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcpkix-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;&#160;&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;+-&#160;org.apache.tika:tika-parser-digest-commons:jar:2.4.1:provided<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;+-&#160;org.apache.tika:tika-parser-microsoft-module:jar:2.4.1:provided<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;\-&#160;org.apache.tika:tika-parser-pdf-module:jar:2.4.1:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br /></li><br />
-<li>org.onehippo.forge.content-exim:content-exim-repository-jaxrs:jar:6.0.0<br />\-&#160;org.apache.tika:tika-parsers-standard-package:jar:2.4.1:provided<br />&#160;&#160;&#160;+-&#160;org.apache.tika:tika-parser-crypto-module:jar:2.4.1:provided<br />&#160;&#160;&#160;|&#160;&#160;+-&#160;org.bouncycastle:bcmail-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;+-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;+-&#160;org.bouncycastle:bcutil-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcpkix-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;&#160;&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;+-&#160;org.apache.tika:tika-parser-digest-commons:jar:2.4.1:provided<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;+-&#160;org.apache.tika:tika-parser-microsoft-module:jar:2.4.1:provided<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br />&#160;&#160;&#160;\-&#160;org.apache.tika:tika-parser-pdf-module:jar:2.4.1:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.bouncycastle:bcprov-jdk15on:jar:1.70:provided<br /></li><br /></ol></td></tr></table></td></tr></table></section></section>
+<h2><a name="Overview"></a>Overview</h2><a name="Overview"></a>
+<p>This project uses an issue management system to manage its issues.</p></section><section>
+<h2><a name="Issue_Management"></a>Issue Management</h2><a name="Issue_Management"></a>
+<p>Issues, bugs, and feature requests should be submitted to the following issue management system for this project.</p>
+<div>
+<pre><a class="externalLink" href="https://issues.onehippo.com/projects/HIPFORGE">https://issues.onehippo.com/projects/HIPFORGE</a></pre></div></section>
     </div>
     </div>
     </div>
