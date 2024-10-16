@@ -442,19 +442,20 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${maven.plugin.javadoc.version}</version>
-        <configuration>
-          <encoding>${project.build.sourceEncoding}</encoding>
-          <skip>false</skip>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <id>default</id>
-            <reports>
-              <report>javadoc</report>
-              <report>test-javadoc</report>
-            </reports>
-          </reportSet>
-        </reportSets>
+<!--        <configuration>-->
+<!--          <encoding>${project.build.sourceEncoding}</encoding>-->
+<!--          <skip>false</skip>-->
+<!--          <aggregate>true</aggregate>-->
+<!--        </configuration>-->
+<!--        <reportSets>-->
+<!--          <reportSet>-->
+<!--            <id>default</id>-->
+<!--            <reports>-->
+<!--              <report>javadoc</report>-->
+<!--              <report>test-javadoc</report>-->
+<!--            </reports>-->
+<!--          </reportSet>-->
+<!--        </reportSets>-->
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
