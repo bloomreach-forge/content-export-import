@@ -27,7 +27,7 @@
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>6.0.0</version>
+  <version>6.0.1</version>
   <packaging>pom</packaging>
   <url>https://github.com/bloomreach-forge/content-export-import</url>
 
@@ -35,21 +35,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.javaVersion>17</project.build.javaVersion>
 
-    <forge.hippo-pojo-bind-jcr.version>2.0.0</forge.hippo-pojo-bind-jcr.version>
-    <forge.gallery-magick.version>3.0.2</forge.gallery-magick.version>
+    <forge.hippo-pojo-bind-jcr.version>3.0.1</forge.hippo-pojo-bind-jcr.version>
+    <forge.gallery-magick.version>4.0.0</forge.gallery-magick.version>
 
     <commons-vfs2.version>2.9.0</commons-vfs2.version>
 
-    <lib.junit.version>4.13.1</lib.junit.version>
-    <lib.easymock.version>3.4</lib.easymock.version>
-    <lib.slf4j.version>1.7.30</lib.slf4j.version>
-    <lib.log4j2.version>2.17.1</lib.log4j2.version>
-
     <plugin.jxr.version>3.4.0</plugin.jxr.version>
     <plugin.pmd.version>3.1</plugin.pmd.version>
-    <plugin.resources.version>3.0.2</plugin.resources.version>
 
-    <extension.wagon-svn.version>1.9</extension.wagon-svn.version>
   </properties>
 
   <licenses>
@@ -91,7 +84,7 @@
   </distributionManagement>
 
   <issueManagement>
-    <url>https://issues.onehippo.com/projects/HIPFORGE</url>
+    <url>https://issues.onehippo.com/projects/FORGE</url>
   </issueManagement>
 
   <repositories>
@@ -296,14 +289,14 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${lib.slf4j.version}</version>
+        <version>${slf4j.version}</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${lib.slf4j.version}</version>
+        <version>${slf4j.version}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -370,46 +363,46 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
-        <version>${lib.slf4j.version}</version>
+        <version>${slf4j.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${lib.log4j2.version}</version>
+        <version>${log4j2.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>${lib.log4j2.version}</version>
+        <version>${log4j2.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>${lib.log4j2.version}</version>
+        <version>${log4j2.version}</version>
         <scope>test</scope>
       </dependency>
       <!-- only (should) be needed to (test)compile log4j1.x (backward compatible) usages -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
-        <version>${lib.log4j2.version}</version>
+        <version>${log4j2.version}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>${lib.junit.version}</version>
+        <version>${junit.version}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>${lib.easymock.version}</version>
+        <version>${easymock.version}</version>
         <scope>test</scope>
       </dependency>
 
@@ -452,7 +445,6 @@
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
           <skip>false</skip>
-          <aggregate>true</aggregate>
         </configuration>
         <reportSets>
           <reportSet>
@@ -514,7 +506,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>${plugin.resources.version}</version>
+        <version>${maven.plugin.resources.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -522,14 +514,6 @@
         <version>${maven.plugin.site.version}</version>
       </plugin>
     </plugins>
-
-    <extensions>
-      <extension>
-        <groupId>org.jvnet.wagon-svn</groupId>
-        <artifactId>wagon-svn</artifactId>
-        <version>${extension.wagon-svn.version}</version>
-      </extension>
-    </extensions>
 
   </build>
 
