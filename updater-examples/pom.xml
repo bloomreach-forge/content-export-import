@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>6.0.2-SNAPSHOT</version>
+    <version>6.1.0</version>
   </parent>
 
   <name>Hippo Content Export / Import Groovy Updater Script Examples</name>
