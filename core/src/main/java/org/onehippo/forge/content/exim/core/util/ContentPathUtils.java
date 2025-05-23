@@ -18,7 +18,7 @@ package org.onehippo.forge.content.exim.core.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Content Node Path related utilities.
