@@ -35,7 +35,7 @@
       <repository>
         <id>bloomreach-maven2</id>
         <name>Bloomreach Maven 2 Repository</name>
-        <url>https://maven.bloomreach.com/repository/maven2-forge//</url>
+        <url>https://maven.bloomreach.com/repository/maven2-forge/</url>
       </repository>
     </repositories>
 
