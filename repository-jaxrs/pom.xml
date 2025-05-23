@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>6.0.1</version>
+    <version>6.1.0</version>
   </parent>
 
   <name>Hippo Content Export / Import Repository JAX-RS Services</name>
@@ -89,8 +89,8 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <dependency>

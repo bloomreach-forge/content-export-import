@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2015-2024 Bloomreach B.V. (https://www.bloomreach.com)
+  Copyright 2015-2025 Bloomreach B.V. (https://www.bloomreach.com)
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,28 +20,27 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-release</artifactId>
-    <version>16.0.0</version>
+    <version>16.3.0</version>
   </parent>
 
   <name>Hippo Content Export / Import</name>
   <description>Hippo Content Export / Import</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim</artifactId>
-  <version>6.0.1</version>
+  <version>6.1.0</version>
   <packaging>pom</packaging>
   <url>https://github.com/bloomreach-forge/content-export-import</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.javaVersion>17</project.build.javaVersion>
 
-    <forge.hippo-pojo-bind-jcr.version>3.0.1</forge.hippo-pojo-bind-jcr.version>
-    <forge.gallery-magick.version>4.0.0</forge.gallery-magick.version>
+    <forge.hippo-pojo-bind-jcr.version>3.1.0</forge.hippo-pojo-bind-jcr.version>
+    <forge.gallery-magick.version>4.1.0</forge.gallery-magick.version>
 
-    <commons-vfs2.version>2.9.0</commons-vfs2.version>
+    <commons-vfs2.version>2.10.0</commons-vfs2.version>
 
-    <plugin.jxr.version>3.4.0</plugin.jxr.version>
-    <plugin.pmd.version>3.1</plugin.pmd.version>
+    <plugin.jxr.version>3.6.0</plugin.jxr.version>
+    <plugin.pmd.version>3.26.0</plugin.pmd.version>
 
   </properties>
 
