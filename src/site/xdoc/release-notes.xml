@@ -66,6 +66,14 @@
       </table>
     </section>
     <section name="Release Notes of 6.x">
+      <subsection name="6.1.0">
+        <p class="smallinfo">Release Date: 23 May 2025</p>
+        <ul>
+          <li><a href='https://bloomreach.atlassian.net/browse/FORGE-566'>FORGE-566</a>:
+            Move from commons-lang and commons-collections to org.apache.commons and bump commons-vfs2 to version 2.10.0
+          </li>
+        </ul>
+      </subsection>
       <subsection name="6.0.1">
         <p class="smallinfo">Release Date: 16 October 2024</p>
         <ul>

@@ -33,9 +33,9 @@
           <source><![CDATA[
     <repositories>
       <repository>
-        <id>hippo-maven2</id>
-        <name>Hippo Maven 2 Repository</name>
-        <url>https://maven.onehippo.com/maven2-forge//</url>
+        <id>bloomreach-maven2</id>
+        <name>Bloomreach Maven 2 Repository</name>
+        <url>https://maven.bloomreach.com/repository/maven2-forge//</url>
       </repository>
     </repositories>
 

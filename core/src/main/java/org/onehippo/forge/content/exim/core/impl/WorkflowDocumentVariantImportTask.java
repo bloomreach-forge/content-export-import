@@ -18,7 +18,7 @@ package org.onehippo.forge.content.exim.core.impl;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hippoecm.repository.api.Document;
 import org.hippoecm.repository.api.HippoNodeType;
 import org.onehippo.forge.content.exim.core.Constants;

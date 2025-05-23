@@ -28,8 +28,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.commons.io.IOUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
