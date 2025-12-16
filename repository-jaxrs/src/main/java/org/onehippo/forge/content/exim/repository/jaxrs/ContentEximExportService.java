@@ -202,6 +202,9 @@ public class ContentEximExportService extends AbstractContentEximService {
                     ZipArchiveOutputStream zipOutput = null;
                     try {
                         zipOutput = new ZipArchiveOutputStream(output);
+                        // FORGE-448: Enable Unicode extra fields for proper handling of non-ASCII filenames (e.g., Cyrillic characters)
+                        // This ensures that filenames with Unicode characters are correctly preserved in the ZIP archive
+                        // without being mangled or converted to question marks during extraction
                         zipOutput.setCreateUnicodeExtraFields(ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS);
 
                         ZipCompressUtils.addEntryToZip(EXIM_EXECUTION_LOG_REL_PATH, tempLogOutString, "UTF-8",
