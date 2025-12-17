@@ -21,6 +21,10 @@ import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 
 public class ProcessStatus {
 
+    public enum Status {
+        RUNNING, COMPLETED, FAILED, CANCELLED
+    }
+
     private final long id;
     private final long startTimeMillis;
     private String username;
@@ -29,6 +33,12 @@ public class ProcessStatus {
     private double progress;
     private ExecutionParams executionParams;
     private File logFile;
+    private String exportFilePath;
+    private String importFilePath;
+    private long completionTimeMillis;
+    private Status status = Status.RUNNING;
+    private String errorMessage;
+    private volatile boolean cancellationRequested = false;
 
     public ProcessStatus(final long id, final long startTimeMillis) {
         this.id = id;
@@ -89,6 +99,54 @@ public class ProcessStatus {
 
     public void setLogFile(File logFile) {
         this.logFile = logFile;
+    }
+
+    public String getExportFilePath() {
+        return exportFilePath;
+    }
+
+    public void setExportFilePath(String exportFilePath) {
+        this.exportFilePath = exportFilePath;
+    }
+
+    public String getImportFilePath() {
+        return importFilePath;
+    }
+
+    public void setImportFilePath(String importFilePath) {
+        this.importFilePath = importFilePath;
+    }
+
+    public long getCompletionTimeMillis() {
+        return completionTimeMillis;
+    }
+
+    public void setCompletionTimeMillis(long completionTimeMillis) {
+        this.completionTimeMillis = completionTimeMillis;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public boolean isCancellationRequested() {
+        return cancellationRequested;
+    }
+
+    public void requestCancellation() {
+        this.cancellationRequested = true;
     }
 
 }
