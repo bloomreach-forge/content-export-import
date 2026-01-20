@@ -108,8 +108,8 @@ public class ProcessFileManager {
      * Creates a new export file with a unique identifier.
      * Returns the file path relative to the exports directory.
      */
-    public String createExportFile(long processId) throws IOException {
-        String filename = String.format("exim-export-%d-%s.zip", processId, UUID.randomUUID().toString());
+    public String createExportFile(String processId) throws IOException {
+        String filename = String.format("exim-export-%s-%s.zip", processId, UUID.randomUUID().toString());
         Path filePath = exportsPath.resolve(filename);
         Files.createFile(filePath);
         return filePath.toString();
@@ -119,8 +119,8 @@ public class ProcessFileManager {
      * Creates a new import file with a unique identifier.
      * Returns the file path relative to the imports directory.
      */
-    public String createImportFile(long processId) throws IOException {
-        String filename = String.format("exim-import-%d-%s.zip", processId, UUID.randomUUID().toString());
+    public String createImportFile(String processId) throws IOException {
+        String filename = String.format("exim-import-%s-%s.zip", processId, UUID.randomUUID().toString());
         Path filePath = importsPath.resolve(filename);
         Files.createFile(filePath);
         return filePath.toString();

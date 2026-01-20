@@ -21,7 +21,7 @@ package org.onehippo.forge.content.exim.repository.jaxrs.param;
 public class ImportResultsResponse {
 
     private String status;
-    private long processId;
+    private String processId;
     private double progress;
     private long completionTime;
     private String message;
@@ -29,7 +29,7 @@ public class ImportResultsResponse {
     public ImportResultsResponse() {
     }
 
-    public ImportResultsResponse(String status, long processId, double progress, long completionTime, String message) {
+    public ImportResultsResponse(String status, String processId, double progress, long completionTime, String message) {
         this.status = status;
         this.processId = processId;
         this.progress = progress;
@@ -45,11 +45,11 @@ public class ImportResultsResponse {
         this.status = status;
     }
 
-    public long getProcessId() {
+    public String getProcessId() {
         return processId;
     }
 
-    public void setProcessId(long processId) {
+    public void setProcessId(String processId) {
         this.processId = processId;
     }
 

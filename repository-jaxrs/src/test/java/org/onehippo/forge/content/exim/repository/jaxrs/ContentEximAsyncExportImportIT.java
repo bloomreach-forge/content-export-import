@@ -22,6 +22,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +67,7 @@ public class ContentEximAsyncExportImportIT {
         // Start a process
         ProcessStatus process = processMonitor.startProcess();
         assertNotNull("Process should be created", process);
-        assertTrue("Process ID should be positive", process.getId() > 0);
+        assertTrue("Process ID should not be empty", process.getId() != null && !process.getId().isEmpty());
         assertEquals("Initial status should be RUNNING", ProcessStatus.Status.RUNNING, process.getStatus());
         assertEquals("Initial progress should be 0", 0.0, process.getProgress(), 0.01);
 
@@ -88,7 +94,7 @@ public class ContentEximAsyncExportImportIT {
      */
     @Test
     public void testExportFileCreation() throws IOException {
-        long processId = 1L;
+        String processId = UUID.randomUUID().toString();
         String exportFile = fileManager.createExportFile(processId);
 
         assertNotNull("Export file path should be created", exportFile);
@@ -114,7 +120,7 @@ public class ContentEximAsyncExportImportIT {
      */
     @Test
     public void testImportFileCreation() throws IOException {
-        long processId = 1L;
+        String processId = UUID.randomUUID().toString();
         String importFile = fileManager.createImportFile(processId);
 
         assertNotNull("Import file path should be created", importFile);
@@ -140,7 +146,7 @@ public class ContentEximAsyncExportImportIT {
      */
     @Test
     public void testFileExpiration() throws IOException, InterruptedException {
-        long processId = 1L;
+        String processId = UUID.randomUUID().toString();
         String exportFile = fileManager.createExportFile(processId);
         File file = new File(exportFile);
 
@@ -170,17 +176,19 @@ public class ContentEximAsyncExportImportIT {
     public void testProcessHistoryTracking() {
         // Create and complete multiple processes
         int processCount = 10;
+        String lastProcessId = null;
         for (int i = 0; i < processCount; i++) {
             ProcessStatus process = processMonitor.startProcess();
+            lastProcessId = process.getId();
             process.setStatus(ProcessStatus.Status.COMPLETED);
             process.setCompletionTimeMillis(System.currentTimeMillis());
             processMonitor.stopProcess(process);
         }
 
         // Verify recent processes are still in history
-        ProcessStatus lastProcess = processMonitor.getProcess(processCount);
+        ProcessStatus lastProcess = processMonitor.getProcess(lastProcessId);
         assertNotNull("Last process should be in history", lastProcess);
-        assertEquals("Last process should have correct ID", processCount, lastProcess.getId());
+        assertEquals("Last process should have correct ID", lastProcessId, lastProcess.getId());
     }
 
     /**
@@ -204,12 +212,13 @@ public class ContentEximAsyncExportImportIT {
     public void testConcurrentProcessMonitoring() throws InterruptedException {
         int threadCount = 5;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        List<String> processIds = Collections.synchronizedList(new ArrayList<>());
 
         // Submit multiple processes
         for (int i = 0; i < threadCount; i++) {
-            final int processIndex = i;
             executor.submit(() -> {
                 ProcessStatus process = processMonitor.startProcess();
+                processIds.add(process.getId());
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -225,10 +234,10 @@ public class ContentEximAsyncExportImportIT {
         assertTrue("Executor should terminate", executor.awaitTermination(5, TimeUnit.SECONDS));
 
         // Verify all processes completed
-        for (long i = 1; i <= threadCount; i++) {
-            ProcessStatus process = processMonitor.getProcess(i);
-            assertNotNull("Process " + i + " should exist", process);
-            assertEquals("Process " + i + " should be completed", ProcessStatus.Status.COMPLETED, process.getStatus());
+        for (String processId : processIds) {
+            ProcessStatus process = processMonitor.getProcess(processId);
+            assertNotNull("Process " + processId + " should exist", process);
+            assertEquals("Process " + processId + " should be completed", ProcessStatus.Status.COMPLETED, process.getStatus());
         }
     }
 
@@ -258,8 +267,8 @@ public class ContentEximAsyncExportImportIT {
     @Test
     public void testFileCleanup() throws IOException, InterruptedException {
         // Create multiple files
-        String exportFile1 = fileManager.createExportFile(1L);
-        String exportFile2 = fileManager.createExportFile(2L);
+        String exportFile1 = fileManager.createExportFile(UUID.randomUUID().toString());
+        String exportFile2 = fileManager.createExportFile(UUID.randomUUID().toString());
 
         assertTrue("Files should exist after creation",
                 new File(exportFile1).exists() && new File(exportFile2).exists());
@@ -321,7 +330,7 @@ public class ContentEximAsyncExportImportIT {
      */
     @Test
     public void testDirectoryTraversalPrevention() throws IOException {
-        String exportFile = fileManager.createExportFile(1L);
+        String exportFile = fileManager.createExportFile(UUID.randomUUID().toString());
 
         // Attempt to access file with directory traversal
         try {
@@ -394,7 +403,7 @@ public class ContentEximAsyncExportImportIT {
     @Test
     public void testShutdown() throws IOException {
         ProcessFileManager tempManager = new ProcessFileManager(tempStorageDir, 86400000L);
-        String exportFile = tempManager.createExportFile(1L);
+        String exportFile = tempManager.createExportFile(UUID.randomUUID().toString());
         assertTrue("File should be created", new File(exportFile).exists());
 
         // Note: actual cleanup would delete the base directory
@@ -454,10 +463,9 @@ public class ContentEximAsyncExportImportIT {
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (int i = 0; i < fileCount; i++) {
-            final int index = i;
             executor.submit(() -> {
                 try {
-                    String file = fileManager.createExportFile(index);
+                    String file = fileManager.createExportFile(UUID.randomUUID().toString());
                     assertNotNull("File should be created", file);
                     assertTrue("File should exist", new File(file).exists());
                 } catch (IOException e) {
@@ -472,15 +480,24 @@ public class ContentEximAsyncExportImportIT {
 
     /**
      * Test 20: Process ID Uniqueness
-     * Verify that process IDs are unique and incrementing.
+     * Verify that process IDs are unique UUIDs.
      */
     @Test
     public void testProcessIdUniqueness() {
-        long id1 = processMonitor.startProcess().getId();
-        long id2 = processMonitor.startProcess().getId();
-        long id3 = processMonitor.startProcess().getId();
+        String id1 = processMonitor.startProcess().getId();
+        String id2 = processMonitor.startProcess().getId();
+        String id3 = processMonitor.startProcess().getId();
 
-        assertTrue("Process IDs should be unique", id1 != id2 && id2 != id3 && id1 != id3);
-        assertTrue("Process IDs should be incrementing", id1 < id2 && id2 < id3);
+        assertTrue("Process IDs should be unique", !id1.equals(id2) && !id2.equals(id3) && !id1.equals(id3));
+        assertTrue("Process IDs should be valid UUIDs", isValidUUID(id1) && isValidUUID(id2) && isValidUUID(id3));
+    }
+
+    private boolean isValidUUID(String id) {
+        try {
+            UUID.fromString(id);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

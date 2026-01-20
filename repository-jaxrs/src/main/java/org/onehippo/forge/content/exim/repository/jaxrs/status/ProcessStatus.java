@@ -25,7 +25,7 @@ public class ProcessStatus {
         RUNNING, COMPLETED, FAILED, CANCELLED
     }
 
-    private final long id;
+    private final String id;
     private final long startTimeMillis;
     private String username;
     private String clientInfo;
@@ -40,7 +40,7 @@ public class ProcessStatus {
     private String errorMessage;
     private volatile boolean cancellationRequested = false;
 
-    public ProcessStatus(final long id, final long startTimeMillis) {
+    public ProcessStatus(final String id, final long startTimeMillis) {
         this.id = id;
         this.startTimeMillis = startTimeMillis;
     }
@@ -69,7 +69,7 @@ public class ProcessStatus {
         this.commandInfo = commandInfo;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 

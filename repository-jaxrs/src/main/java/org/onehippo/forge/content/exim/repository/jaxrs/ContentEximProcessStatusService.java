@@ -65,7 +65,7 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
             for (ProcessStatus process : processes) {
                 final long startTime = process.getStartTimeMillis();
                 final long duration = System.currentTimeMillis() - startTime;
-                out.printf("%8s %5d %15s %8s %8s %1.2f  %s\r\n", process.getUsername(), process.getId(),
+                out.printf("%8s %36s %15s %8s %8s %1.2f  %s\r\n", process.getUsername(), process.getId(),
                         process.getClientInfo(), timeFormat.format(startTime),
                         DurationFormatUtils.formatDuration(duration, "HH:mm:ss"), process.getProgress(),
                         process.getCommandInfo());
@@ -80,7 +80,7 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
     @Path("/{id}")
     @Produces("multipart/mixed")
     @GET
-    public List<Attachment> getProcessInfo(@PathParam("id") long processId) {
+    public List<Attachment> getProcessInfo(@PathParam("id") String processId) {
         List<Attachment> attachments = new ArrayList<>();
 
         StringWriter sw = new StringWriter(1024);
@@ -112,7 +112,7 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
     @Path("/{id}/logs")
     @Produces(MediaType.TEXT_PLAIN)
     @GET
-    public String getLogsOfProcess(@PathParam("id") long processId) {
+    public String getLogsOfProcess(@PathParam("id") String processId) {
         StringWriter sw = new StringWriter(1024);
         PrintWriter out = new PrintWriter(sw);
 
@@ -144,7 +144,7 @@ public class ContentEximProcessStatusService extends AbstractContentEximService 
         final long startTime = process.getStartTimeMillis();
         final long duration = System.currentTimeMillis() - startTime;
 
-        out.printf("%8s %5d %15s %8s %8s %1.2f  %s\r\n", process.getUsername(), process.getId(),
+        out.printf("%8s %36s %15s %8s %8s %1.2f  %s\r\n", process.getUsername(), process.getId(),
                 process.getClientInfo(), timeFormat.format(startTime),
                 DurationFormatUtils.formatDuration(duration, "HH:mm:ss"), process.getProgress(),
                 process.getCommandInfo());

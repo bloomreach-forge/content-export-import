@@ -143,7 +143,8 @@ public class ContentEximAsyncImportService extends AbstractContentEximService {
                     log.warn("Failed to cleanup import file after error", ioe);
                 }
             }
-            ErrorResponse errorResponse = new ErrorResponse("IMPORT_INIT_FAILED", e.getMessage());
+            String errorMessage = "Failed to initiate import operation. Please verify your package file and parameters.";
+            ErrorResponse errorResponse = new ErrorResponse("IMPORT_INIT_FAILED", errorMessage);
             return Response.serverError().entity(errorResponse).build();
         }
     }
@@ -155,7 +156,7 @@ public class ContentEximAsyncImportService extends AbstractContentEximService {
     @Path("/{processId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getImportResults(@PathParam("processId") long processId) {
+    public Response getImportResults(@PathParam("processId") String processId) {
 
         ProcessStatus processStatus = getProcessMonitor().getProcess(processId);
 
@@ -173,7 +174,8 @@ public class ContentEximAsyncImportService extends AbstractContentEximService {
 
         // If process failed, return error
         if (processStatus.getStatus() == ProcessStatus.Status.FAILED) {
-            ErrorResponse errorResponse = new ErrorResponse("failed", "IMPORT_FAILED", processStatus.getErrorMessage());
+            String errorMessage = "Import operation failed. Please check the process logs for details.";
+            ErrorResponse errorResponse = new ErrorResponse("failed", "IMPORT_FAILED", errorMessage);
             return Response.serverError().entity(errorResponse).build();
         }
 
@@ -194,7 +196,7 @@ public class ContentEximAsyncImportService extends AbstractContentEximService {
      */
     @Path("/{processId}")
     @DELETE
-    public Response cancelImport(@PathParam("processId") long processId) {
+    public Response cancelImport(@PathParam("processId") String processId) {
 
         ProcessStatus processStatus = getProcessMonitor().getProcess(processId);
 

@@ -20,7 +20,7 @@ package org.onehippo.forge.content.exim.repository.jaxrs.param;
  */
 public class AsyncResponse {
 
-    private long processId;
+    private String processId;
     private String statusUrl;
     private String downloadUrl;
     private String resultsUrl;
@@ -28,16 +28,16 @@ public class AsyncResponse {
     public AsyncResponse() {
     }
 
-    public AsyncResponse(long processId, String statusUrl) {
+    public AsyncResponse(String processId, String statusUrl) {
         this.processId = processId;
         this.statusUrl = statusUrl;
     }
 
-    public long getProcessId() {
+    public String getProcessId() {
         return processId;
     }
 
-    public void setProcessId(long processId) {
+    public void setProcessId(String processId) {
         this.processId = processId;
     }
 

@@ -133,7 +133,8 @@ public class ContentEximAsyncExportService extends AbstractContentEximService {
                     log.warn("Failed to cleanup export file after error", ioe);
                 }
             }
-            ErrorResponse errorResponse = new ErrorResponse("EXPORT_INIT_FAILED", e.getMessage());
+            String errorMessage = "Failed to initiate export operation. Please check your parameters and try again.";
+            ErrorResponse errorResponse = new ErrorResponse("EXPORT_INIT_FAILED", errorMessage);
             return Response.serverError().entity(errorResponse).build();
         }
     }
@@ -145,7 +146,7 @@ public class ContentEximAsyncExportService extends AbstractContentEximService {
     @Path("/{processId}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response downloadExport(@PathParam("processId") long processId,
+    public Response downloadExport(@PathParam("processId") String processId,
             @Multipart(value = "deleteAfterDownload", required = false) String deleteAfterDownloadParam) {
 
         ProcessStatus processStatus = getProcessMonitor().getProcess(processId);
@@ -162,7 +163,8 @@ public class ContentEximAsyncExportService extends AbstractContentEximService {
 
         // If process failed, return error
         if (processStatus.getStatus() == ProcessStatus.Status.FAILED) {
-            ErrorResponse errorResponse = new ErrorResponse("failed", "EXPORT_FAILED", processStatus.getErrorMessage());
+            String errorMessage = "Export operation failed. Please check the process logs for details.";
+            ErrorResponse errorResponse = new ErrorResponse("failed", "EXPORT_FAILED", errorMessage);
             return Response.serverError().entity(errorResponse).build();
         }
 
@@ -183,7 +185,7 @@ public class ContentEximAsyncExportService extends AbstractContentEximService {
             boolean deleteAfterDownload = StringUtils.equalsIgnoreCase(deleteAfterDownloadParam, "true");
 
             // Stream the file back to client
-            String fileName = String.format("exim-export-%d.zip", processId);
+            String fileName = String.format("exim-export-%s.zip", processId);
             StreamingFileOutput fileOutput = new StreamingFileOutput(exportFile, deleteAfterDownload ? filePath : null);
 
             return Response.ok()
@@ -208,7 +210,7 @@ public class ContentEximAsyncExportService extends AbstractContentEximService {
      */
     @Path("/{processId}")
     @DELETE
-    public Response cancelExport(@PathParam("processId") long processId) {
+    public Response cancelExport(@PathParam("processId") String processId) {
 
         ProcessStatus processStatus = getProcessMonitor().getProcess(processId);
 

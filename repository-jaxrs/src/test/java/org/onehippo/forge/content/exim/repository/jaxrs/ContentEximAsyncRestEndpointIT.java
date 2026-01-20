@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,14 +58,14 @@ public class ContentEximAsyncRestEndpointIT {
             process.setExportFilePath(exportFile);
 
             // Simulate response structure
-            long processId = process.getId();
+            String processId = process.getId();
             String statusUrl = "/exim/ps/" + processId;
             String downloadUrl = "/exim/export-async/" + processId;
 
             assertNotNull("Status URL should be generated", statusUrl);
             assertNotNull("Download URL should be generated", downloadUrl);
-            assertTrue("Status URL should contain process ID", statusUrl.contains(String.valueOf(processId)));
-            assertTrue("Download URL should contain process ID", downloadUrl.contains(String.valueOf(processId)));
+            assertTrue("Status URL should contain process ID", statusUrl.contains(processId));
+            assertTrue("Download URL should contain process ID", downloadUrl.contains(processId));
 
         } finally {
             if (exportFile != null) {
@@ -92,14 +93,14 @@ public class ContentEximAsyncRestEndpointIT {
             process.setImportFilePath(importFile);
 
             // Simulate response structure
-            long processId = process.getId();
+            String processId = process.getId();
             String statusUrl = "/exim/ps/" + processId;
             String resultsUrl = "/exim/import-async/" + processId;
 
             assertNotNull("Status URL should be generated", statusUrl);
             assertNotNull("Results URL should be generated", resultsUrl);
-            assertTrue("Status URL should contain process ID", statusUrl.contains(String.valueOf(processId)));
-            assertTrue("Results URL should contain process ID", resultsUrl.contains(String.valueOf(processId)));
+            assertTrue("Status URL should contain process ID", statusUrl.contains(processId));
+            assertTrue("Results URL should contain process ID", resultsUrl.contains(processId));
 
         } finally {
             if (importFile != null) {
@@ -212,7 +213,7 @@ public class ContentEximAsyncRestEndpointIT {
      */
     @Test
     public void testExportCancellationNotFound() {
-        long nonExistentId = 99999L;
+        String nonExistentId = UUID.randomUUID().toString();
         ProcessStatus process = processMonitor.getProcess(nonExistentId);
 
         assertNull("Non-existent process should not be found", process);
@@ -480,7 +481,7 @@ public class ContentEximAsyncRestEndpointIT {
      */
     @Test
     public void testProcessQueryNotFound() {
-        ProcessStatus process = processMonitor.getProcess(999999L);
+        ProcessStatus process = processMonitor.getProcess(UUID.randomUUID().toString());
         assertNull("Non-existent process should return null", process);
     }
 
