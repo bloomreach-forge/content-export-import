@@ -244,7 +244,15 @@ public class ContentEximExportService extends AbstractContentEximService {
      */
     protected ExportCoreResult performExportCore(Logger procLogger, ProcessStatus processStatus, File baseFolder,
             Session session, ExecutionParams params) throws Exception {
+        procLogger.info("Starting export core with ExecutionParams: binaries={}, documents={}",
+                params.getBinaries() != null ? params.getBinaries() : "null",
+                params.getDocuments() != null ? params.getDocuments() : "null");
+
         Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
+
+        procLogger.info("Export item collection complete. Total items collected: {}", result.getItems().size());
+        procLogger.debug("Items: {}", result.getItems());
+
         session.refresh(false);
 
         FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());

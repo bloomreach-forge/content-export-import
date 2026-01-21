@@ -25,6 +25,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.content.exim.repository.jaxrs.status.ProcessStatus;
 import org.onehippo.forge.content.exim.repository.jaxrs.util.ProcessFileManager;
@@ -190,6 +191,7 @@ public class ContentEximJaxrsDaemonModule extends AbstractReconfigurableDaemonMo
     private void registerEndpoints() {
         RepositoryJaxrsService.addEndpoint(
                 new RepositoryJaxrsEndpoint(endpoint)
+                .singleton(new JacksonJsonProvider())
                 .singleton(contentEximProcessStatusService)
                 .singleton(contentEximExportService)
                 .singleton(contentEximImportService)
