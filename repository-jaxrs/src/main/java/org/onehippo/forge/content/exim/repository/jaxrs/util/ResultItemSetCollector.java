@@ -33,11 +33,15 @@ import org.onehippo.forge.content.exim.repository.jaxrs.param.ExecutionParams;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.QueriesAndPaths;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.Result;
 import org.onehippo.forge.content.exim.repository.jaxrs.param.ResultItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility to collect {@link ResultItem}s based on various conditions.
  */
 public class ResultItemSetCollector {
+
+    private static final Logger log = LoggerFactory.getLogger(ResultItemSetCollector.class);
 
     private ResultItemSetCollector() {
     }
@@ -57,17 +61,29 @@ public class ResultItemSetCollector {
         QueriesAndPaths binaries = params.getBinaries();
 
         if (binaries != null) {
+            log.info("Processing binary items - paths: {}, queries: {}",
+                    binaries.getPaths() != null ? binaries.getPaths().size() : 0,
+                    binaries.getQueries() != null ? binaries.getQueries().size() : 0);
             Set<String> binaryPathsCache = new LinkedHashSet<>();
             fillResultItemsForNodePaths(session, binaries.getPaths(), true, binaryPathsCache, result);
             fillResultItemsFromQueries(session, binaries.getQueries(), true, binaryPathsCache, result);
+            log.info("Binary items collected: {}", result.getItems().size());
+        } else {
+            log.info("No binary configuration provided");
         }
 
         QueriesAndPaths documents = params.getDocuments();
 
         if (documents != null) {
+            log.info("Processing document items - paths: {}, queries: {}",
+                    documents.getPaths() != null ? documents.getPaths().size() : 0,
+                    documents.getQueries() != null ? documents.getQueries().size() : 0);
             Set<String> documentPathsCache = new LinkedHashSet<>();
             fillResultItemsForNodePaths(session, documents.getPaths(), false, documentPathsCache, result);
             fillResultItemsFromQueries(session, documents.getQueries(), false, documentPathsCache, result);
+            log.info("Document items collected: {}", result.getItems().size());
+        } else {
+            log.info("No document configuration provided");
         }
 
         return result;
@@ -89,37 +105,57 @@ public class ResultItemSetCollector {
             pathsCache = new HashSet<>();
         }
 
+        if (nodePaths == null || nodePaths.isEmpty()) {
+            log.debug("No paths provided for {} collection", binary ? "binary" : "document");
+            return;
+        }
+
+        log.debug("Processing {} {} paths", nodePaths.size(), binary ? "binary" : "document");
+
+        int processedCount = 0;
+        int addedCount = 0;
+
         for (String path : nodePaths) {
+            processedCount++;
+
             if ((binary && !HippoNodeUtils.isBinaryPath(path)) || (!binary && !HippoNodeUtils.isDocumentPath(path))) {
+                log.debug("Skipping path (type mismatch): {}", path);
                 continue;
             }
 
             if (!session.nodeExists(path)) {
+                log.debug("Skipping path (node does not exist): {}", path);
                 continue;
             }
 
             Node handle = HippoNodeUtils.getHippoDocumentHandle(session.getNode(path));
 
             if (handle == null) {
+                log.debug("Skipping path (no document handle found): {}", path);
                 continue;
             }
 
             String handlePath = handle.getPath();
 
             if (pathsCache.contains(handlePath)) {
+                log.debug("Skipping path (already in cache): {}", handlePath);
                 continue;
             }
 
             Node firstVariant = HippoNodeUtils.getFirstVariantNode(handle);
 
             if (firstVariant == null) {
+                log.debug("Skipping path (no variant found): {}", handlePath);
                 continue;
             }
 
             pathsCache.add(handlePath);
             ResultItem item = new ResultItem(handlePath, firstVariant.getPrimaryNodeType().getName());
             resultOut.addItem(item);
+            addedCount++;
         }
+
+        log.info("Path processing complete: {} paths processed, {} items added", processedCount, addedCount);
     }
 
     /**
@@ -135,18 +171,31 @@ public class ResultItemSetCollector {
      */
     public static void fillResultItemsFromQueries(Session session, Collection<String> queries,
             boolean binary, Set<String> pathsCache, Result resultOut) throws RepositoryException {
+        if (queries == null || queries.isEmpty()) {
+            log.debug("No queries provided for {} collection", binary ? "binary" : "document");
+            return;
+        }
+
         for (String query : queries) {
             if (StringUtils.isBlank(query)) {
+                log.debug("Skipping blank query");
                 continue;
             }
 
-            if (!StringUtils.startsWith(query, "/") || StringUtils.startsWithIgnoreCase(query, "select")) {
+            // Only process XPath queries (start with /) or SQL queries (start with select)
+            if (!StringUtils.startsWith(query, "/") && !StringUtils.startsWithIgnoreCase(query, "select")) {
+                log.debug("Skipping query (not XPath or SQL): {}", query);
                 continue;
             }
 
             final String language = (StringUtils.startsWithIgnoreCase(query, "select")) ? Query.SQL : Query.XPATH;
+            log.debug("Executing {} query for {} collection: {}", language, binary ? "binary" : "document", query);
+
             Query jcrQuery = session.getWorkspace().getQueryManager().createQuery(query, language);
             QueryResult queryResult = jcrQuery.execute();
+
+            int resultCount = 0;
+            int addedCount = 0;
 
             for (NodeIterator nodeIt = queryResult.getNodes(); nodeIt.hasNext();) {
                 Node node = nodeIt.nextNode();
@@ -155,34 +204,42 @@ public class ResultItemSetCollector {
                     continue;
                 }
 
+                resultCount++;
                 String nodePath = node.getPath();
 
                 if ((binary && !HippoNodeUtils.isBinaryPath(nodePath)) || (!binary && !HippoNodeUtils.isDocumentPath(nodePath))) {
+                    log.debug("Skipping node (path type mismatch): {}", nodePath);
                     continue;
                 }
 
                 Node handle = HippoNodeUtils.getHippoDocumentHandle(node);
 
                 if (handle == null) {
+                    log.debug("Skipping node (no document handle found): {}", nodePath);
                     continue;
                 }
 
                 String handlePath = handle.getPath();
 
                 if (pathsCache.contains(handlePath)) {
+                    log.debug("Skipping node (already in cache): {}", handlePath);
                     continue;
                 }
 
                 Node firstVariant = HippoNodeUtils.getFirstVariantNode(handle);
 
                 if (firstVariant == null) {
+                    log.debug("Skipping node (no variant found): {}", handlePath);
                     continue;
                 }
 
                 pathsCache.add(handlePath);
                 ResultItem item = new ResultItem(handlePath, firstVariant.getPrimaryNodeType().getName());
                 resultOut.addItem(item);
+                addedCount++;
             }
+
+            log.info("Query executed: {} - Result nodes: {}, Added items: {}", query, resultCount, addedCount);
         }
     }
 }

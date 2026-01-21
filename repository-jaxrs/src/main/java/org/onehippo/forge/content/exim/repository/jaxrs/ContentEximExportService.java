@@ -140,49 +140,7 @@ public class ContentEximExportService extends AbstractContentEximService {
             }
 
             session = createSession();
-            Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
-            session.refresh(false);
-
-            FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());
-            FileObject attachmentsFolderObject = baseFolderObject.resolveFile(BINARY_ATTACHMENT_REL_PATH);
-
-            DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
-
-            final WorkflowDocumentVariantExportTask documentExportTask = new WorkflowDocumentVariantExportTask(
-                    documentManager);
-            documentExportTask.setLogger(log);
-            documentExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
-            documentExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
-
-            final DefaultBinaryExportTask binaryExportTask = new DefaultBinaryExportTask(documentManager);
-            binaryExportTask.setLogger(log);
-            binaryExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
-            binaryExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
-
-            int batchCount = 0;
-
-            Set<String> referredNodePaths = new LinkedHashSet<>();
-
-            try {
-                documentExportTask.start();
-                batchCount = exportDocuments(procLogger, processStatus, params, documentExportTask, result, batchCount,
-                        baseFolderObject, referredNodePaths);
-            } finally {
-                documentExportTask.stop();
-            }
-
-            if (!referredNodePaths.isEmpty()) {
-                ResultItemSetCollector.fillResultItemsForNodePaths(session, referredNodePaths, true, null, result);
-                session.refresh(false);
-            }
-
-            try {
-                binaryExportTask.start();
-                batchCount = exportBinaries(procLogger, processStatus, params, binaryExportTask, result, batchCount,
-                        baseFolderObject);
-            } finally {
-                binaryExportTask.stop();
-            }
+            ExportCoreResult exportResult = performExportCore(procLogger, processStatus, baseFolder, session, params);
 
             session.logout();
             session = null;
@@ -195,6 +153,8 @@ public class ContentEximExportService extends AbstractContentEximService {
 
             final String tempLogOutString = FileUtils.readFileToString(tempLogFile, "UTF-8");
             final File zipBaseFolder = baseFolder;
+            final DefaultBinaryExportTask binaryTask = exportResult.binaryExportTask;
+            final WorkflowDocumentVariantExportTask documentTask = exportResult.documentExportTask;
 
             final StreamingOutput entity = new StreamingOutput() {
                 @Override
@@ -210,9 +170,9 @@ public class ContentEximExportService extends AbstractContentEximService {
                         ZipCompressUtils.addEntryToZip(EXIM_EXECUTION_LOG_REL_PATH, tempLogOutString, "UTF-8",
                                 zipOutput);
                         ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_BINARIES_LOG_REL_PATH,
-                                binaryExportTask.getSummary(), "UTF-8", zipOutput);
+                                binaryTask.getSummary(), "UTF-8", zipOutput);
                         ZipCompressUtils.addEntryToZip(EXIM_SUMMARY_DOCUMENTS_LOG_REL_PATH,
-                                documentExportTask.getSummary(), "UTF-8", zipOutput);
+                                documentTask.getSummary(), "UTF-8", zipOutput);
                         ZipCompressUtils.addFileEntriesInFolderToZip(zipBaseFolder, "", zipOutput);
                     } finally {
                         zipOutput.finish();
@@ -267,6 +227,90 @@ public class ContentEximExportService extends AbstractContentEximService {
                     log.error("Failed to delete temporary log file.", e);
                 }
             }
+        }
+    }
+
+    /**
+     * Reusable core export logic that can be called from both synchronous and asynchronous export services.
+     * Performs document and binary export to a base folder.
+     *
+     * @param procLogger Logger for output
+     * @param processStatus Process status for tracking progress and cancellation
+     * @param baseFolder Temporary folder to export content to
+     * @param session JCR session for content access
+     * @param params Execution parameters for the export
+     * @return ExportCoreResult containing export tasks and results
+     * @throws Exception if export fails
+     */
+    protected ExportCoreResult performExportCore(Logger procLogger, ProcessStatus processStatus, File baseFolder,
+            Session session, ExecutionParams params) throws Exception {
+        procLogger.info("Starting export core with ExecutionParams: binaries={}, documents={}",
+                params.getBinaries() != null ? params.getBinaries() : "null",
+                params.getDocuments() != null ? params.getDocuments() : "null");
+
+        Result result = ResultItemSetCollector.collectItemsFromExecutionParams(session, params);
+
+        procLogger.info("Export item collection complete. Total items collected: {}", result.getItems().size());
+        procLogger.debug("Items: {}", result.getItems());
+
+        session.refresh(false);
+
+        FileObject baseFolderObject = VFS.getManager().resolveFile(baseFolder.toURI());
+        FileObject attachmentsFolderObject = baseFolderObject.resolveFile(BINARY_ATTACHMENT_REL_PATH);
+
+        DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
+
+        final WorkflowDocumentVariantExportTask documentExportTask = new WorkflowDocumentVariantExportTask(
+                documentManager);
+        documentExportTask.setLogger(log);
+        documentExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
+        documentExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
+
+        final DefaultBinaryExportTask binaryExportTask = new DefaultBinaryExportTask(documentManager);
+        binaryExportTask.setLogger(log);
+        binaryExportTask.setBinaryValueFileFolder(attachmentsFolderObject);
+        binaryExportTask.setDataUrlSizeThreashold(params.getDataUrlSizeThreshold());
+
+        int batchCount = 0;
+        Set<String> referredNodePaths = new LinkedHashSet<>();
+
+        try {
+            documentExportTask.start();
+            batchCount = exportDocuments(procLogger, processStatus, params, documentExportTask, result, batchCount,
+                    baseFolderObject, referredNodePaths);
+        } finally {
+            documentExportTask.stop();
+        }
+
+        if (!referredNodePaths.isEmpty()) {
+            ResultItemSetCollector.fillResultItemsForNodePaths(session, referredNodePaths, true, null, result);
+            session.refresh(false);
+        }
+
+        try {
+            binaryExportTask.start();
+            batchCount = exportBinaries(procLogger, processStatus, params, binaryExportTask, result, batchCount,
+                    baseFolderObject);
+        } finally {
+            binaryExportTask.stop();
+        }
+
+        return new ExportCoreResult(documentExportTask, binaryExportTask, result);
+    }
+
+    /**
+     * Container for export core operation results.
+     */
+    protected static class ExportCoreResult {
+        public final WorkflowDocumentVariantExportTask documentExportTask;
+        public final DefaultBinaryExportTask binaryExportTask;
+        public final Result result;
+
+        public ExportCoreResult(WorkflowDocumentVariantExportTask documentExportTask,
+                DefaultBinaryExportTask binaryExportTask, Result result) {
+            this.documentExportTask = documentExportTask;
+            this.binaryExportTask = binaryExportTask;
+            this.result = result;
         }
     }
 

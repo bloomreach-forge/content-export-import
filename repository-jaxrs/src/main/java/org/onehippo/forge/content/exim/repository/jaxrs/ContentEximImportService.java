@@ -155,37 +155,7 @@ public class ContentEximImportService extends AbstractContentEximService {
 
             session = createSession();
 
-            DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
-
-            final DefaultBinaryImportTask binaryImportTask = new DefaultBinaryImportTask(documentManager);
-            binaryImportTask.setLogger(procLogger);
-
-            final WorkflowDocumentVariantImportTask documentImportTask = new WorkflowDocumentVariantImportTask(
-                    documentManager);
-            documentImportTask.setLogger(procLogger);
-
-            FileObject[] jsonFiles = binaryImportTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
-
-            int batchCount = 0;
-
-            try {
-                binaryImportTask.start();
-                batchCount = importBinaries(procLogger, processStatus, jsonFiles, params, baseFolder, binaryImportTask,
-                        result, batchCount);
-            } finally {
-                binaryImportTask.stop();
-            }
-
-            try {
-                documentImportTask.start();
-                batchCount = importDocuments(procLogger, processStatus, jsonFiles, params, baseFolder,
-                        documentImportTask, result, batchCount);
-            } finally {
-                documentImportTask.stop();
-            }
-
-            batchCount = cleanMirrorDocbaseValues(procLogger, processStatus, session, params, result, batchCount);
-            batchCount = cleanAllDocbaseFieldValues(procLogger, processStatus, session, params, result, batchCount);
+            result = performImportCore(procLogger, processStatus, baseFolder, session, params);
 
             if (processStatus != null) {
                 processStatus.setProgress(1.0);
@@ -581,5 +551,56 @@ public class ContentEximImportService extends AbstractContentEximService {
         session.refresh(false);
 
         return batchCount;
+    }
+
+    /**
+     * Reusable core import logic that can be called from both synchronous and asynchronous import services.
+     * Performs binary and document import from a zip file.
+     *
+     * @param procLogger Logger for output
+     * @param processStatus Process status for tracking progress and cancellation
+     * @param baseFolder VFS FileObject pointing to the zip file
+     * @param session JCR session for content access
+     * @param params Execution parameters for the import
+     * @return Result object containing import statistics and errors
+     * @throws Exception if import fails
+     */
+    protected Result performImportCore(Logger procLogger, ProcessStatus processStatus, FileObject baseFolder,
+            Session session, ExecutionParams params) throws Exception {
+        Result result = new Result();
+
+        DocumentManager documentManager = new WorkflowDocumentManagerImpl(session);
+
+        final DefaultBinaryImportTask binaryImportTask = new DefaultBinaryImportTask(documentManager);
+        binaryImportTask.setLogger(procLogger);
+
+        final WorkflowDocumentVariantImportTask documentImportTask = new WorkflowDocumentVariantImportTask(
+                documentManager);
+        documentImportTask.setLogger(procLogger);
+
+        FileObject[] jsonFiles = binaryImportTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
+
+        int batchCount = 0;
+
+        try {
+            binaryImportTask.start();
+            batchCount = importBinaries(procLogger, processStatus, jsonFiles, params, baseFolder, binaryImportTask,
+                    result, batchCount);
+        } finally {
+            binaryImportTask.stop();
+        }
+
+        try {
+            documentImportTask.start();
+            batchCount = importDocuments(procLogger, processStatus, jsonFiles, params, baseFolder,
+                    documentImportTask, result, batchCount);
+        } finally {
+            documentImportTask.stop();
+        }
+
+        batchCount = cleanMirrorDocbaseValues(procLogger, processStatus, session, params, result, batchCount);
+        batchCount = cleanAllDocbaseFieldValues(procLogger, processStatus, session, params, result, batchCount);
+
+        return result;
     }
 }
