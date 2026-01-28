@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ISO8601} %-5level [%logger{1}] %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!-- Suppress Tika-related warnings (missing xmlbeans for OOXML detection - not needed for tests) -->
+        <Logger name="org.apache.tika.detect" level="ERROR" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.apache.jackrabbit.core.query.lucene.SearchIndex" level="ERROR" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Application loggers -->
+        <Logger name="org.bloomreach.forge.brut" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.onehippo.forge.content.exim" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Root level="WARN">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

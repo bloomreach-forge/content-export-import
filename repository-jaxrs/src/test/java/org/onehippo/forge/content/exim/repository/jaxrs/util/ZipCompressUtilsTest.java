@@ -25,40 +25,27 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test cases for ZipCompressUtils to verify proper Unicode filename handling,
  * especially for Cyrillic and other non-ASCII characters.
  * JIRA: FORGE-448 - Cyrillic characters in filenames not encoded properly
  */
-public class ZipCompressUtilsTest {
+class ZipCompressUtilsTest {
 
-    private File tempDir;
-
-    @Before
-    public void setUp() throws IOException {
-        tempDir = Files.createTempDirectory("zip-test").toFile();
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        if (tempDir != null && tempDir.exists()) {
-            FileUtils.deleteDirectory(tempDir);
-        }
-    }
+    @TempDir
+    Path tempDir;
 
     /**
      * Test that Cyrillic characters in entry names are properly preserved in ZIP.
      * This is the core issue from FORGE-448.
      */
     @Test
-    public void testCyrillicCharactersInEntryName() throws IOException {
+    void testCyrillicCharactersInEntryName() throws IOException {
         String cyrillicContent = "Test content for Cyrillic filename";
         String cyrillicEntryName = "документ/тест.txt";
 
@@ -74,21 +61,21 @@ public class ZipCompressUtilsTest {
         }
 
         byte[] zipBytes = baos.toByteArray();
-        assertNotNull("ZIP content should not be null", zipBytes);
-        assertTrue("ZIP content should not be empty", zipBytes.length > 0);
+        assertNotNull(zipBytes, "ZIP content should not be null");
+        assertTrue(zipBytes.length > 0, "ZIP content should not be empty");
 
         // Verify the entry can be read back with correct name
         ZipInputStream zis = new ZipInputStream(new java.io.ByteArrayInputStream(zipBytes), StandardCharsets.UTF_8);
         try {
             ZipEntry entry = zis.getNextEntry();
-            assertNotNull("ZIP should contain an entry", entry);
-            assertEquals("Entry name should match original Cyrillic name", cyrillicEntryName, entry.getName());
+            assertNotNull(entry, "ZIP should contain an entry");
+            assertEquals(cyrillicEntryName, entry.getName(), "Entry name should match original Cyrillic name");
 
             // Verify content
             byte[] buffer = new byte[1024];
             int bytesRead = zis.read(buffer);
             String readContent = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
-            assertEquals("Content should match", cyrillicContent, readContent);
+            assertEquals(cyrillicContent, readContent, "Content should match");
         } finally {
             zis.close();
         }
@@ -98,7 +85,7 @@ public class ZipCompressUtilsTest {
      * Test that various Unicode scripts are properly preserved (Greek, Arabic, CJK, etc.)
      */
     @Test
-    public void testVariousUnicodeScriptsInEntryName() throws IOException {
+    void testVariousUnicodeScriptsInEntryName() throws IOException {
         String[] testCases = {
             "ελληνικά/αρχείο.txt",        // Greek
             "العربية/ملف.txt",              // Arabic
@@ -124,8 +111,8 @@ public class ZipCompressUtilsTest {
             ZipInputStream zis = new ZipInputStream(new java.io.ByteArrayInputStream(zipBytes), StandardCharsets.UTF_8);
             try {
                 ZipEntry entry = zis.getNextEntry();
-                assertNotNull("ZIP should contain an entry for: " + entryName, entry);
-                assertEquals("Entry name should match original: " + entryName, entryName, entry.getName());
+                assertNotNull(entry, "ZIP should contain an entry for: " + entryName);
+                assertEquals(entryName, entry.getName(), "Entry name should match original: " + entryName);
             } finally {
                 zis.close();
             }
@@ -136,7 +123,7 @@ public class ZipCompressUtilsTest {
      * Test binary content with Cyrillic entry names
      */
     @Test
-    public void testBinaryContentWithCyrillicName() throws IOException {
+    void testBinaryContentWithCyrillicName() throws IOException {
         byte[] binaryContent = new byte[]{(byte) 0xFF, (byte) 0xFE, 0x00, 0x01, 0x02, 0x03};
         String cyrillicEntryName = "бинарный/файл.bin";
 
@@ -155,13 +142,13 @@ public class ZipCompressUtilsTest {
         ZipInputStream zis = new ZipInputStream(new java.io.ByteArrayInputStream(zipBytes), StandardCharsets.UTF_8);
         try {
             ZipEntry entry = zis.getNextEntry();
-            assertNotNull("ZIP should contain an entry", entry);
-            assertEquals("Entry name should match", cyrillicEntryName, entry.getName());
+            assertNotNull(entry, "ZIP should contain an entry");
+            assertEquals(cyrillicEntryName, entry.getName(), "Entry name should match");
 
             byte[] readContent = new byte[binaryContent.length];
             int bytesRead = zis.read(readContent);
-            assertEquals("All bytes should be read", binaryContent.length, bytesRead);
-            assertArrayEquals("Binary content should match", binaryContent, readContent);
+            assertEquals(binaryContent.length, bytesRead, "All bytes should be read");
+            assertArrayEquals(binaryContent, readContent, "Binary content should match");
         } finally {
             zis.close();
         }
@@ -171,9 +158,9 @@ public class ZipCompressUtilsTest {
      * Test file entries from folder with Cyrillic file names
      */
     @Test
-    public void testFileEntriesFromFolderWithCyrillicNames() throws IOException {
+    void testFileEntriesFromFolderWithCyrillicNames() throws IOException {
         // Create test folder structure with Cyrillic names
-        File testFolder = new File(tempDir, "тестовая_папка");
+        File testFolder = tempDir.resolve("тестовая_папка").toFile();
         testFolder.mkdir();
 
         File file1 = new File(testFolder, "документ1.txt");
@@ -199,7 +186,7 @@ public class ZipCompressUtilsTest {
         }
 
         byte[] zipBytes = baos.toByteArray();
-        assertTrue("ZIP should contain content", zipBytes.length > 0);
+        assertTrue(zipBytes.length > 0, "ZIP should contain content");
 
         // Verify all entries are present with correct names
         ZipInputStream zis = new ZipInputStream(new java.io.ByteArrayInputStream(zipBytes), StandardCharsets.UTF_8);
@@ -209,10 +196,10 @@ public class ZipCompressUtilsTest {
             while ((entry = zis.getNextEntry()) != null) {
                 entryCount++;
                 // Entry names should not contain question marks (sign of encoding failure)
-                assertFalse("Entry name should not contain question marks: " + entry.getName(),
-                        entry.getName().contains("?"));
+                assertFalse(entry.getName().contains("?"),
+                        "Entry name should not contain question marks: " + entry.getName());
             }
-            assertTrue("ZIP should contain at least 3 entries", entryCount >= 3);
+            assertTrue(entryCount >= 3, "ZIP should contain at least 3 entries");
         } finally {
             zis.close();
         }
@@ -222,7 +209,7 @@ public class ZipCompressUtilsTest {
      * Test mixed ASCII and Cyrillic file names
      */
     @Test
-    public void testMixedAsciiAndCyrillicNames() throws IOException {
+    void testMixedAsciiAndCyrillicNames() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipArchiveOutputStream zipOutput = new ZipArchiveOutputStream(baos);
         zipOutput.setCreateUnicodeExtraFields(ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS);
@@ -245,10 +232,10 @@ public class ZipCompressUtilsTest {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 entryCount++;
-                assertFalse("Entry name should not contain question marks: " + entry.getName(),
-                        entry.getName().contains("?"));
+                assertFalse(entry.getName().contains("?"),
+                        "Entry name should not contain question marks: " + entry.getName());
             }
-            assertEquals("Should have 4 entries", 4, entryCount);
+            assertEquals(4, entryCount, "Should have 4 entries");
         } finally {
             zis.close();
         }
@@ -258,7 +245,7 @@ public class ZipCompressUtilsTest {
      * Test that content encoding is preserved as UTF-8
      */
     @Test
-    public void testUtf8ContentEncoding() throws IOException {
+    void testUtf8ContentEncoding() throws IOException {
         String cyrillicContent = "Тестовое содержимое с кириллицей";
         String entryName = "файл.txt";
 
@@ -277,12 +264,12 @@ public class ZipCompressUtilsTest {
         ZipInputStream zis = new ZipInputStream(new java.io.ByteArrayInputStream(zipBytes), StandardCharsets.UTF_8);
         try {
             ZipEntry entry = zis.getNextEntry();
-            assertNotNull("ZIP should contain an entry", entry);
+            assertNotNull(entry, "ZIP should contain an entry");
 
             byte[] buffer = new byte[1024];
             int bytesRead = zis.read(buffer);
             String readContent = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
-            assertEquals("Content should match original Cyrillic text", cyrillicContent, readContent);
+            assertEquals(cyrillicContent, readContent, "Content should match original Cyrillic text");
         } finally {
             zis.close();
         }
@@ -292,7 +279,7 @@ public class ZipCompressUtilsTest {
      * Test offset-based entry addition with Cyrillic names
      */
     @Test
-    public void testOffsetBasedEntryWithCyrillicName() throws IOException {
+    void testOffsetBasedEntryWithCyrillicName() throws IOException {
         byte[] fullContent = "Beginning content Middle content End content".getBytes(StandardCharsets.UTF_8);
         String cyrillicEntryName = "извлеченный_файл.txt";
         int offset = 10;
@@ -313,8 +300,8 @@ public class ZipCompressUtilsTest {
         ZipInputStream zis = new ZipInputStream(new java.io.ByteArrayInputStream(zipBytes), StandardCharsets.UTF_8);
         try {
             ZipEntry entry = zis.getNextEntry();
-            assertNotNull("ZIP should contain an entry", entry);
-            assertEquals("Entry name should match", cyrillicEntryName, entry.getName());
+            assertNotNull(entry, "ZIP should contain an entry");
+            assertEquals(cyrillicEntryName, entry.getName(), "Entry name should match");
 
             byte[] buffer = new byte[1024];
             int bytesRead = zis.read(buffer);
@@ -322,7 +309,7 @@ public class ZipCompressUtilsTest {
             System.arraycopy(fullContent, offset, expectedContent, 0, length);
             byte[] actualContent = new byte[bytesRead];
             System.arraycopy(buffer, 0, actualContent, 0, bytesRead);
-            assertArrayEquals("Content should match extracted portion", expectedContent, actualContent);
+            assertArrayEquals(expectedContent, actualContent, "Content should match extracted portion");
         } finally {
             zis.close();
         }

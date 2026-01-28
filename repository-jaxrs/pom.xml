@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
   </parent>
 
   <name>Hippo Content Export / Import Repository JAX-RS Services</name>
@@ -68,18 +68,6 @@
       <groupId>org.onehippo.forge.content-exim</groupId>
       <artifactId>content-exim-core</artifactId>
       <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-parsers-standard-package</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -148,15 +136,25 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- JUnit 5 (Jupiter) -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit-jupiter.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- BRUT - Bloomreach Unit Testing Library for integration tests -->
+    <dependency>
+      <groupId>org.bloomreach.forge.brut</groupId>
+      <artifactId>brut-resources</artifactId>
+      <version>${forge.brut.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -169,6 +167,15 @@
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
           <skip>true</skip>
+        </configuration>
+      </plugin>
+      <!-- Configure Surefire to run BRUT integration tests in isolation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <reuseForks>false</reuseForks>
+          <forkCount>1</forkCount>
         </configuration>
       </plugin>
     </plugins>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- CND (Compact Namespace and Node Type Definition) resources for JCR node types -->
+    <bean id="contributedCndResourcesPatterns" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <value>classpath*:org/example/namespaces/**/*.cnd</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- YAML resources for importing test data into JCR -->
+    <bean id="contributedYamlResourcesPatterns" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <value>classpath*:org/example/imports/**/*.yaml</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>
