@@ -27,6 +27,11 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * ZIP Compressing Utilities.
+ *
+ * Note: When using ZipArchiveOutputStream, ensure that Unicode filename support is enabled via:
+ * {@code zipOutput.setCreateUnicodeExtraFields(ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS)}
+ * This is necessary to properly preserve non-ASCII characters (e.g., Cyrillic) in ZIP entry names.
+ * See FORGE-448 for details.
  */
 public class ZipCompressUtils {
 

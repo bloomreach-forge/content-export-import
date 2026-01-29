@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>6.1.0</version>
+    <version>7.0.0</version>
   </parent>
 
   <name>Hippo Content Export / Import Core</name>
@@ -76,20 +76,18 @@
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.tika</groupId>
-      <artifactId>tika-parsers-standard-package</artifactId>
-      <scope>provided</scope>
+      <artifactId>tika-parser-pdf-module</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <scope>provided</scope>
+      </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -156,9 +154,11 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- JUnit 5 -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit-jupiter.version}</version>
       <scope>test</scope>
     </dependency>
 
