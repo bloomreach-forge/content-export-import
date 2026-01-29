@@ -5,14 +5,14 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-release</artifactId>
-    <version>16.0.0</version>
+    <version>16.6.5</version>
   </parent>
 
   <name>Hippo Content Export / Import Demo</name>
   <description>Hippo Content Export / Import Demo</description>
   <groupId>org.onehippo.forge.content-exim</groupId>
   <artifactId>content-exim-demo</artifactId>
-  <version>6.1.1-SNAPSHOT</version>
+  <version>7.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!--

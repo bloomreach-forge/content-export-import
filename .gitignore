@@ -6,3 +6,5 @@ overlays
 
 # Ignore auto-generated log4j.log file for tests
 core/log4j.log
+*.log
+.claude

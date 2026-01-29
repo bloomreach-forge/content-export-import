@@ -8,7 +8,7 @@ This is the **Bloomreach Content Export/Import (Content-ExIm)** Forge library, a
 
 **Project Identity:**
 - Group ID: `org.onehippo.forge.content-exim`
-- Version: 6.1.1-SNAPSHOT
+- Version: 7.0.0-SNAPSHOT
 - Parent: `hippo-cms7-release` (version 16.3.0)
 - License: Apache 2.0
 - Repository: https://github.com/bloomreach-forge/content-export-import

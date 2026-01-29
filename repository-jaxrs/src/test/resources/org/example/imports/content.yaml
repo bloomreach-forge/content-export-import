@@ -1,0 +1,65 @@
+/content:
+  jcr:primaryType: hippostd:folder
+  jcr:mixinTypes: ['mix:referenceable']
+  jcr:uuid: ed307dfc-5774-4ac7-9feb-79b57e058bb2
+  hippostd:foldertype: [new-document, new-folder]
+  /documents:
+    jcr:primaryType: hippostd:folder
+    jcr:mixinTypes: ['mix:referenceable']
+    jcr:uuid: 2c21a29c-a5d1-4e84-aec4-594e5bf93b25
+    hippostd:foldertype: [new-folder, new-translated-folder]
+    /exim:
+      jcr:primaryType: hippostd:folder
+      jcr:mixinTypes: ['hippo:named', 'hippotranslation:translated', 'mix:referenceable']
+      jcr:uuid: 04c7cbd6-6366-4a9b-aa7c-8430b32164a1
+      hippo:name: EXIM Test
+      hippostd:foldertype: [new-translated-folder, new-document]
+      hippotranslation:id: 996bcac5-86cf-49b5-a7a3-16a74863e814
+      hippotranslation:locale: en
+      /news:
+        jcr:primaryType: hippostd:folder
+        jcr:mixinTypes: ['hippotranslation:translated', 'mix:referenceable']
+        jcr:uuid: f03f04ea-c4dd-462e-a3cc-5927d2e0535d
+        hippostd:foldertype: [new-document, new-folder]
+        hippotranslation:id: 4243e9e0-05b0-40b6-96e3-d98cfcc34125
+        hippotranslation:locale: en
+        /test-document:
+          jcr:primaryType: hippo:handle
+          jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+          jcr:uuid: c580ac64-3874-4717-a6d9-e5ad72080abe
+          hippo:name: Test Document
+          /test-document:
+            jcr:primaryType: exim:testdocument
+            jcr:mixinTypes: ['mix:referenceable']
+            jcr:uuid: 40827fa4-67ec-4a91-a3ef-9037d80821db
+            hippo:availability: [live, preview]
+            hippostd:holder: admin
+            hippostd:state: published
+            hippostdpubwf:createdBy: admin
+            hippostdpubwf:creationDate: 2024-01-01T10:00:00+01:00
+            hippostdpubwf:lastModificationDate: 2024-01-01T10:00:00+01:00
+            hippostdpubwf:lastModifiedBy: admin
+            hippostdpubwf:publicationDate: 2024-01-01T10:00:00+01:00
+            hippotranslation:id: e46d71ec-9421-43c8-9e6e-a23e2431b392
+            hippotranslation:locale: en
+            exim:title: Test Document Title
+            exim:content: Test content for BRUT integration testing.
+  /gallery:
+    jcr:primaryType: hippogallery:stdImageGallery
+    jcr:mixinTypes: ['mix:referenceable']
+    jcr:uuid: 37aa21b2-d5dd-4ac2-9e1c-9cb0f82dd099
+    hippostd:foldertype: [new-image-folder]
+    hippostd:gallerytype: ['hippogallery:imageset']
+    /exim:
+      jcr:primaryType: hippogallery:stdImageGallery
+      jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+      jcr:uuid: d767c101-53a9-4070-a750-8d330dbb70d9
+      hippo:name: EXIM Test
+      hippostd:foldertype: [new-image-folder]
+      hippostd:gallerytype: ['hippogallery:imageset']
+  /assets:
+    jcr:primaryType: hippogallery:stdAssetGallery
+    jcr:mixinTypes: ['mix:referenceable']
+    jcr:uuid: 64eb45b7-5bc5-458b-86cf-274652390358
+    hippostd:foldertype: [new-file-folder]
+    hippostd:gallerytype: ['hippogallery:exampleAssetSet']

@@ -1,0 +1,88 @@
+/hst:exim:
+  jcr:primaryType: hst:hst
+  jcr:uuid: 8afb07f7-b10e-40fc-a03b-1d415f10df87
+  /hst:configurations:
+    jcr:primaryType: hst:configurations
+    jcr:uuid: ad47a42b-31e3-45e8-8d61-abb4f19e74ae
+    /hst:default:
+      jcr:primaryType: hst:configuration
+      jcr:uuid: ea2400cc-e913-4e25-a5fc-8f7e6917e483
+      /hst:sitemap:
+        jcr:primaryType: hst:sitemap
+        jcr:uuid: 58abd504-6d37-49ed-b912-00378d3930a8
+      /hst:pages:
+        jcr:primaryType: hst:pages
+        jcr:uuid: 0bbfceb5-c47f-41f5-becb-9395dc4d8ce3
+      /hst:components:
+        jcr:primaryType: hst:components
+        jcr:uuid: da07aff8-fc6e-4b3b-abc1-8eef87d586f7
+      /hst:templates:
+        jcr:primaryType: hst:templates
+        jcr:uuid: a51c86d7-4f9c-4fce-91c5-320c28da40ba
+      /hst:sitemenus:
+        jcr:primaryType: hst:sitemenus
+        jcr:uuid: 3b87408a-31e7-4dcd-a450-b526574b9e70
+      /hst:catalog:
+        jcr:primaryType: hst:catalog
+        jcr:uuid: cbabd2c0-558e-4056-b8b1-cf08c61e8fe8
+    /exim:
+      jcr:primaryType: hst:configuration
+      jcr:uuid: 107349d9-b741-46a1-a70c-c76f42ee0601
+      hst:inheritsfrom: [../hst:default]
+      /hst:sitemap:
+        jcr:primaryType: hst:sitemap
+        jcr:uuid: b75078bd-05eb-44e7-b12e-1b14b8af1d25
+        /root:
+          jcr:primaryType: hst:sitemapitem
+          jcr:uuid: e15b774d-ba17-47a0-ace5-ce43ee9c0d26
+          hst:refId: root
+      /hst:pages:
+        jcr:primaryType: hst:pages
+        jcr:uuid: a01c93f1-6329-4cb3-b38b-15a562caa87f
+      /hst:components:
+        jcr:primaryType: hst:components
+        jcr:uuid: b40a7be7-3a57-463b-9a86-faebca91c234
+      /hst:templates:
+        jcr:primaryType: hst:templates
+        jcr:uuid: 337bb19a-089d-47e7-838e-78603ba7fae5
+      /hst:sitemenus:
+        jcr:primaryType: hst:sitemenus
+        jcr:uuid: 8e19c02f-5c2a-4eaf-970b-c1436293ffc7
+      /hst:workspace:
+        jcr:primaryType: hst:workspace
+        /hst:channel:
+          jcr:primaryType: hst:channel
+          jcr:uuid: 92d8ab25-e8f4-45f9-96d2-b45a03e7358e
+          hst:name: EXIM Test
+          hst:type: website
+  /hst:blueprints:
+    jcr:primaryType: hst:blueprints
+    jcr:uuid: a0e17558-0239-464c-b3ff-30c74e2a802a
+  /hst:hosts:
+    jcr:primaryType: hst:virtualhosts
+    jcr:uuid: 5f3f7755-b68a-4b85-ba34-3fc6aff4f1ee
+    /dev-localhost:
+      jcr:primaryType: hst:virtualhostgroup
+      jcr:uuid: e65e378e-172d-49cc-b015-6ce3f9f90941
+      hst:defaultport: 8080
+      /localhost:
+        jcr:primaryType: hst:virtualhost
+        jcr:uuid: 88f17582-fad1-481c-b042-d5e40f71ccb7
+        /hst:root:
+          jcr:primaryType: hst:mount
+          jcr:uuid: 337f235c-d4e0-41e2-9a2b-69a729ea8073
+          hst:homepage: root
+          hst:mountpoint: /hst:exim/hst:sites/exim
+          /api:
+            jcr:primaryType: hst:mount
+            jcr:uuid: afb327df-d6f4-42b3-a32a-6d56dcbcced2
+            hst:ismapped: false
+            hst:namedpipeline: JaxrsRestPlainPipeline
+            hst:types: [rest]
+  /hst:sites:
+    jcr:primaryType: hst:sites
+    jcr:uuid: 08019a1c-fd56-4dd1-947e-b62487a86077
+    /exim:
+      jcr:primaryType: hst:site
+      jcr:uuid: 543ef6e2-63ae-47ec-a326-ed456b0dbfcd
+      hst:content: /content/documents/exim

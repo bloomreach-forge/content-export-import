@@ -15,14 +15,14 @@
  */
 package org.onehippo.forge.content.exim.core.util;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContentPathUtilsTest {
+class ContentPathUtilsTest {
 
     @Test
-    public void testRemoveIndexNotationInNodePath() throws Exception {
+    void testRemoveIndexNotationInNodePath() {
         String nodePath = "/a/b/c/d[2]";
         assertEquals("/a/b/c/d", ContentPathUtils.removeIndexNotationInNodePath(nodePath));
 
@@ -49,7 +49,7 @@ public class ContentPathUtilsTest {
     }
 
     @Test
-    public void testEncodeNodePath() throws Exception {
+    void testEncodeNodePath() {
         String nodePath = "/a/b/c";
         assertEquals("/a/b/c", ContentPathUtils.encodeNodePath(nodePath));
 
@@ -64,7 +64,7 @@ public class ContentPathUtilsTest {
     }
 
     @Test
-    public void testEncodeHippoContentNodePath() throws Exception {
+    void testEncodeHippoContentNodePath() {
         String nodePath = "/content/documents/MyHippoProject/a/b/c";
         assertEquals("/content/documents/MyHippoProject/a/b/c", ContentPathUtils.encodeNodePath(nodePath));
 
@@ -77,5 +77,4 @@ public class ContentPathUtilsTest {
         nodePath = "/content/documents/MyHippoProject/a/b/C And D/";
         assertEquals("/content/documents/MyHippoProject/a/b/c-and-d/", ContentPathUtils.encodeNodePath(nodePath));
     }
-
 }
