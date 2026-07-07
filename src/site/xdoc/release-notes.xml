@@ -32,6 +32,10 @@
                     </th>
                 </tr>
                 <tr>
+                    <td>8.x</td>
+                    <td>17.x</td>
+                </tr>
+                <tr>
                     <td>7.x</td>
                     <td>16.6.5</td>
                 </tr>
@@ -68,6 +72,26 @@
                     <td>10.2+</td>
                 </tr>
             </table>
+        </section>
+        <section name="Release Notes of 8.x">
+            <subsection name="8.0.0">
+                <p class="smallinfo">Release Date: Unreleased</p>
+                <ul>
+                    <li><a href='https://bloomreach.atlassian.net/browse/FORGE-584'>FORGE-584</a>:
+                        Upgrade to Bloomreach Experience Manager 17, i.e. use version 17.0.0, build on Java 21.
+                        Upgrade forge dependencies: hippo-pojo-bind-jcr 5.0.0, gallery-magick 5.0.0, brut 5.5.0.
+                    </li>
+                    <li>
+                        Added <code>EXIM-INF/manifest.txt</code> support for deterministic import ordering.
+                        When a ZIP package contains <code>EXIM-INF/manifest.txt</code>, JSON content entries
+                        are imported in the order listed in that file rather than in VFS HashMap iteration order
+                        (which is non-deterministic as of commons-vfs2 2.9.0). Lines starting with <code>#</code>
+                        are treated as comments. Files not listed in the manifest are imported after the listed
+                        files in their original order. The manifest is optional — its absence is a no-op, so
+                        existing ZIP packages are fully backwards compatible.
+                    </li>
+                </ul>
+            </subsection>
         </section>
         <section name="Release Notes of 7.x">
             <subsection name="7.0.0">
