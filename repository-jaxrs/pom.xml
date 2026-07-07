@@ -184,10 +184,8 @@
           <reuseForks>false</reuseForks>
           <forkCount>1</forkCount>
           <!--
-            Brut (bloomreach-forge/brut) has not yet been upgraded for BrXM 17 / Java 21.
-            These three integration tests depend on brut's AbstractJaxrsTest which references
-            org.hippoecm.hst.core.jcr.RuntimeRepositoryException removed in BrXM 17.
-            Re-enable when brut publishes a BrXM 17-compatible release (FORGE-582).
+            These integration tests use brut's AbstractJaxrsTest. With brut 6.1.0 (the current
+            brXM 17-compatible release), verify these pass before re-enabling (FORGE-582).
           -->
           <excludes>
             <exclude>**/ContentEximExportServiceTest.java</exclude>
