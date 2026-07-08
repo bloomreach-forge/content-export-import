@@ -79,7 +79,9 @@
                 <ul>
                     <li><a href='https://bloomreach.atlassian.net/browse/FORGE-584'>FORGE-584</a>:
                         Upgrade to Bloomreach Experience Manager 17, i.e. use version 17.0.0, build on Java 21.
-                        Upgrade forge dependencies: hippo-pojo-bind-jcr 5.0.0, gallery-magick 5.0.0, brut 5.5.0.
+                        Forge dependencies used: hippo-pojo-bind-jcr 4.0.0, gallery-magick 4.1.0, brut 6.1.0
+                        (5.0.0 releases for pojo-bind and gallery-magick were not yet published at time of release;
+                        brut 5.5.0 was never published — 6.1.0 is the first brXM 17-compatible brut release).
                     </li>
                     <li>
                         Added <code>EXIM-INF/manifest.txt</code> support for deterministic import ordering.
