@@ -35,9 +35,7 @@
     <properties>
         <project.build.javaVersion>21</project.build.javaVersion>
 
-        <!-- 5.0.0 for both pojo-bind and gallery-magick are not yet published;
-             use the last available releases until the brXM 17-compatible versions are released. -->
-        <forge.hippo-pojo-bind-jcr.version>4.0.0</forge.hippo-pojo-bind-jcr.version>
+        <forge.hippo-pojo-bind-jcr.version>5.0.0</forge.hippo-pojo-bind-jcr.version>
         <forge.gallery-magick.version>4.1.0</forge.gallery-magick.version>
         <!-- 6.1.0 is the brXM 17-compatible brut release (5.5.0 was never published). -->
         <forge.brut.version>6.1.0</forge.brut.version>
@@ -82,7 +80,7 @@
         <repository>
             <id>bloomreach-maven2-forge</id>
             <name>Bloomreach Maven 2 Forge Repository</name>
-            <url>https://maven.bloomreach.com/content/repositories/forge-releases/</url>
+            <url>https://maven.bloomreach.com/repository/forge-releases/</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
     </distributionManagement>
@@ -100,7 +98,7 @@
         <repository>
             <id>bloomreach-maven2-forge</id>
             <name>Bloomreach Maven 2 Forge Repository</name>
-            <url>https://maven.bloomreach.com/maven2-forge/</url>
+            <url>https://maven.bloomreach.com/repository/maven2-forge/</url>
             <snapshots/>
         </repository>
     </repositories>
