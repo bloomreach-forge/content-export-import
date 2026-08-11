@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>7.0.0</version>
+    <version>8.0.0</version>
   </parent>
 
   <name>Hippo Content Export / Import Repository JAX-RS Services</name>
@@ -158,6 +158,13 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -176,7 +183,7 @@
         <configuration>
           <reuseForks>false</reuseForks>
           <forkCount>1</forkCount>
-        </configuration>
+</configuration>
       </plugin>
     </plugins>
   </build>

@@ -10,7 +10,7 @@ definitions:
         \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
         \n * See the License for the specific language governing permissions and\r\
         \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
-        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.lang.*\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.lang3.*\r\
         \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\n\r\nclass\
         \ CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {\r\
         \n\r\n  boolean doUpdate(Node node) {\r\n    log.debug \"Visiting ${node.path}\"\
@@ -34,7 +34,7 @@ definitions:
         \n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\
         \n * See the License for the specific language governing permissions and\r\
         \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
-        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.lang.*\r\
+        \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.lang3.*\r\
         \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.hippoecm.repository.util.*\r\
         \n\r\nclass CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor\
         \ {\r\n\r\n  boolean doUpdate(Node node) {\r\n    log.debug \"Visiting ${node.path}\"\
@@ -65,7 +65,7 @@ definitions:
         \n * See the License for the specific language governing permissions and\r\
         \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
         \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
-        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.lang3.*\r\nimport org.apache.commons.lang3.text.*\r\
         \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
         \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
         \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
@@ -110,9 +110,10 @@ definitions:
         \n    } finally {\r\n      exportTask.endRecord()\r\n    }\r\n\r\n    return\
         \ false\r\n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
         \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
-        \n    exportTask.stop()\r\n    exportTask.logSummary()\r\n  }\r\n\r\n}"
+        \n    if (exportTask != null) {\r\n      exportTask.stop()\r\n      exportTask.logSummary()\r\n    }\r\n  }\r\n\r\n}"
       hipposys:loglevel: DEBUG
       hipposys:dryrun: false
+      hipposys:parameters: '{"targetBaseFolderPath":"${java.io.tmpdir}/contenteximdemo/export/binaries","binaryAttachmentFolderPath":"${java.io.tmpdir}/contenteximdemo/export/binary-attachments"}'
     /hippo:configuration/hippo:update/hippo:registry/Example_Export_Published_Documents:
       hipposys:script: "/*\r\n * Copyright 2015-2024 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
@@ -124,7 +125,7 @@ definitions:
         \n * See the License for the specific language governing permissions and\r\
         \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
         \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
-        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.lang3.*\r\nimport org.apache.commons.lang3.text.*\r\
         \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
         \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
         \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
@@ -167,9 +168,10 @@ definitions:
         \n    } finally {\r\n      exportTask.endRecord()\r\n    }\r\n\r\n    return\
         \ false\r\n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
         \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
-        \n    exportTask.stop()\r\n    exportTask.logSummary()\r\n  }\r\n\r\n}"
+        \n    if (exportTask != null) {\r\n      exportTask.stop()\r\n      exportTask.logSummary()\r\n    }\r\n  }\r\n\r\n}"
       hipposys:loglevel: DEBUG
       hipposys:dryrun: false
+      hipposys:parameters: '{"targetBaseFolderPath":"${java.io.tmpdir}/contenteximdemo/export/documents"}'
     /hippo:configuration/hippo:update/hippo:registry/Example_Import_Asset_and_Image_Set_Content:
       hipposys:script: "/*\r\n * Copyright 2015-2024 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
@@ -181,7 +183,7 @@ definitions:
         \n * See the License for the specific language governing permissions and\r\
         \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
         \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
-        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.lang3.*\r\nimport org.apache.commons.lang3.text.*\r\
         \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
         \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
         \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
@@ -248,9 +250,10 @@ definitions:
         \     importTask.endRecord()\r\n      }\r\n    }\r\n\r\n    return false\r\
         \n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
         \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
-        \n    importTask.stop()\r\n    importTask.logSummary()\r\n  }\r\n\r\n}"
+        \n    if (importTask != null) {\r\n      importTask.stop()\r\n      importTask.logSummary()\r\n    }\r\n  }\r\n\r\n}"
       hipposys:loglevel: DEBUG
       hipposys:dryrun: false
+      hipposys:parameters: '{"sourceBaseFolderPath":"${java.io.tmpdir}/contenteximdemo/export/binaries"}'
     /hippo:configuration/hippo:update/hippo:registry/Example_Import_Documents_As_Unpublished:
       hipposys:script: "/*\r\n * Copyright 2015-2024 Bloomreach B.V. (https://www.bloomreach.com)\r\
         \n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"\
@@ -262,7 +265,7 @@ definitions:
         \n * See the License for the specific language governing permissions and\r\
         \n * limitations under the License.\r\n */\r\n\r\npackage org.hippoecm.frontend.plugins.cms.admin.updater\r\
         \n\r\nimport java.io.*\r\nimport javax.jcr.*\r\nimport org.apache.commons.io.*\r\
-        \nimport org.apache.commons.lang.*\r\nimport org.apache.commons.lang.text.*\r\
+        \nimport org.apache.commons.lang3.*\r\nimport org.apache.commons.lang3.text.*\r\
         \nimport org.apache.commons.vfs2.*\r\nimport org.hippoecm.repository.api.*\r\
         \nimport org.onehippo.repository.update.BaseNodeUpdateVisitor\r\nimport org.onehippo.forge.content.pojo.model.*\r\
         \nimport org.onehippo.forge.content.exim.core.*\r\nimport org.onehippo.forge.content.exim.core.impl.*\r\
@@ -315,5 +318,6 @@ definitions:
         \      importTask.endRecord()\r\n      }\r\n    }\r\n\r\n    return false\r\
         \n  }\r\n\r\n  boolean undoUpdate(Node node) {\r\n    throw new UnsupportedOperationException('Updater\
         \ does not implement undoUpdate method')\r\n  }\r\n\r\n  void destroy() {\r\
-        \n    importTask.stop()\r\n    importTask.logSummary()\r\n  }\r\n\r\n}"
+        \n    if (importTask != null) {\r\n      importTask.stop()\r\n      importTask.logSummary()\r\n    }\r\n  }\r\n\r\n}"
       hipposys:loglevel: DEBUG
+      hipposys:parameters: '{"sourceBaseFolderPath":"${java.io.tmpdir}/contenteximdemo/export/documents"}'

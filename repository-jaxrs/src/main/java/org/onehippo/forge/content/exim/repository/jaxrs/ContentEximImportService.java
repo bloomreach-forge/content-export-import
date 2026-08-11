@@ -19,8 +19,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Node;
@@ -165,6 +170,7 @@ public class ContentEximImportService extends AbstractContentEximService {
             documentImportTask.setLogger(procLogger);
 
             FileObject[] jsonFiles = binaryImportTask.findFilesByNamePattern(baseFolder, "^.+\\.json$", 1, 20);
+            jsonFiles = applyManifestOrdering(baseFolder, jsonFiles);
 
             int batchCount = 0;
 
@@ -253,6 +259,52 @@ public class ContentEximImportService extends AbstractContentEximService {
         }
 
         return Response.ok(new MultipartBody(attachments, true)).build();
+    }
+
+    /**
+     * If EXIM-INF/manifest.txt exists in the ZIP, re-sorts the jsonFiles array to
+     * match the listed entry paths. Each non-blank, non-comment line names one JSON
+     * path relative to the ZIP root. Files not listed keep their original (VFS hash)
+     * order after listed files. Falls back silently to the original array on any error.
+     *
+     * This sidesteps AbstractFileSystem.files being a HashMap (VFS 2.9.0) which
+     * destroys ZIP central-directory order before EXIM iterates entries.
+     */
+    FileObject[] applyManifestOrdering(FileObject baseFolder, FileObject[] files) {
+        try {
+            FileObject manifest = baseFolder.resolveFile("EXIM-INF/manifest.txt");
+            if (!manifest.exists()) {
+                return files;
+            }
+            List<String> order;
+            try (java.io.InputStream in = manifest.getContent().getInputStream()) {
+                order = IOUtils.readLines(in, StandardCharsets.UTF_8).stream()
+                        .map(String::trim)
+                        .filter(l -> !l.isEmpty() && !l.startsWith("#"))
+                        .toList();
+            }
+            // Build rank map using relative paths (manifest lines have no leading slash).
+            // f.getName().getPath() returns the ZIP-internal absolute path (e.g. /content/docs/foo.json)
+            // but baseFolder.getName().getPath() returns the ZIP FILE's path on disk, not "/".
+            // Using getRelativeName() avoids the mismatch and matches manifest entries directly.
+            Map<String, Integer> rank = new HashMap<>();
+            for (int i = 0; i < order.size(); i++) {
+                rank.put(order.get(i), i);
+            }
+            Arrays.sort(files, Comparator.comparingInt(f -> {
+                try {
+                    String rel = baseFolder.getName().getRelativeName(f.getName());
+                    return rank.getOrDefault(rel, Integer.MAX_VALUE);
+                } catch (Exception ex) {
+                    return Integer.MAX_VALUE;
+                }
+            }));
+            log.info("Applied EXIM-INF/manifest.txt ordering to {} files", files.length);
+            return files;
+        } catch (Exception e) {
+            log.warn("Could not apply EXIM-INF/manifest.txt ordering, using VFS hash order: {}", e.getMessage());
+            return files;
+        }
     }
 
     private int importBinaries(Logger procLogger, ProcessStatus processStatus, FileObject[] jsonFiles,
