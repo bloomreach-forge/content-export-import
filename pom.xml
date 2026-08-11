@@ -21,23 +21,24 @@
     <parent>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-cms7-release</artifactId>
-        <version>16.6.5</version>
+        <version>17.0.0</version>
     </parent>
 
     <name>Hippo Content Export / Import</name>
     <description>Hippo Content Export / Import</description>
     <groupId>org.onehippo.forge.content-exim</groupId>
     <artifactId>content-exim</artifactId>
-    <version>7.0.1-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://github.com/bloomreach-forge/content-export-import</url>
 
     <properties>
-        <project.build.javaVersion>17</project.build.javaVersion>
+        <project.build.javaVersion>21</project.build.javaVersion>
 
-        <forge.hippo-pojo-bind-jcr.version>4.0.0</forge.hippo-pojo-bind-jcr.version>
-        <forge.gallery-magick.version>4.1.0</forge.gallery-magick.version>
-        <forge.brut.version>5.0.1</forge.brut.version>
+        <forge.hippo-pojo-bind-jcr.version>5.0.0</forge.hippo-pojo-bind-jcr.version>
+        <forge.gallery-magick.version>5.0.0</forge.gallery-magick.version>
+        <!-- 6.1.0 is the brXM 17-compatible brut release (5.5.0 was never published). -->
+        <forge.brut.version>6.1.0</forge.brut.version>
 
         <commons-vfs2.version>2.10.0</commons-vfs2.version>
 
@@ -79,7 +80,7 @@
         <repository>
             <id>bloomreach-maven2-forge</id>
             <name>Bloomreach Maven 2 Forge Repository</name>
-            <url>https://maven.bloomreach.com/content/repositories/forge-releases/</url>
+            <url>https://maven.bloomreach.com/repository/forge-releases/</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
     </distributionManagement>
@@ -97,7 +98,7 @@
         <repository>
             <id>bloomreach-maven2-forge</id>
             <name>Bloomreach Maven 2 Forge Repository</name>
-            <url>https://maven.bloomreach.com/maven2-forge/</url>
+            <url>https://maven.bloomreach.com/repository/maven2-forge/</url>
             <snapshots/>
         </repository>
     </repositories>
@@ -305,8 +306,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.plugin.compiler.version}</version>
                 <configuration>
-                    <source>${project.build.javaVersion}</source>
-                    <target>${project.build.javaVersion}</target>
+                    <release>${project.build.javaVersion}</release>
                 </configuration>
             </plugin>
             <plugin>

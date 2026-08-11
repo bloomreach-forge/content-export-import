@@ -18,7 +18,7 @@ package org.hippoecm.frontend.plugins.cms.admin.updater
 
 import java.io.*
 import javax.jcr.*
-import org.apache.commons.lang.*
+import org.apache.commons.lang3.*
 import org.onehippo.repository.update.BaseNodeUpdateVisitor
 
 class CleaningDocbasesHavingPathsUpdateVisitor extends BaseNodeUpdateVisitor {
