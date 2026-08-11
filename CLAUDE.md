@@ -8,12 +8,12 @@ This is the **Bloomreach Content Export/Import (Content-ExIm)** Forge library, a
 
 **Project Identity:**
 - Group ID: `org.onehippo.forge.content-exim`
-- Version: 7.0.0-SNAPSHOT
-- Parent: `hippo-cms7-release` (version 16.3.0)
+- Version: 8.0.0-SNAPSHOT
+- Parent: `hippo-cms7-release` (version 17.0.0)
 - License: Apache 2.0
 - Repository: https://github.com/bloomreach-forge/content-export-import
 - Documentation: https://bloomreach-forge.github.io/content-export-import/
-- Java Version: Java 17
+- Java Version: Java 21
 
 ## Architecture Overview
 
@@ -169,12 +169,12 @@ content-export-import/
 ### Java Backend
 - **JCR**: Apache Jackrabbit (via Bloomreach)
 - **Workflow**: Hippo Workflow API
-- **POJO Binding**: Hippo POJO Bind JCR library (3.1.0)
+- **POJO Binding**: Hippo POJO Bind JCR library (5.0.0)
 - **Image Processing**: Gallery Magick (4.1.0)
 - **REST Services**: JAX-RS (likely Apache CXF)
 - **File Systems**: Apache Commons VFS2 (2.10.0)
 - **Build**: Apache Maven 3.x
-- **Java**: Java 17+
+- **Java**: Java 21+
 
 ### Testing Frameworks
 - **JUnit**: Primary testing framework

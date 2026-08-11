@@ -75,7 +75,7 @@
         </section>
         <section name="Release Notes of 8.x">
             <subsection name="8.0.0">
-                <p class="smallinfo">Release Date: Unreleased</p>
+                <p class="smallinfo">Release Date: 11 August 2026</p>
                 <ul>
                     <li><a href='https://bloomreach.atlassian.net/browse/FORGE-584'>FORGE-584</a>:
                         Upgrade to Bloomreach Experience Manager 17, i.e. use version 17.0.0, build on Java 21.

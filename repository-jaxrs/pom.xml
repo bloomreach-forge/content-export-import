@@ -183,16 +183,7 @@
         <configuration>
           <reuseForks>false</reuseForks>
           <forkCount>1</forkCount>
-          <!--
-            These integration tests use brut's AbstractJaxrsTest. With brut 6.1.0 (the current
-            brXM 17-compatible release), verify these pass before re-enabling (FORGE-582).
-          -->
-          <excludes>
-            <exclude>**/ContentEximExportServiceTest.java</exclude>
-            <exclude>**/ContentEximImportServiceTest.java</exclude>
-            <exclude>**/ContentNodeBinderRegressionTest.java</exclude>
-          </excludes>
-        </configuration>
+</configuration>
       </plugin>
     </plugins>
   </build>

@@ -36,7 +36,7 @@
         <project.build.javaVersion>21</project.build.javaVersion>
 
         <forge.hippo-pojo-bind-jcr.version>5.0.0</forge.hippo-pojo-bind-jcr.version>
-        <forge.gallery-magick.version>4.1.0</forge.gallery-magick.version>
+        <forge.gallery-magick.version>5.0.0</forge.gallery-magick.version>
         <!-- 6.1.0 is the brXM 17-compatible brut release (5.5.0 was never published). -->
         <forge.brut.version>6.1.0</forge.brut.version>
 
@@ -306,8 +306,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.plugin.compiler.version}</version>
                 <configuration>
-                    <source>${project.build.javaVersion}</source>
-                    <target>${project.build.javaVersion}</target>
+                    <release>${project.build.javaVersion}</release>
                 </configuration>
             </plugin>
             <plugin>

@@ -19,8 +19,8 @@ package org.hippoecm.frontend.plugins.cms.admin.updater
 import java.io.*
 import javax.jcr.*
 import org.apache.commons.io.*
-import org.apache.commons.lang.*
-import org.apache.commons.lang.text.*
+import org.apache.commons.lang3.*
+import org.apache.commons.lang3.text.*
 import org.apache.commons.vfs2.*
 import org.hippoecm.repository.api.*
 import org.onehippo.repository.update.BaseNodeUpdateVisitor
