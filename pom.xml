@@ -280,6 +280,13 @@
                 </configuration>
                 <reportSets>
                     <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
                         <id>default</id>
                         <reports>
                             <report>javadoc</report>
